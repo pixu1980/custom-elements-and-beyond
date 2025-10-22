@@ -1,0 +1,243 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Framework Agnostic</mark> Components</h3>
+    <p>Building components that work everywhere</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Universal Component Pattern</h4>
+    <pre><code class="language-javascript">// universal-button.js
+class UniversalButton extends HTMLButtonElement {
+  // Use standard web APIs only
+  static get observedAttributes() {
+    return ['variant', 'loading'];
+  }
+
+  constructor() {
+    super();
+    this._initialized = false;
+  }
+
+  connectedCallback() {
+    if (!this._initialized) {
+      this.initialize();
+      this._initialized = true;
+    }
+  }
+
+  initialize() {
+    // Setup that works everywhere
+    this.classList.add('universal-button');
+    this.updateAppearance();
+    
+    // Use standard events
+    this.addEventListener('click', this.handleClick);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this.handleClick);
+  }
+
+  // Public API using properties
+  get loading() {
+    return this.hasAttribute('loading');
+  }
+
+  set loading(value) {
+    if (value) {
+      this.setAttribute('loading', '');
+    } else {
+      this.removeAttribute('loading');
+    }
+  }
+
+  // Emit standard custom events
+  handleClick = (event) => {
+    if (this.loading) {
+      event.preventDefault();
+      return;
+    }
+
+    this.dispatchEvent(new CustomEvent('button-click', {
+      detail: { timestamp: Date.now() },
+      bubbles: true,
+    }));
+  };
+}
+
+customElements.define('universal-button', UniversalButton, {
+  extends: 'button',
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Framework Compatibility Checklist</h4>
+    <ul>
+      <li class="fragment">
+        ✅ Use <mark>properties</mark> for complex data, <mark>attributes</mark> for simple values
+      </li>
+      <li class="fragment">
+        ✅ Emit <mark>CustomEvents</mark> with kebab-case names
+      </li>
+      <li class="fragment">
+        ✅ Support both <mark>declarative</mark> (HTML) and <mark>imperative</mark> (JS) usage
+      </li>
+      <li class="fragment">
+        ✅ Provide <mark>proper cleanup</mark> in disconnectedCallback
+      </li>
+      <li class="fragment">
+        ✅ Don't rely on <mark>framework-specific</mark> features
+      </li>
+      <li class="fragment">
+        ✅ Include <mark>TypeScript definitions</mark> for better DX
+      </li>
+      <li class="fragment">
+        ✅ Document <mark>all public APIs</mark> clearly
+      </li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Framework Adapters</h4>
+    <pre><code class="language-javascript">// adapters/react.jsx
+import { forwardRef, useEffect, useRef } from 'react';
+
+export function createReactWrapper(elementName, events = []) {
+  return forwardRef(({ children, ...props }, ref) => {
+    const internalRef = useRef(null);
+    const elementRef = ref || internalRef;
+
+    useEffect(() => {
+      const element = elementRef.current;
+      if (!element) return;
+
+      // Set properties
+      Object.entries(props).forEach(([key, value]) => {
+        if (!events.includes(key) && key !== 'children') {
+          element[key] = value;
+        }
+      });
+    }, [props]);
+
+    // Convert React events to DOM events
+    const eventHandlers = {};
+    events.forEach(eventName => {
+      const propName = `on${eventName.charAt(0).toUpperCase()}${eventName.slice(1)}`;
+      if (props[propName]) {
+        eventHandlers[eventName] = props[propName];
+      }
+    });
+
+    useEffect(() => {
+      const element = elementRef.current;
+      if (!element) return;
+
+      const handlers = Object.entries(eventHandlers).map(([event, handler]) => {
+        element.addEventListener(event, handler);
+        return () => element.removeEventListener(event, handler);
+      });
+
+      return () => handlers.forEach(cleanup => cleanup());
+    }, [eventHandlers]);
+
+    return createElement(elementName, { ref: elementRef }, children);
+  });
+}
+
+// Usage
+const UniversalButton = createReactWrapper('universal-button', ['button-click']);</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Interoperability Best Practices</h4>
+    <pre><code class="language-javascript">// Good: Framework-agnostic data flow
+class DataComponent extends HTMLDivElement {
+  // ✅ Property for complex data
+  set data(value) {
+    this._data = value;
+    this.render();
+  }
+
+  get data() {
+    return this._data;
+  }
+
+  // ✅ Attribute for simple config
+  get mode() {
+    return this.getAttribute('mode') || 'default';
+  }
+
+  set mode(value) {
+    this.setAttribute('mode', value);
+  }
+
+  // ✅ Standard custom events
+  emitChange(detail) {
+    this.dispatchEvent(new CustomEvent('data-change', {
+      detail,
+      bubbles: true,
+      composed: true, // Cross shadow DOM boundaries
+    }));
+  }
+
+  // ✅ Public methods
+  refresh() {
+    this.render();
+  }
+
+  reset() {
+    this._data = null;
+    this.render();
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Testing Across Frameworks</h4>
+    <pre><code class="language-javascript">// test/universal.test.js
+describe('Universal Component', () => {
+  it('works in vanilla JavaScript', () => {
+    const button = document.createElement('button', {
+      is: 'universal-button'
+    });
+    button.loading = true;
+    expect(button.hasAttribute('loading')).toBe(true);
+  });
+
+  it('works with Vue', async () => {
+    const wrapper = mount({
+      template: `&lt;button is="universal-button" :loading="true" /&gt;`
+    });
+    expect(wrapper.find('button').attributes('loading')).toBeDefined();
+  });
+
+  it('works with React', () => {
+    const { container } = render(
+      &lt;UniversalButton loading={true} /&gt;
+    );
+    expect(container.querySelector('button')).toHaveAttribute('loading');
+  });
+
+  it('works with Angular', async () => {
+    const fixture = TestBed.createComponent(TestComponent);
+    fixture.componentInstance.loading = true;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('button'))
+      .toHaveAttribute('loading');
+  });
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Progressive Enhancement</h4>
+    <pre><code class="language-html">&lt;!-- Component works without JavaScript --&gt;
+&lt;button is="universal-button" disabled&gt;
+  &lt;!-- Fallback content --&gt;
+  Click me
+&lt;/button&gt;
+
+&lt;script type="module"&gt;
+  // Enhancement loads progressively
+  import './universal-button.js';
+  
+  // Component upgrades automatically
+  customElements.whenDefined('universal-button').then(() => {
+    console.log('Component upgraded!');
+  });
+&lt;/script&gt;</code></pre>
+  </section>
+</section>

@@ -1,0 +1,216 @@
+<section>
+  <section data-transition="slide">
+    <h3>Integration with <mark>Vue.js</mark></h3>
+    <p>Using Custom Elements in Vue applications</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Vue Configuration</h4>
+    <pre><code class="language-javascript">// vite.config.js (Vue 3 + Vite)
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+
+export default defineConfig({
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          // Treat all tags with a dash as custom elements
+          isCustomElement: (tag) => tag.includes('-') || tag.startsWith('is-'),
+        },
+      },
+    }),
+  ],
+});</code></pre>
+    <pre><code class="language-javascript">// main.js (Vue 3)
+import { createApp } from 'vue';
+import App from './App.vue';
+
+// Import custom elements
+import './components/counter-button.js';
+import './components/data-list.js';
+
+const app = createApp(App);
+
+// Tell Vue to ignore custom elements
+app.config.compilerOptions.isCustomElement = (tag) => {
+  return tag.includes('-') || tag.startsWith('is-');
+};
+
+app.mount('#app');</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Using in Vue Templates</h4>
+    <pre><code class="language-vue">&lt;template&gt;
+  &lt;div class="app"&gt;
+    &lt;!-- Custom element as standard HTML --&gt;
+    &lt;button 
+      is="counter-button"
+      :count="count"
+      @count-changed="handleCountChange"
+    &gt;
+      Count: {{ count }}
+    &lt;/button&gt;
+
+    &lt;!-- Pass data as properties --&gt;
+    &lt;ul 
+      is="data-list"
+      ref="listRef"
+    &gt;&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref, onMounted } from 'vue';
+
+const count = ref(0);
+const listRef = ref(null);
+
+function handleCountChange(event) {
+  count.value = event.detail.newValue;
+}
+
+onMounted(() => {
+  // Set properties that can't be set via attributes
+  if (listRef.value) {
+    listRef.value.items = [
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+    ];
+  }
+});
+&lt;/script&gt;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Two-Way Binding with v-model</h4>
+    <pre><code class="language-vue">&lt;template&gt;
+  &lt;!-- Custom v-model support --&gt;
+  &lt;input 
+    is="custom-input"
+    v-model="inputValue"
+    type="text"
+  /&gt;
+  
+  &lt;p&gt;Value: {{ inputValue }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref } from 'vue';
+
+const inputValue = ref('');
+&lt;/script&gt;</code></pre>
+    <pre><code class="language-javascript">// custom-input.js - Vue-compatible custom element
+class CustomInput extends HTMLInputElement {
+  connectedCallback() {
+    // Emit 'input' event for v-model
+    this.addEventListener('input', () => {
+      this.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  }
+}
+
+customElements.define('custom-input', CustomInput, { extends: 'input' });</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Wrapper Component Pattern</h4>
+    <pre><code class="language-vue">&lt;!-- CustomButton.vue --&gt;
+&lt;template&gt;
+  &lt;button 
+    is="fancy-button"
+    ref="buttonRef"
+    :variant="variant"
+    @click="handleClick"
+  &gt;
+    &lt;slot /&gt;
+  &lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref, watch, onMounted } from 'vue';
+import './fancy-button.js';
+
+const props = defineProps({
+  variant: {
+    type: String,
+    default: 'primary',
+  },
+  loading: Boolean,
+});
+
+const emit = defineEmits(['click']);
+const buttonRef = ref(null);
+
+// Sync properties that can't be attributes
+watch(() => props.loading, (newValue) => {
+  if (buttonRef.value) {
+    buttonRef.value.loading = newValue;
+  }
+});
+
+function handleClick(event) {
+  emit('click', event);
+}
+
+onMounted(() => {
+  // Initialize complex properties
+  if (buttonRef.value) {
+    buttonRef.value.loading = props.loading;
+  }
+});
+&lt;/script&gt;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Composables with Custom Elements</h4>
+    <pre><code class="language-javascript">// useCustomElement.js
+import { ref, onMounted, onUnmounted } from 'vue';
+
+export function useCustomElement(elementRef, elementType) {
+  const element = ref(null);
+  const isReady = ref(false);
+
+  onMounted(() => {
+    element.value = elementRef.value;
+    
+    // Wait for element upgrade
+    if (element.value) {
+      customElements.whenDefined(elementType).then(() => {
+        isReady.value = true;
+      });
+    }
+  });
+
+  function setProperty(prop, value) {
+    if (element.value) {
+      element.value[prop] = value;
+    }
+  }
+
+  function callMethod(method, ...args) {
+    if (element.value && typeof element.value[method] === 'function') {
+      return element.value[method](...args);
+    }
+  }
+
+  return {
+    element,
+    isReady,
+    setProperty,
+    callMethod,
+  };
+}</code></pre>
+    <pre><code class="language-vue">&lt;script setup&gt;
+import { ref } from 'vue';
+import { useCustomElement } from './useCustomElement';
+
+const listRef = ref(null);
+const { element, isReady, setProperty, callMethod } = useCustomElement(
+  listRef,
+  'data-list'
+);
+
+function loadData() {
+  setProperty('items', [...data]);
+  callMethod('refresh');
+}
+&lt;/script&gt;</code></pre>
+  </section>
+</section>

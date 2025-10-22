@@ -1,0 +1,325 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Debugging</mark> & DevTools</h3>
+    <p>Tools and techniques for debugging Custom Elements</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Browser DevTools</h4>
+    <pre><code class="language-javascript">class DebuggableComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    
+    // Add debug flag
+    this.debug = this.hasAttribute('debug');
+    
+    if (this.debug) {
+      console.log('Component constructed:', this);
+    }
+  }
+
+  connectedCallback() {
+    if (this.debug) {
+      console.log('Component connected:', {
+        element: this,
+        attributes: this.getAttributeNames(),
+        children: this.children.length,
+      });
+    }
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this.debug) {
+      console.log('Attribute changed:', { name, oldValue, newValue });
+    }
+  }
+
+  // Helper to inspect component state
+  getDebugInfo() {
+    return {
+      tagName: this.tagName,
+      is: this.getAttribute('is'),
+      attributes: Object.fromEntries(
+        this.getAttributeNames().map(name => [name, this.getAttribute(name)])
+      ),
+      properties: this.getOwnPropertyNames(),
+      children: Array.from(this.children).map(c => c.tagName),
+    };
+  }
+}
+
+// Make component inspectable from console
+window.debugComponent = (selector) => {
+  const el = document.querySelector(selector);
+  if (el && el.getDebugInfo) {
+    return el.getDebugInfo();
+  }
+  return el;
+};</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Custom DevTools Panel</h4>
+    <pre><code class="language-javascript">// Create debug panel for component
+class ComponentDebugPanel {
+  constructor(component) {
+    this.component = component;
+    this.panel = this.createPanel();
+  }
+
+  createPanel() {
+    const panel = document.createElement('div');
+    panel.className = 'debug-panel';
+    panel.style.cssText = `
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 300px;
+      max-height: 400px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 1rem;
+      overflow: auto;
+      font-family: monospace;
+      font-size: 12px;
+      z-index: 10000;
+    `;
+    
+    this.update();
+    return panel;
+  }
+
+  update() {
+    const state = this.component.getDebugInfo?.() || {};
+    
+    this.panel.innerHTML = `
+      &lt;h3 style="margin: 0 0 1rem 0"&gt;🔍 Component Inspector&lt;/h3&gt;
+      &lt;pre&gt;${JSON.stringify(state, null, 2)}&lt;/pre&gt;
+      &lt;button onclick="this.parentElement.remove()"&gt;Close&lt;/button&gt;
+    `;
+  }
+
+  show() {
+    document.body.appendChild(this.panel);
+    
+    // Update on mutations
+    const observer = new MutationObserver(() => this.update());
+    observer.observe(this.component, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+  }
+}
+
+// Usage
+const panel = new ComponentDebugPanel(myComponent);
+panel.show();</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Performance Profiling</h4>
+    <pre><code class="language-javascript">class ProfiledComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this.metrics = {
+      renders: 0,
+      totalRenderTime: 0,
+      averageRenderTime: 0,
+    };
+  }
+
+  render() {
+    const start = performance.now();
+    
+    // Do rendering
+    this.buildDOM();
+    
+    const end = performance.now();
+    const duration = end - start;
+    
+    // Track metrics
+    this.metrics.renders++;
+    this.metrics.totalRenderTime += duration;
+    this.metrics.averageRenderTime = 
+      this.metrics.totalRenderTime / this.metrics.renders;
+    
+    // Log slow renders
+    if (duration > 16.67) {
+      console.warn(`Slow render #${this.metrics.renders}: ${duration.toFixed(2)}ms`);
+      console.trace();
+    }
+    
+    // Mark in Performance timeline
+    performance.mark(`render-${this.metrics.renders}-start`);
+    performance.mark(`render-${this.metrics.renders}-end`);
+    performance.measure(
+      `render-${this.metrics.renders}`,
+      `render-${this.metrics.renders}-start`,
+      `render-${this.metrics.renders}-end`
+    );
+  }
+
+  getMetrics() {
+    return { ...this.metrics };
+  }
+}
+
+// View metrics
+console.table(component.getMetrics());</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Error Tracking</h4>
+    <pre><code class="language-javascript">class ErrorTrackingComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this.errors = [];
+  }
+
+  connectedCallback() {
+    // Wrap lifecycle in try-catch
+    try {
+      this.initialize();
+    } catch (error) {
+      this.logError('connectedCallback', error);
+    }
+  }
+
+  logError(context, error) {
+    const errorInfo = {
+      context,
+      message: error.message,
+      stack: error.stack,
+      timestamp: Date.now(),
+      element: this.tagName,
+      attributes: Object.fromEntries(
+        this.getAttributeNames().map(n => [n, this.getAttribute(n)])
+      ),
+    };
+    
+    this.errors.push(errorInfo);
+    
+    // Report to console
+    console.error('Component error:', errorInfo);
+    
+    // Report to external service
+    if (window.errorTracker) {
+      window.errorTracker.report(errorInfo);
+    }
+    
+    // Dispatch event for parent to handle
+    this.dispatchEvent(new CustomEvent('component-error', {
+      detail: errorInfo,
+      bubbles: true,
+    }));
+  }
+
+  getErrors() {
+    return [...this.errors];
+  }
+}
+
+// Global error handler
+window.addEventListener('component-error', (event) => {
+  console.error('Component error detected:', event.detail);
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Logging Utilities</h4>
+    <pre><code class="language-javascript">// Create custom logger for components
+class ComponentLogger {
+  constructor(componentName) {
+    this.name = componentName;
+    this.enabled = localStorage.getItem(`debug:${componentName}`) === 'true';
+  }
+
+  log(...args) {
+    if (this.enabled) {
+      console.log(`[${this.name}]`, ...args);
+    }
+  }
+
+  warn(...args) {
+    if (this.enabled) {
+      console.warn(`[${this.name}]`, ...args);
+    }
+  }
+
+  error(...args) {
+    console.error(`[${this.name}]`, ...args);
+  }
+
+  group(label) {
+    if (this.enabled) {
+      console.group(`[${this.name}] ${label}`);
+    }
+  }
+
+  groupEnd() {
+    if (this.enabled) {
+      console.groupEnd();
+    }
+  }
+
+  time(label) {
+    if (this.enabled) {
+      console.time(`[${this.name}] ${label}`);
+    }
+  }
+
+  timeEnd(label) {
+    if (this.enabled) {
+      console.timeEnd(`[${this.name}] ${label}`);
+    }
+  }
+}
+
+// Usage in component
+class LoggedComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this.logger = new ComponentLogger('LoggedComponent');
+  }
+
+  connectedCallback() {
+    this.logger.time('initialization');
+    this.logger.log('Component connected');
+    this.initialize();
+    this.logger.timeEnd('initialization');
+  }
+}
+
+// Enable debugging from console
+localStorage.setItem('debug:LoggedComponent', 'true');</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Testing in DevTools</h4>
+    <pre><code class="language-javascript">// Helper functions for testing in console
+
+// Test component by selector
+window.$test = (selector) => {
+  const el = document.querySelector(selector);
+  
+  return {
+    element: el,
+    click: () => el?.click(),
+    set: (prop, value) => { el[prop] = value; },
+    get: (prop) => el?.[prop],
+    attr: (name, value) => {
+      if (value === undefined) return el?.getAttribute(name);
+      el?.setAttribute(name, value);
+    },
+    dispatch: (event, detail) => {
+      el?.dispatchEvent(new CustomEvent(event, { detail, bubbles: true }));
+    },
+    inspect: () => console.dir(el),
+  };
+};
+
+// Usage in DevTools console
+const btn = $test('[is="counter-button"]');
+btn.click();
+btn.get('count'); // Get property
+btn.set('count', 10); // Set property
+btn.attr('disabled', 'true'); // Set attribute
+btn.dispatch('custom-event', { data: 'test' });
+btn.inspect(); // Full element inspection</code></pre>
+  </section>
+</section>

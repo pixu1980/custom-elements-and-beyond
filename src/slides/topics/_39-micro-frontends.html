@@ -1,0 +1,71 @@
+<section>
+  <section data-transition="slide">
+    <h3>Micro Frontends with <mark>Custom Elements</mark></h3>
+    <p>Composing apps from independent slices using the platform</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Why Custom Elements fit MFE</h4>
+    <ul>
+      <li class="fragment">Stable contract: attributes, properties, events</li>
+      <li class="fragment">Style isolation with attribute gates and layers</li>
+      <li class="fragment">Independent deploy and versioning</li>
+      <li class="fragment">No runtime coupling between teams</li>
+      <li class="fragment">Works with any framework or none</li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Shell + Remote Composition</h4>
+    <pre><code class="language-html">&lt;!-- Shell owns layout and navigation --&gt;
+&lt;header&gt;My App&lt;/header&gt;
+&lt;main&gt;
+  &lt;section&gt;
+    &lt;!-- Team A provides component --&gt;
+    &lt;div is="cart-widget" data-endpoint="/api/cart"&gt;&lt;/div&gt;
+  &lt;/section&gt;
+  &lt;section&gt;
+    &lt;!-- Team B provides component --&gt;
+    &lt;table is="orders-table" data-endpoint="/api/orders"&gt;&lt;/table&gt;
+  &lt;/section&gt;
+&lt;/main&gt;</code></pre>
+    <pre><code class="language-javascript">// Shell dynamically loads MFEs
+async function loadRemote(name, url){
+  if (!customElements.get(name)) {
+    await import(url);
+  }
+}
+
+await Promise.all([
+  loadRemote('cart-widget', '/remotes/cart-widget.js'),
+  loadRemote('orders-table', '/remotes/orders-table.js'),
+]);</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Contracts: Props and Events</h4>
+    <pre><code class="language-javascript">// cart-widget.js
+class CartWidget extends HTMLDivElement {
+  static get observedAttributes(){ return ['data-endpoint']; }
+
+  set items(value){ this._items = value; this.render(); }
+  get items(){ return this._items || []; }
+
+  connectedCallback(){ this.fetchData(); }
+
+  async fetchData(){
+    const res = await fetch(this.getAttribute('data-endpoint'));
+    this.items = await res.json();
+    this.dispatchEvent(new CustomEvent('cart:loaded', { detail: { count: this.items.length }, bubbles: true }));
+  }
+}
+customElements.define('cart-widget', CartWidget, { extends: 'div' });</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Versioning Strategy</h4>
+    <ul>
+      <li class="fragment">Semantic versioning per component</li>
+      <li class="fragment">Backward compatible attributes and events</li>
+      <li class="fragment">Feature detection flags</li>
+      <li class="fragment">Error boundaries at shell level</li>
+      <li class="fragment">Observability: log slow renders and errors</li>
+    </ul>
+  </section>
+</section>

@@ -1,0 +1,282 @@
+<section>
+  <section data-transition="slide">
+    <h3>Advanced <mark>Event Patterns</mark></h3>
+    <p>Sophisticated event handling and communication strategies</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Event Delegation with Data Attributes</h4>
+    <pre><code class="language-javascript">class ActionableList extends HTMLUListElement {
+  connectedCallback() {
+    // Single event listener for all actions
+    this.addEventListener('click', this.handleAction);
+  }
+
+  handleAction = (event) => {
+    const target = event.target;
+    
+    // Find closest element with action
+    const actionEl = target.closest('[data-action]');
+    if (!actionEl) return;
+    
+    const action = actionEl.dataset.action;
+    const itemId = actionEl.closest('[data-id]')?.dataset.id;
+    
+    // Route to appropriate handler
+    switch (action) {
+      case 'edit':
+        this.handleEdit(itemId);
+        break;
+      case 'delete':
+        this.handleDelete(itemId);
+        break;
+      case 'share':
+        this.handleShare(itemId);
+        break;
+      default:
+        console.warn(`Unknown action: ${action}`);
+    }
+  };
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this.handleAction);
+  }
+}</code></pre>
+    <pre><code class="language-html">&lt;ul is="actionable-list"&gt;
+  &lt;li data-id="1"&gt;
+    Item 1
+    &lt;button data-action="edit"&gt;Edit&lt;/button&gt;
+    &lt;button data-action="delete"&gt;Delete&lt;/button&gt;
+    &lt;button data-action="share"&gt;Share&lt;/button&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Event Bus Pattern</h4>
+    <pre><code class="language-javascript">// Global event bus
+class EventBus extends EventTarget {
+  static instance = new EventBus();
+  
+  emit(eventName, detail) {
+    this.dispatchEvent(new CustomEvent(eventName, { detail }));
+  }
+  
+  on(eventName, handler) {
+    this.addEventListener(eventName, handler);
+  }
+  
+  off(eventName, handler) {
+    this.removeEventListener(eventName, handler);
+  }
+}
+
+// Component using event bus
+class SubscriberComponent extends HTMLDivElement {
+  connectedCallback() {
+    // Subscribe to global events
+    this._handlers = {
+      userLogin: (e) => this.handleUserLogin(e.detail),
+      themeChange: (e) => this.handleThemeChange(e.detail),
+    };
+    
+    EventBus.instance.on('user:login', this._handlers.userLogin);
+    EventBus.instance.on('theme:change', this._handlers.themeChange);
+  }
+
+  disconnectedCallback() {
+    // Unsubscribe
+    EventBus.instance.off('user:login', this._handlers.userLogin);
+    EventBus.instance.off('theme:change', this._handlers.themeChange);
+  }
+}
+
+// Component emitting events
+class PublisherComponent extends HTMLButtonElement {
+  connectedCallback() {
+    this.onclick = () => {
+      EventBus.instance.emit('user:login', {
+        userId: 123,
+        username: 'john_doe',
+      });
+    };
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Event Throttling and Debouncing</h4>
+    <pre><code class="language-javascript">class SearchInput extends HTMLInputElement {
+  constructor() {
+    super();
+    this._searchTimeout = null;
+  }
+
+  connectedCallback() {
+    // Debounce: Wait for user to stop typing
+    this.addEventListener('input', this.handleInputDebounced);
+    
+    // Throttle: Limit scroll event frequency
+    this.addEventListener('scroll', this.handleScrollThrottled);
+  }
+
+  // Debounce: Execute after delay, reset timer on each call
+  handleInputDebounced = (event) => {
+    clearTimeout(this._searchTimeout);
+    
+    this._searchTimeout = setTimeout(() => {
+      this.performSearch(event.target.value);
+    }, 300); // Wait 300ms after last keystroke
+  };
+
+  // Throttle: Execute at most once per interval
+  handleScrollThrottled = (event) => {
+    if (this._scrollThrottled) return;
+    
+    this._scrollThrottled = true;
+    
+    requestAnimationFrame(() => {
+      this.handleScroll(event);
+      this._scrollThrottled = false;
+    });
+  };
+
+  performSearch(query) {
+    this.dispatchEvent(new CustomEvent('search', {
+      detail: { query },
+      bubbles: true,
+    }));
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Event Composition</h4>
+    <pre><code class="language-javascript">class GestureButton extends HTMLButtonElement {
+  constructor() {
+    super();
+    this._pressStart = 0;
+    this._pressTimer = null;
+  }
+
+  connectedCallback() {
+    this.addEventListener('pointerdown', this.handlePointerDown);
+    this.addEventListener('pointerup', this.handlePointerUp);
+    this.addEventListener('pointercancel', this.handlePointerCancel);
+  }
+
+  handlePointerDown = (event) => {
+    this._pressStart = Date.now();
+    
+    // Detect long press
+    this._pressTimer = setTimeout(() => {
+      this.dispatchEvent(new CustomEvent('longpress', {
+        detail: { duration: Date.now() - this._pressStart },
+        bubbles: true,
+      }));
+    }, 500);
+  };
+
+  handlePointerUp = (event) => {
+    const duration = Date.now() - this._pressStart;
+    clearTimeout(this._pressTimer);
+    
+    if (duration < 500) {
+      // Short press - regular click
+      this.dispatchEvent(new CustomEvent('shortpress', {
+        detail: { duration },
+        bubbles: true,
+      }));
+    }
+  };
+
+  handlePointerCancel = () => {
+    clearTimeout(this._pressTimer);
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Promise-Based Events</h4>
+    <pre><code class="language-javascript">class AsyncDialog extends HTMLDialogElement {
+  // Return promise that resolves with user's choice
+  async ask(question) {
+    return new Promise((resolve) => {
+      this.querySelector('p').textContent = question;
+      
+      const handleChoice = (event) => {
+        const button = event.target.closest('button');
+        if (!button) return;
+        
+        const choice = button.dataset.value;
+        this.close();
+        resolve(choice);
+        
+        // Cleanup
+        this.removeEventListener('click', handleChoice);
+      };
+      
+      this.addEventListener('click', handleChoice);
+      this.showModal();
+    });
+  }
+}
+
+// Usage
+const dialog = document.querySelector('dialog[is="async-dialog"]');
+const answer = await dialog.ask('Do you want to continue?');
+
+if (answer === 'yes') {
+  // User clicked yes
+} else {
+  // User clicked no
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Event Replay Pattern</h4>
+    <pre><code class="language-javascript">class EventRecorder extends HTMLDivElement {
+  constructor() {
+    super();
+    this._eventLog = [];
+    this._recording = false;
+  }
+
+  startRecording() {
+    this._recording = true;
+    this._eventLog = [];
+    
+    // Capture all events
+    this.addEventListener('click', this.recordEvent, true);
+    this.addEventListener('input', this.recordEvent, true);
+    this.addEventListener('change', this.recordEvent, true);
+  }
+
+  stopRecording() {
+    this._recording = false;
+    this.removeEventListener('click', this.recordEvent, true);
+    this.removeEventListener('input', this.recordEvent, true);
+    this.removeEventListener('change', this.recordEvent, true);
+  }
+
+  recordEvent = (event) => {
+    if (!this._recording) return;
+    
+    this._eventLog.push({
+      type: event.type,
+      target: event.target,
+      timestamp: Date.now(),
+      detail: event.detail,
+    });
+  };
+
+  async replay(speed = 1) {
+    for (const record of this._eventLog) {
+      // Wait for original timing
+      await new Promise(resolve => setTimeout(resolve, 100 / speed));
+      
+      // Dispatch recorded event
+      const event = new CustomEvent(record.type, {
+        detail: record.detail,
+        bubbles: true,
+      });
+      record.target.dispatchEvent(event);
+    }
+  }
+}</code></pre>
+  </section>
+</section>

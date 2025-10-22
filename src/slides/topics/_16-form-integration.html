@@ -1,0 +1,170 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Form Integration</mark> & Validation</h3>
+    <p>Building form controls that work seamlessly with native forms</p>
+  </section>
+  <section data-transition="slide">
+    <h4>ElementInternals API</h4>
+    <pre><code class="language-javascript">class CustomInput extends HTMLInputElement {
+  static formAssociated = true;
+
+  constructor() {
+    super();
+    this._internals = this.attachInternals();
+  }
+
+  connectedCallback() {
+    this.addEventListener('input', this.handleInput);
+  }
+
+  handleInput = () => {
+    // Update form value
+    this._internals.setFormValue(this.value);
+    
+    // Validate
+    this.validate();
+  };
+
+  validate() {
+    if (!this.value) {
+      this._internals.setValidity(
+        { valueMissing: true },
+        'This field is required'
+      );
+    } else {
+      this._internals.setValidity({});
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Custom Validation</h4>
+    <pre><code class="language-javascript">class EmailInput extends HTMLInputElement {
+  connectedCallback() {
+    this.type = 'email';
+    this.addEventListener('blur', this.validateEmail);
+  }
+
+  validateEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(this.value);
+
+    if (!isValid && this.value) {
+      this.setCustomValidity('Please enter a valid email');
+      this.setAttribute('aria-invalid', 'true');
+    } else {
+      this.setCustomValidity('');
+      this.setAttribute('aria-invalid', 'false');
+    }
+
+    // Trigger validation UI
+    this.reportValidity();
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Form Submission</h4>
+    <pre><code class="language-javascript">class FormButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.type = 'submit';
+    this.addEventListener('click', this.handleSubmit);
+  }
+
+  handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    const form = this.closest('form');
+    
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    this.setAttribute('aria-busy', 'true');
+    this.disabled = true;
+
+    try {
+      const formData = new FormData(form);
+      const response = await this.submitForm(formData);
+      this.handleSuccess(response);
+    } catch (error) {
+      this.handleError(error);
+    } finally {
+      this.setAttribute('aria-busy', 'false');
+      this.disabled = false;
+    }
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Real-time Validation</h4>
+    <pre><code class="language-javascript">class PasswordInput extends HTMLInputElement {
+  static get observedAttributes() {
+    return ['minlength'];
+  }
+
+  connectedCallback() {
+    this.type = 'password';
+    this.addEventListener('input', this.checkStrength);
+  }
+
+  checkStrength = () => {
+    const value = this.value;
+    const minLength = parseInt(this.getAttribute('minlength')) || 8;
+    
+    const hasLength = value.length >= minLength;
+    const hasUpper = /[A-Z]/.test(value);
+    const hasLower = /[a-z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecial = /[!@#$%^&*]/.test(value);
+
+    const strength = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial]
+      .filter(Boolean).length;
+
+    this.setAttribute('data-strength', strength);
+    this.updateStrengthIndicator(strength);
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Complex Validation Example</h4>
+    <pre><code class="language-javascript">class DateRangeInput extends HTMLInputElement {
+  connectedCallback() {
+    this.type = 'date';
+    this.addEventListener('change', this.validateRange);
+  }
+
+  validateRange = () => {
+    const startDate = this.form?.querySelector('[name="start-date"]');
+    const endDate = this.form?.querySelector('[name="end-date"]');
+
+    if (startDate && endDate && startDate.value && endDate.value) {
+      const start = new Date(startDate.value);
+      const end = new Date(endDate.value);
+
+      if (end < start) {
+        endDate.setCustomValidity('End date must be after start date');
+        endDate.reportValidity();
+      } else {
+        startDate.setCustomValidity('');
+        endDate.setCustomValidity('');
+      }
+    }
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Browser Compatibility</h4>
+    <p class="fragment">
+      ⚠️ <code>ElementInternals</code> is relatively new
+    </p>
+    <ul class="fragment">
+      <li>Chrome/Edge: ✅ Since 2020</li>
+      <li>Firefox: ✅ Since 2021</li>
+      <li>Safari: ✅ Since 2021</li>
+    </ul>
+    <p class="fragment">
+      For older browsers, use traditional form integration with hidden inputs
+    </p>
+  </section>
+</section>

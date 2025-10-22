@@ -1,0 +1,63 @@
+<section>
+  <section data-transition="slide">
+    <h3>Attributes vs <mark>Properties</mark></h3>
+    <p>Understanding the difference is key to effective Custom Elements</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Attributes (HTML)</h4>
+    <pre><code class="language-html">&lt;button is="my-button" value="42" disabled&gt;
+  Click me
+&lt;/button&gt;</code></pre>
+    <ul class="fragment">
+      <li>Always <mark>strings</mark> (or null)</li>
+      <li>Defined in <mark>HTML</mark></li>
+      <li>Accessible via <code>getAttribute()</code></li>
+      <li>Trigger <code>attributeChangedCallback()</code></li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Properties (JavaScript)</h4>
+    <pre><code class="language-javascript">const button = document.querySelector('[is="my-button"]');
+button.value = 42;        // Number
+button.disabled = true;   // Boolean
+button.data = { foo: 'bar' }; // Object</code></pre>
+    <ul class="fragment">
+      <li>Can be any <mark>JavaScript type</mark></li>
+      <li>Accessed in <mark>JavaScript</mark></li>
+      <li>Don't trigger callbacks automatically</li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Reflection Pattern</h4>
+    <pre><code class="language-javascript">class MyButton extends HTMLButtonElement {
+  get value() {
+    return this.getAttribute('value');
+  }
+  
+  set value(val) {
+    this.setAttribute('value', val);
+  }
+}</code></pre>
+    <p class="fragment">
+      Sync properties with attributes for <mark>consistency</mark>
+    </p>
+  </section>
+  <section data-transition="slide">
+    <h4>Best Practices</h4>
+    <ul>
+      <li class="fragment">
+        Use <mark>attributes</mark> for simple, serializable values
+      </li>
+      <li class="fragment">
+        Use <mark>properties</mark> for complex objects or functions
+      </li>
+      <li class="fragment">
+        Reflect simple properties to attributes when possible
+      </li>
+      <li class="fragment">
+        Follow native element patterns (e.g., <code>disabled</code>,
+        <code>value</code>)
+      </li>
+    </ul>
+  </section>
+</section>

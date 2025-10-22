@@ -1,0 +1,82 @@
+<section></section>
+  <section data-transition="slide">
+    <h3>Component <mark>Composition</mark> Patterns</h3>
+    <p>Building complex components from simple extended elements</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Container Pattern</h4>
+    <pre><code class="language-javascript">class TabContainer extends HTMLDivElement {
+  connectedCallback() {
+    this.setAttribute('role', 'tablist');
+    this.setupTabs();
+  }
+
+  setupTabs() {
+    const tabs = this.querySelectorAll('[is="tab-button"]');
+    const panels = this.querySelectorAll('[is="tab-panel"]');
+    
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        this.activateTab(index);
+      });
+    });
+  }
+
+  activateTab(index) {
+    // Manage active states
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Presentational Pattern</h4>
+    <pre><code class="language-javascript">class TabButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.setAttribute('role', 'tab');
+    this.setAttribute('aria-selected', 'false');
+  }
+
+  activate() {
+    this.setAttribute('aria-selected', 'true');
+    this.classList.add('active');
+  }
+
+  deactivate() {
+    this.setAttribute('aria-selected', 'false');
+    this.classList.remove('active');
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Usage</h4>
+    <pre><code class="language-html">&lt;div is="tab-container"&gt;
+  &lt;button is="tab-button"&gt;Tab 1&lt;/button&gt;
+  &lt;button is="tab-button"&gt;Tab 2&lt;/button&gt;
+  &lt;button is="tab-button"&gt;Tab 3&lt;/button&gt;
+  
+  &lt;div is="tab-panel"&gt;Content 1&lt;/div&gt;
+  &lt;div is="tab-panel"&gt;Content 2&lt;/div&gt;
+  &lt;div is="tab-panel"&gt;Content 3&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <p class="fragment">
+      ✅ Separation of concerns: container manages logic, children handle
+      presentation
+    </p>
+  </section>
+  <section data-transition="slide">
+    <h4>Best Practices</h4>
+    <ul>
+      <li class="fragment">
+        Keep components <mark>focused</mark> on a single responsibility
+      </li>
+      <li class="fragment">
+        Use <mark>composition</mark> over deep inheritance
+      </li>
+      <li class="fragment">
+        Communicate through <mark>events</mark> and attributes
+      </li>
+      <li class="fragment">
+        Let parents manage <mark>state</mark>, children handle presentation
+      </li>
+    </ul>
+  </section>
+</section>

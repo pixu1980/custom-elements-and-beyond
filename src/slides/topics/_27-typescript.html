@@ -1,0 +1,320 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>TypeScript</mark> Integration</h3>
+    <p>Adding type safety to Custom Elements</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Basic TypeScript Definition</h4>
+    <pre><code class="language-typescript">// counter-button.ts
+interface CounterButtonElement extends HTMLButtonElement {
+  count: number;
+  increment(): void;
+  decrement(): void;
+}
+
+class CounterButton extends HTMLButtonElement implements CounterButtonElement {
+  private _count: number = 0;
+
+  get count(): number {
+    return this._count;
+  }
+
+  set count(value: number) {
+    this._count = value;
+    this.render();
+  }
+
+  connectedCallback(): void {
+    this.addEventListener('click', this.increment);
+    this.render();
+  }
+
+  disconnectedCallback(): void {
+    this.removeEventListener('click', this.increment);
+  }
+
+  increment = (): void => {
+    this.count++;
+  };
+
+  decrement(): void {
+    this.count--;
+  }
+
+  private render(): void {
+    this.textContent = `Count: ${this._count}`;
+  }
+}
+
+customElements.define('counter-button', CounterButton, { extends: 'button' });</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Type-Safe Attributes</h4>
+    <pre><code class="language-typescript">type ThemeValue = 'light' | 'dark' | 'auto';
+type SizeValue = 'small' | 'medium' | 'large';
+
+interface ThemedButtonAttributes {
+  theme: ThemeValue;
+  size: SizeValue;
+  disabled: boolean;
+}
+
+class ThemedButton extends HTMLButtonElement {
+  static get observedAttributes(): string[] {
+    return ['theme', 'size', 'disabled'];
+  }
+
+  get theme(): ThemeValue {
+    return (this.getAttribute('theme') as ThemeValue) || 'auto';
+  }
+
+  set theme(value: ThemeValue) {
+    this.setAttribute('theme', value);
+  }
+
+  get size(): SizeValue {
+    return (this.getAttribute('size') as SizeValue) || 'medium';
+  }
+
+  set size(value: SizeValue) {
+    this.setAttribute('size', value);
+  }
+
+  attributeChangedCallback(
+    name: keyof ThemedButtonAttributes,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
+    if (oldValue === newValue) return;
+    
+    switch (name) {
+      case 'theme':
+        this.updateTheme(newValue as ThemeValue);
+        break;
+      case 'size':
+        this.updateSize(newValue as SizeValue);
+        break;
+    }
+  }
+
+  private updateTheme(theme: ThemeValue): void {
+    this.className = `btn btn-${theme}`;
+  }
+
+  private updateSize(size: SizeValue): void {
+    this.dataset.size = size;
+  }
+}
+
+customElements.define('themed-button', ThemedButton, { extends: 'button' });</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Event Type Definitions</h4>
+    <pre><code class="language-typescript">// Define custom event types
+interface CountChangedEvent extends CustomEvent {
+  detail: {
+    oldValue: number;
+    newValue: number;
+    delta: number;
+  };
+}
+
+interface ItemSelectedEvent extends CustomEvent {
+  detail: {
+    itemId: string;
+    item: unknown;
+  };
+}
+
+// Extend CustomElementEventMap for better autocomplete
+declare global {
+  interface HTMLElementEventMap {
+    'count-changed': CountChangedEvent;
+    'item-selected': ItemSelectedEvent;
+  }
+}
+
+class CounterButton extends HTMLButtonElement {
+  private _count: number = 0;
+
+  increment(): void {
+    const oldValue = this._count;
+    this._count++;
+    
+    // Type-safe event dispatch
+    const event: CountChangedEvent = new CustomEvent('count-changed', {
+      detail: {
+        oldValue,
+        newValue: this._count,
+        delta: 1,
+      },
+      bubbles: true,
+    });
+    
+    this.dispatchEvent(event);
+  }
+}
+
+// Usage with type safety
+const button = document.querySelector('[is="counter-button"]') as CounterButton;
+button.addEventListener('count-changed', (event) => {
+  // event is typed as CountChangedEvent
+  console.log(event.detail.newValue); // ✅ Autocomplete works!
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Generic Components</h4>
+    <pre><code class="language-typescript">// Generic data list component
+interface DataItem {
+  id: string | number;
+  [key: string]: unknown;
+}
+
+class DataList&lt;T extends DataItem&gt; extends HTMLUListElement {
+  private _items: T[] = [];
+  private _renderItem?: (item: T) => HTMLElement;
+
+  set items(items: T[]) {
+    this._items = items;
+    this.render();
+  }
+
+  get items(): T[] {
+    return [...this._items];
+  }
+
+  set renderItem(fn: (item: T) => HTMLElement) {
+    this._renderItem = fn;
+    this.render();
+  }
+
+  render(): void {
+    const fragment = document.createDocumentFragment();
+    
+    this._items.forEach(item => {
+      const element = this._renderItem
+        ? this._renderItem(item)
+        : this.defaultRender(item);
+      
+      fragment.appendChild(element);
+    });
+    
+    this.replaceChildren(fragment);
+  }
+
+  private defaultRender(item: T): HTMLElement {
+    const li = document.createElement('li');
+    li.textContent = String(item.id);
+    return li;
+  }
+
+  findById(id: T['id']): T | undefined {
+    return this._items.find(item => item.id === id);
+  }
+}
+
+// Usage with specific type
+interface User extends DataItem {
+  id: number;
+  name: string;
+  email: string;
+}
+
+const userList = document.createElement('ul', {
+  is: 'data-list'
+}) as DataList&lt;User&gt;;
+
+userList.items = [
+  { id: 1, name: 'John', email: 'john@example.com' }
+];
+
+const user = userList.findById(1); // Type: User | undefined</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Decorators (Experimental)</h4>
+    <pre><code class="language-typescript">// Using decorators for cleaner syntax
+function customElement(tagName: string, options?: ElementDefinitionOptions) {
+  return function (target: CustomElementConstructor) {
+    customElements.define(tagName, target, options);
+  };
+}
+
+function property(options?: PropertyDeclaration) {
+  return function (target: any, propertyKey: string) {
+    const attributeName = options?.attribute || propertyKey;
+    
+    Object.defineProperty(target, propertyKey, {
+      get() {
+        return this.getAttribute(attributeName);
+      },
+      set(value: any) {
+        this.setAttribute(attributeName, String(value));
+      },
+    });
+  };
+}
+
+function event(eventName: string) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    const original = descriptor.value;
+    
+    descriptor.value = function (...args: any[]) {
+      const result = original.apply(this, args);
+      this.dispatchEvent(new CustomEvent(eventName, { bubbles: true }));
+      return result;
+    };
+  };
+}
+
+// Usage
+@customElement('fancy-button', { extends: 'button' })
+class FancyButton extends HTMLButtonElement {
+  @property()
+  label?: string;
+
+  @property({ attribute: 'icon-name' })
+  icon?: string;
+
+  @event('button-clicked')
+  handleClick(): void {
+    console.log('Button clicked!');
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Type Declaration Files</h4>
+    <pre><code class="language-typescript">// counter-button.d.ts
+declare global {
+  interface HTMLElementTagNameMap {
+    'counter-button': CounterButtonElement;
+  }
+}
+
+export interface CounterButtonElement extends HTMLButtonElement {
+  count: number;
+  increment(): void;
+  decrement(): void;
+  reset(): void;
+}
+
+export class CounterButton extends HTMLButtonElement implements CounterButtonElement {
+  count: number;
+  increment(): void;
+  decrement(): void;
+  reset(): void;
+}
+
+// Now TypeScript knows about the element
+const button = document.createElement('button', {
+  is: 'counter-button'
+}) as CounterButtonElement;
+
+button.count = 10; // ✅ Type-safe
+button.increment(); // ✅ Autocomplete works
+button.unknownMethod(); // ❌ TypeScript error</code></pre>
+  </section>
+</section>

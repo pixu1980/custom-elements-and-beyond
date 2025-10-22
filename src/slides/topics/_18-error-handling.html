@@ -1,0 +1,183 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Error Handling</mark> & Resilience</h3>
+    <p>Building robust components that gracefully handle failures</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Try-Catch in Lifecycle</h4>
+    <pre><code class="language-javascript">class ResilientComponent extends HTMLDivElement {
+  connectedCallback() {
+    try {
+      this.initialize();
+    } catch (error) {
+      console.error('Failed to initialize:', error);
+      this.renderError(error);
+    }
+  }
+
+  initialize() {
+    const config = JSON.parse(this.getAttribute('config') || '{}');
+    this.setup(config);
+  }
+
+  renderError(error) {
+    this.innerHTML = `
+      &lt;div class="error-state"&gt;
+        &lt;p&gt;⚠️ Failed to load component&lt;/p&gt;
+        &lt;details&gt;
+          &lt;summary&gt;Error details&lt;/summary&gt;
+          &lt;pre&gt;${error.message}&lt;/pre&gt;
+        &lt;/details&gt;
+      &lt;/div&gt;
+    `;
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Graceful Degradation</h4>
+    <pre><code class="language-javascript">class ImageWithFallback extends HTMLImageElement {
+  connectedCallback() {
+    this.addEventListener('error', this.handleError);
+  }
+
+  handleError = () => {
+    // Try fallback image
+    if (this.dataset.fallback && this.src !== this.dataset.fallback) {
+      console.warn('Primary image failed, using fallback');
+      this.src = this.dataset.fallback;
+    } else {
+      // Show placeholder
+      this.style.display = 'none';
+      this.insertAdjacentHTML('afterend', `
+        &lt;div class="image-placeholder"&gt;
+          📷 Image unavailable
+        &lt;/div&gt;
+      `);
+    }
+  };
+
+  disconnectedCallback() {
+    this.removeEventListener('error', this.handleError);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Retry Logic</h4>
+    <pre><code class="language-javascript">class DataFetcher extends HTMLDivElement {
+  constructor() {
+    super();
+    this.maxRetries = 3;
+    this.retryCount = 0;
+  }
+
+  async fetchData(url) {
+    try {
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      return await response.json();
+      
+    } catch (error) {
+      if (this.retryCount < this.maxRetries) {
+        this.retryCount++;
+        console.warn(`Retry ${this.retryCount}/${this.maxRetries}`);
+        
+        // Exponential backoff
+        await this.delay(Math.pow(2, this.retryCount) * 1000);
+        return this.fetchData(url);
+      }
+      
+      throw error;
+    }
+  }
+
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Error Boundaries Pattern</h4>
+    <pre><code class="language-javascript">class ErrorBoundary extends HTMLDivElement {
+  connectedCallback() {
+    this.setupErrorHandling();
+  }
+
+  setupErrorHandling() {
+    // Catch errors from child components
+    this.addEventListener('error', this.handleError, true);
+    
+    // Catch unhandled promise rejections
+    window.addEventListener('unhandledrejection', this.handleRejection);
+  }
+
+  handleError = (event) => {
+    if (this.contains(event.target)) {
+      event.preventDefault();
+      console.error('Caught error:', event.error);
+      this.showErrorUI();
+    }
+  };
+
+  handleRejection = (event) => {
+    console.error('Unhandled rejection:', event.reason);
+    this.showErrorUI();
+  };
+
+  showErrorUI() {
+    const errorContainer = this.querySelector('.error-fallback');
+    if (errorContainer) {
+      errorContainer.style.display = 'block';
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Loading States</h4>
+    <pre><code class="language-javascript">class AsyncButton extends HTMLButtonElement {
+  async connectedCallback() {
+    this.addEventListener('click', this.handleClick);
+  }
+
+  handleClick = async () => {
+    if (this.loading) return;
+
+    this.loading = true;
+    this.renderLoadingState();
+
+    try {
+      await this.performAction();
+      this.renderSuccessState();
+    } catch (error) {
+      this.renderErrorState(error);
+    } finally {
+      this.loading = false;
+    }
+  };
+
+  renderLoadingState() {
+    this.disabled = true;
+    this.originalText = this.textContent;
+    this.textContent = '⏳ Loading...';
+    this.setAttribute('aria-busy', 'true');
+  }
+
+  renderSuccessState() {
+    this.textContent = '✅ Done';
+    setTimeout(() => {
+      this.textContent = this.originalText;
+      this.disabled = false;
+      this.setAttribute('aria-busy', 'false');
+    }, 2000);
+  }
+
+  renderErrorState(error) {
+    this.textContent = '❌ Failed';
+    console.error(error);
+  }
+}</code></pre>
+  </section>
+</section>

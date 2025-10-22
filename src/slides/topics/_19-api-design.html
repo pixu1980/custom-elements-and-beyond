@@ -1,0 +1,179 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>API Design</mark> & Documentation</h3>
+    <p>Creating clear and intuitive component interfaces</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Designing Clear APIs</h4>
+    <pre><code class="language-javascript">/**
+ * Enhanced button with icon support
+ * 
+ * @element icon-button
+ * @extends HTMLButtonElement
+ * 
+ * @attr {string} icon - Icon to display (emoji or icon class)
+ * @attr {string} position - Icon position: 'start' | 'end'
+ * @attr {string} variant - Button style: 'primary' | 'secondary' | 'danger'
+ * 
+ * @fires icon-button:click - Fired when button is clicked
+ * 
+ * @example
+ * &lt;button is="icon-button" icon="🚀" variant="primary"&gt;
+ *   Launch
+ * &lt;/button&gt;
+ */
+class IconButton extends HTMLButtonElement {
+  static get observedAttributes() {
+    return ['icon', 'position', 'variant'];
+  }
+  
+  // ... implementation
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>JSDoc Comments</h4>
+    <pre><code class="language-javascript">class DataTable extends HTMLTableElement {
+  /**
+   * Sets the table data
+   * @param {Array&lt;Object&gt;} data - Array of row objects
+   * @example
+   * table.data = [
+   *   { id: 1, name: 'John', age: 30 },
+   *   { id: 2, name: 'Jane', age: 25 }
+   * ];
+   */
+  set data(data) {
+    this._data = data;
+    this.render();
+  }
+
+  /**
+   * Sorts the table by column
+   * @param {string} column - Column name to sort by
+   * @param {('asc'|'desc')} direction - Sort direction
+   * @returns {void}
+   */
+  sort(column, direction = 'asc') {
+    // Implementation
+  }
+
+  /**
+   * Filters table rows
+   * @param {Function} predicate - Filter function
+   * @returns {Array} Filtered data
+   */
+  filter(predicate) {
+    return this._data.filter(predicate);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Semantic Attribute Naming</h4>
+    <pre><code class="language-javascript">class FormInput extends HTMLInputElement {
+  static get observedAttributes() {
+    return [
+      // ✅ Good: Clear, semantic names
+      'label-text',
+      'error-message',
+      'help-text',
+      'validation-mode',
+      
+      // ❌ Bad: Vague or abbreviated
+      // 'txt', 'err', 'msg', 'mode'
+    ];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'label-text':
+        this.updateLabel(newValue);
+        break;
+      case 'error-message':
+        this.showError(newValue);
+        break;
+      // ...
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Property vs Attribute Guidelines</h4>
+    <pre><code class="language-javascript">class SmartList extends HTMLUListElement {
+  // ✅ Attribute: Simple, serializable values
+  get sortOrder() {
+    return this.getAttribute('sort-order') || 'asc';
+  }
+  
+  set sortOrder(value) {
+    this.setAttribute('sort-order', value);
+  }
+
+  // ✅ Property: Complex objects, functions
+  set items(items) {
+    this._items = items;
+    this.render();
+  }
+  
+  get items() {
+    return this._items;
+  }
+
+  // ✅ Property: Callback functions
+  set onItemClick(callback) {
+    this._onItemClick = callback;
+  }
+
+  // ✅ Method: Actions
+  refresh() {
+    this.render();
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>TypeScript Support</h4>
+    <pre><code class="language-typescript">// Custom element type definition
+interface IconButtonElement extends HTMLButtonElement {
+  icon: string;
+  position: 'start' | 'end';
+  variant: 'primary' | 'secondary' | 'danger';
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'icon-button': IconButtonElement;
+  }
+}
+
+// Usage with type safety
+const button = document.createElement('button', {
+  is: 'icon-button'
+}) as IconButtonElement;
+
+button.icon = '🚀';
+button.variant = 'primary'; // TypeScript validates this!</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Documentation Best Practices</h4>
+    <ul>
+      <li class="fragment">
+        Document <mark>all public APIs</mark> (attributes, properties, methods,
+        events)
+      </li>
+      <li class="fragment">
+        Provide <mark>usage examples</mark> in comments
+      </li>
+      <li class="fragment">
+        Use <mark>semantic naming</mark> that's self-explanatory
+      </li>
+      <li class="fragment">
+        Follow <mark>native element patterns</mark> when possible
+      </li>
+      <li class="fragment">
+        Include <mark>TypeScript definitions</mark> for type safety
+      </li>
+      <li class="fragment">
+        Document <mark>browser compatibility</mark> requirements
+      </li>
+    </ul>
+  </section>
+</section>

@@ -1,0 +1,113 @@
+<section>
+  <section data-transition="slide">
+    <h3>Component <mark>Styling</mark> Strategies</h3>
+    <p>Organizing CSS for maintainable components</p>
+  </section>
+  <section data-transition="slide">
+    <h4>BEM with Custom Elements</h4>
+    <pre><code class="language-css">/* Block */
+button[is="card-button"] {
+  display: flex;
+  padding: 1rem;
+}
+
+/* Element */
+button[is="card-button"] .card-button__icon {
+  margin-right: 0.5rem;
+}
+
+/* Modifier */
+button[is="card-button"][data-variant="primary"] {
+  background: var(--primary-color);
+}
+
+button[is="card-button"][data-size="large"] {
+  font-size: 1.2em;
+  padding: 1.5rem;
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>CSS Custom Properties Architecture</h4>
+    <pre><code class="language-css">/* Component defines tokens */
+button[is="themed-button"] {
+  /* Public API - can be customized */
+  background: var(--button-bg, #007bff);
+  color: var(--button-color, white);
+  padding: var(--button-padding, 0.5rem 1rem);
+  
+  /* Private tokens - internal use */
+  --_button-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --_button-transition: all 0.2s ease;
+  
+  box-shadow: var(--_button-shadow);
+  transition: var(--_button-transition);
+}
+
+button[is="themed-button"]:hover {
+  background: var(--button-bg-hover, #0056b3);
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Theme Layers</h4>
+    <pre><code class="language-css">/* Global theme */
+:root {
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --spacing-unit: 0.5rem;
+}
+
+/* Context theme */
+.dark-mode {
+  --button-bg: #1a1a1a;
+  --button-color: #ffffff;
+}
+
+/* Component overrides */
+.card[is="feature-card"] button[is="themed-button"] {
+  --button-padding: calc(var(--spacing-unit) * 2);
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>State-based styling</h4>
+    <pre><code class="language-css">/* Data attributes for state */
+button[is="toggle-button"][data-state="active"] {
+  background: var(--active-bg);
+  border-color: var(--active-border);
+}
+
+/* ARIA states */
+button[is="menu-button"][aria-expanded="true"] {
+  transform: rotate(180deg);
+}
+
+/* Pseudo-classes */
+input[is="validated-input"]:invalid {
+  border-color: var(--error-color);
+}
+
+input[is="validated-input"]:focus {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Organizational Best Practices</h4>
+    <ul>
+      <li class="fragment">
+        Use <code>data-*</code> attributes for <mark>component state</mark>
+      </li>
+      <li class="fragment">
+        Prefix private custom properties with <code>--_</code>
+      </li>
+      <li class="fragment">
+        Group related styles with <mark>CSS comments</mark>
+      </li>
+      <li class="fragment">
+        Keep specificity <mark>low</mark> for easier overrides
+      </li>
+      <li class="fragment">
+        Document custom properties as <mark>public API</mark>
+      </li>
+    </ul>
+  </section>
+</section>

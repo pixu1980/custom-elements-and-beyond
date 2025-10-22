@@ -1,0 +1,233 @@
+<section>
+  <section data-transition="slide">
+    <h3>Integration with <mark>React</mark></h3>
+    <p>Using Custom Elements in React applications</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Basic Usage in React</h4>
+    <pre><code class="language-jsx">// App.jsx
+import { useEffect, useRef } from 'react';
+import './components/counter-button.js';
+
+function App() {
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    const button = buttonRef.current;
+    
+    // Set properties (not attributes)
+    if (button) {
+      button.count = 10;
+    }
+    
+    // Add event listeners
+    const handleCountChange = (event) => {
+      console.log('Count changed:', event.detail.newValue);
+    };
+    
+    button?.addEventListener('count-changed', handleCountChange);
+    
+    return () => {
+      button?.removeEventListener('count-changed', handleCountChange);
+    };
+  }, []);
+
+  return (
+    &lt;div className="app"&gt;
+      &lt;button is="counter-button" ref={buttonRef}&gt;
+        Count: 0
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>React Wrapper Component</h4>
+    <pre><code class="language-jsx">// CounterButton.jsx
+import { useEffect, useRef, forwardRef } from 'react';
+import './counter-button.js';
+
+const CounterButton = forwardRef(({ 
+  count = 0, 
+  variant = 'primary',
+  onCountChange,
+  children 
+}, ref) => {
+  const internalRef = useRef(null);
+  const buttonRef = ref || internalRef;
+
+  // Sync props to properties
+  useEffect(() => {
+    if (buttonRef.current) {
+      buttonRef.current.count = count;
+    }
+  }, [count]);
+
+  // Handle events
+  useEffect(() => {
+    const button = buttonRef.current;
+    if (!button || !onCountChange) return;
+
+    const handleChange = (event) => {
+      onCountChange(event.detail);
+    };
+
+    button.addEventListener('count-changed', handleChange);
+    return () => {
+      button.removeEventListener('count-changed', handleChange);
+    };
+  }, [onCountChange]);
+
+  return (
+    &lt;button 
+      is="counter-button"
+      ref={buttonRef}
+      variant={variant}
+    &gt;
+      {children}
+    &lt;/button&gt;
+  );
+});
+
+export default CounterButton;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Using the Wrapper</h4>
+    <pre><code class="language-jsx">// App.jsx
+import { useState } from 'react';
+import CounterButton from './CounterButton';
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  const handleCountChange = (detail) => {
+    setCount(detail.newValue);
+  };
+
+  return (
+    &lt;div className="app"&gt;
+      &lt;h1&gt;React + Custom Elements&lt;/h1&gt;
+      
+      &lt;CounterButton
+        count={count}
+        variant="primary"
+        onCountChange={handleCountChange}
+      &gt;
+        Count: {count}
+      &lt;/CounterButton&gt;
+
+      &lt;button onClick={() => setCount(0)}&gt;
+        Reset
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Custom Hook for Elements</h4>
+    <pre><code class="language-javascript">// useCustomElement.js
+import { useEffect, useRef, useCallback } from 'react';
+
+export function useCustomElement(elementName) {
+  const ref = useRef(null);
+
+  // Wait for element definition
+  useEffect(() => {
+    customElements.whenDefined(elementName).then(() => {
+      console.log(`${elementName} is defined`);
+    });
+  }, [elementName]);
+
+  // Set property helper
+  const setProperty = useCallback((prop, value) => {
+    if (ref.current) {
+      ref.current[prop] = value;
+    }
+  }, []);
+
+  // Call method helper
+  const callMethod = useCallback((method, ...args) => {
+    if (ref.current && typeof ref.current[method] === 'function') {
+      return ref.current[method](...args);
+    }
+  }, []);
+
+  // Add event listener helper
+  const addEventListener = useCallback((event, handler) => {
+    const element = ref.current;
+    if (!element) return;
+
+    element.addEventListener(event, handler);
+    return () => element.removeEventListener(event, handler);
+  }, []);
+
+  return {
+    ref,
+    setProperty,
+    callMethod,
+    addEventListener,
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Using the Hook</h4>
+    <pre><code class="language-jsx">// DataList.jsx
+import { useEffect, useState } from 'react';
+import { useCustomElement } from './useCustomElement';
+import './data-list.js';
+
+function DataList({ items }) {
+  const { ref, setProperty, addEventListener } = useCustomElement('data-list');
+
+  // Sync items property
+  useEffect(() => {
+    setProperty('items', items);
+  }, [items, setProperty]);
+
+  // Listen to custom events
+  useEffect(() => {
+    return addEventListener('item-selected', (event) => {
+      console.log('Item selected:', event.detail);
+    });
+  }, [addEventListener]);
+
+  return (
+    &lt;ul is="data-list" ref={ref}&gt;
+      {/* Fallback content */}
+      {items.map(item => (
+        &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+
+export default DataList;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>React 19+ with Custom Elements</h4>
+    <pre><code class="language-jsx">// React 19 has better Custom Elements support
+import './counter-button.js';
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  // React 19 handles properties automatically
+  return (
+    &lt;button 
+      is="counter-button"
+      count={count}  // Passed as property, not attribute!
+      onCountChanged={(e) => setCount(e.detail.newValue)}
+    &gt;
+      Count: {count}
+    &lt;/button&gt;
+  );
+}
+
+// React 19 automatically:
+// - Sets properties instead of attributes
+// - Converts camelCase event names (onCountChanged → count-changed)
+// - Handles cleanup automatically</code></pre>
+  </section>
+</section>

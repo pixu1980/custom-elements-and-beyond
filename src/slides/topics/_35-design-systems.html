@@ -1,0 +1,338 @@
+<section>
+  <section data-transition="slide">
+    <h3>Building <mark>Design Systems</mark></h3>
+    <p>Creating scalable component libraries with Custom Elements</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Design System Structure</h4>
+    <pre><code class="language-plaintext">design-system/
+├── tokens/
+│   ├── colors.css
+│   ├── typography.css
+│   ├── spacing.css
+│   └── tokens.js
+├── components/
+│   ├── button/
+│   │   ├── button.js
+│   │   ├── button.css
+│   │   ├── button.test.js
+│   │   └── README.md
+│   ├── input/
+│   ├── card/
+│   └── index.js
+├── utils/
+│   └── base-element.js
+└── index.js</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Design Tokens</h4>
+    <pre><code class="language-css">/* tokens/colors.css */
+:root {
+  /* Primary colors */
+  --color-primary-50: #e3f2fd;
+  --color-primary-100: #bbdefb;
+  --color-primary-500: #2196f3;
+  --color-primary-900: #0d47a1;
+
+  /* Semantic colors */
+  --color-text-primary: #212121;
+  --color-text-secondary: #757575;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  
+  /* Component tokens */
+  --button-bg: var(--color-primary-500);
+  --button-text: white;
+  --button-hover: var(--color-primary-900);
+}</code></pre>
+    <pre><code class="language-javascript">// tokens/tokens.js
+export const tokens = {
+  colors: {
+    primary: {
+      50: '#e3f2fd',
+      100: '#bbdefb',
+      500: '#2196f3',
+      900: '#0d47a1',
+    },
+  },
+  spacing: {
+    xs: '0.25rem',
+    sm: '0.5rem',
+    md: '1rem',
+    lg: '1.5rem',
+    xl: '2rem',
+  },
+  typography: {
+    fontFamily: {
+      base: 'system-ui, sans-serif',
+      mono: 'monospace',
+    },
+    fontSize: {
+      sm: '0.875rem',
+      base: '1rem',
+      lg: '1.125rem',
+      xl: '1.25rem',
+    },
+  },
+};</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Base Element Class</h4>
+    <pre><code class="language-javascript">// utils/base-element.js
+export class BaseElement extends HTMLElement {
+  constructor(baseElement = HTMLElement) {
+    super();
+    this._baseElement = baseElement;
+  }
+
+  // Common lifecycle helper
+  $(selector) {
+    return this.querySelector(selector);
+  }
+
+  $$(selector) {
+    return Array.from(this.querySelectorAll(selector));
+  }
+
+  // Emit custom event
+  emit(eventName, detail) {
+    this.dispatchEvent(new CustomEvent(eventName, {
+      detail,
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  // Apply design tokens
+  applyTokens(tokens) {
+    Object.entries(tokens).forEach(([property, value]) => {
+      this.style.setProperty(property, value);
+    });
+  }
+
+  // Error handling
+  handleError(error, context) {
+    console.error(`[${this.constructor.name}] ${context}:`, error);
+    this.emit('component-error', { error, context });
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Design System Button</h4>
+    <pre><code class="language-javascript">// components/button/button.js
+import { BaseElement } from '../../utils/base-element.js';
+import styles from './button.css' assert { type: 'css' };
+
+class DSButton extends HTMLButtonElement {
+  static get observedAttributes() {
+    return ['variant', 'size', 'loading'];
+  }
+
+  constructor() {
+    super();
+    this.attachStyles();
+  }
+
+  attachStyles() {
+    // Apply component styles
+    document.adoptedStyleSheets = [
+      ...document.adoptedStyleSheets,
+      styles,
+    ];
+  }
+
+  connectedCallback() {
+    this.classList.add('ds-button');
+    this.updateVariant();
+    this.updateSize();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) return;
+
+    switch (name) {
+      case 'variant':
+        this.updateVariant();
+        break;
+      case 'size':
+        this.updateSize();
+        break;
+      case 'loading':
+        this.updateLoading();
+        break;
+    }
+  }
+
+  get variant() {
+    return this.getAttribute('variant') || 'primary';
+  }
+
+  set variant(value) {
+    this.setAttribute('variant', value);
+  }
+
+  get size() {
+    return this.getAttribute('size') || 'medium';
+  }
+
+  set size(value) {
+    this.setAttribute('size', value);
+  }
+
+  get loading() {
+    return this.hasAttribute('loading');
+  }
+
+  set loading(value) {
+    if (value) {
+      this.setAttribute('loading', '');
+    } else {
+      this.removeAttribute('loading');
+    }
+  }
+
+  updateVariant() {
+    this.dataset.variant = this.variant;
+  }
+
+  updateSize() {
+    this.dataset.size = this.size;
+  }
+
+  updateLoading() {
+    this.disabled = this.loading;
+    this.setAttribute('aria-busy', String(this.loading));
+  }
+}
+
+customElements.define('ds-button', DSButton, { extends: 'button' });</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Button Styles</h4>
+    <pre><code class="language-css">/* components/button/button.css */
+.ds-button {
+  /* Base styles */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  
+  font-family: var(--font-family-base);
+  font-weight: 500;
+  line-height: 1.5;
+  
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  
+  transition: all 0.2s ease;
+}
+
+/* Variants */
+.ds-button[data-variant="primary"] {
+  background: var(--button-bg);
+  color: var(--button-text);
+}
+
+.ds-button[data-variant="primary"]:hover {
+  background: var(--button-hover);
+}
+
+.ds-button[data-variant="secondary"] {
+  background: transparent;
+  color: var(--button-bg);
+  border: 2px solid currentColor;
+}
+
+/* Sizes */
+.ds-button[data-size="small"] {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.ds-button[data-size="medium"] {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+}
+
+.ds-button[data-size="large"] {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-lg);
+}
+
+/* States */
+.ds-button[loading] {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.ds-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Component Documentation</h4>
+    <pre><code class="language-markdown"># Button Component
+
+## Usage
+
+```html
+&lt;button is="ds-button" variant="primary" size="medium"&gt;
+  Click me
+&lt;/button&gt;
+```
+
+## Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| variant | string | 'primary' | Button style variant |
+| size | string | 'medium' | Button size |
+| loading | boolean | false | Loading state |
+
+## Variants
+
+- `primary` - Primary action button
+- `secondary` - Secondary action button
+- `ghost` - Minimal button
+- `danger` - Destructive action
+
+## Sizes
+
+- `small` - Compact button
+- `medium` - Default size
+- `large` - Prominent button
+
+## Accessibility
+
+- Inherits native button accessibility
+- Loading state uses `aria-busy`
+- Disabled state properly handled</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Publishing the Design System</h4>
+    <pre><code class="language-json">// package.json
+{
+  "name": "@company/design-system",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./tokens": "./dist/tokens/tokens.js",
+    "./button": "./dist/components/button/button.js",
+    "./input": "./dist/components/input/input.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "storybook": "storybook dev -p 6006"
+  }
+}</code></pre>
+  </section>
+</section>

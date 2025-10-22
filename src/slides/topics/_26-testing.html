@@ -1,0 +1,262 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Testing</mark> Custom Elements</h3>
+    <p>Strategies for testing web components effectively</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Unit Testing Setup</h4>
+    <pre><code class="language-javascript">// counter-button.test.js
+import { expect } from '@esm-bundle/chai';
+import './counter-button.js';
+
+describe('CounterButton', () => {
+  let element;
+
+  beforeEach(() => {
+    // Create fresh instance for each test
+    element = document.createElement('button', { is: 'counter-button' });
+    document.body.appendChild(element);
+  });
+
+  afterEach(() => {
+    // Clean up after each test
+    element.remove();
+  });
+
+  it('should initialize with count of 0', () => {
+    expect(element.count).to.equal(0);
+    expect(element.textContent).to.include('0');
+  });
+
+  it('should increment count on click', () => {
+    element.click();
+    expect(element.count).to.equal(1);
+  });
+
+  it('should dispatch count-changed event', (done) => {
+    element.addEventListener('count-changed', (e) => {
+      expect(e.detail.newValue).to.equal(1);
+      done();
+    });
+    element.click();
+  });
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Testing Lifecycle</h4>
+    <pre><code class="language-javascript">describe('Component Lifecycle', () => {
+  it('should call connectedCallback when added to DOM', () => {
+    const element = document.createElement('div', { is: 'my-component' });
+    const spy = sinon.spy(element, 'connectedCallback');
+    
+    document.body.appendChild(element);
+    
+    expect(spy.calledOnce).to.be.true;
+    element.remove();
+  });
+
+  it('should call disconnectedCallback when removed', () => {
+    const element = document.createElement('div', { is: 'my-component' });
+    document.body.appendChild(element);
+    
+    const spy = sinon.spy(element, 'disconnectedCallback');
+    element.remove();
+    
+    expect(spy.calledOnce).to.be.true;
+  });
+
+  it('should call attributeChangedCallback', async () => {
+    const element = document.createElement('div', { is: 'my-component' });
+    document.body.appendChild(element);
+    
+    const spy = sinon.spy(element, 'attributeChangedCallback');
+    element.setAttribute('data-value', '42');
+    
+    expect(spy.calledWith('data-value', null, '42')).to.be.true;
+    element.remove();
+  });
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Testing User Interactions</h4>
+    <pre><code class="language-javascript">describe('User Interactions', () => {
+  it('should handle keyboard navigation', () => {
+    const list = document.createElement('ul', { is: 'keyboard-list' });
+    list.innerHTML = `
+      &lt;li tabindex="0"&gt;Item 1&lt;/li&gt;
+      &lt;li tabindex="0"&gt;Item 2&lt;/li&gt;
+      &lt;li tabindex="0"&gt;Item 3&lt;/li&gt;
+    `;
+    document.body.appendChild(list);
+    
+    const firstItem = list.children[0];
+    firstItem.focus();
+    
+    // Simulate arrow down key
+    const event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+    list.dispatchEvent(event);
+    
+    expect(document.activeElement).to.equal(list.children[1]);
+    list.remove();
+  });
+
+  it('should handle form submission', async () => {
+    const input = document.createElement('input', { is: 'validated-input' });
+    input.setAttribute('required', '');
+    document.body.appendChild(input);
+    
+    // Test validation
+    expect(input.checkValidity()).to.be.false;
+    
+    input.value = 'test';
+    expect(input.checkValidity()).to.be.true;
+    
+    input.remove();
+  });
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Testing Async Operations</h4>
+    <pre><code class="language-javascript">describe('Async Operations', () => {
+  it('should fetch and render data', async () => {
+    // Mock fetch
+    global.fetch = sinon.stub().resolves({
+      ok: true,
+      json: async () => ({ items: ['A', 'B', 'C'] })
+    });
+    
+    const list = document.createElement('ul', { is: 'data-list' });
+    document.body.appendChild(list);
+    
+    // Trigger data fetch
+    await list.loadData();
+    
+    // Wait for render
+    await new Promise(resolve => setTimeout(resolve, 0));
+    
+    expect(list.children.length).to.equal(3);
+    expect(list.children[0].textContent).to.equal('A');
+    
+    list.remove();
+  });
+
+  it('should handle loading states', async () => {
+    const button = document.createElement('button', { is: 'async-button' });
+    document.body.appendChild(button);
+    
+    expect(button.loading).to.be.false;
+    
+    const promise = button.performAction();
+    expect(button.loading).to.be.true;
+    expect(button.disabled).to.be.true;
+    
+    await promise;
+    expect(button.loading).to.be.false;
+    expect(button.disabled).to.be.false;
+    
+    button.remove();
+  });
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Integration Testing</h4>
+    <pre><code class="language-javascript">describe('Component Integration', () => {
+  it('should communicate between components', async () => {
+    // Create parent and child
+    const parent = document.createElement('div', { is: 'parent-component' });
+    const child = document.createElement('button', { is: 'child-component' });
+    parent.appendChild(child);
+    document.body.appendChild(parent);
+    
+    // Set up event listener
+    let receivedData = null;
+    parent.addEventListener('child-clicked', (e) => {
+      receivedData = e.detail;
+    });
+    
+    // Trigger interaction
+    child.click();
+    
+    // Verify communication
+    expect(receivedData).to.not.be.null;
+    expect(receivedData.source).to.equal('child');
+    
+    parent.remove();
+  });
+
+  it('should work with forms', () => {
+    const form = document.createElement('form');
+    const input = document.createElement('input', { is: 'custom-input' });
+    input.name = 'username';
+    input.value = 'john';
+    
+    form.appendChild(input);
+    document.body.appendChild(form);
+    
+    const formData = new FormData(form);
+    expect(formData.get('username')).to.equal('john');
+    
+    form.remove();
+  });
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Visual Regression Testing</h4>
+    <pre><code class="language-javascript">// Using Playwright or Puppeteer
+describe('Visual Tests', () => {
+  it('should match screenshot', async () => {
+    await page.goto('http://localhost:8000/test.html');
+    
+    // Wait for component to render
+    await page.waitForSelector('[is="my-component"]');
+    
+    // Take screenshot
+    const screenshot = await page.screenshot();
+    
+    // Compare with baseline
+    expect(screenshot).toMatchImageSnapshot();
+  });
+
+  it('should render correctly in different states', async () => {
+    const component = await page.$('[is="stateful-component"]');
+    
+    // Test initial state
+    await component.screenshot({ path: 'initial.png' });
+    
+    // Test loading state
+    await component.evaluate(el => el.loading = true);
+    await component.screenshot({ path: 'loading.png' });
+    
+    // Test error state
+    await component.evaluate(el => el.error = 'Failed');
+    await component.screenshot({ path: 'error.png' });
+  });
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Testing Best Practices</h4>
+    <ul>
+      <li class="fragment">
+        Test <mark>behavior, not implementation</mark>
+      </li>
+      <li class="fragment">
+        Always <mark>clean up</mark> after tests (remove elements)
+      </li>
+      <li class="fragment">
+        Test <mark>accessibility</mark> (ARIA, keyboard navigation)
+      </li>
+      <li class="fragment">
+        Mock <mark>external dependencies</mark> (fetch, localStorage)
+      </li>
+      <li class="fragment">
+        Test <mark>edge cases</mark> and error states
+      </li>
+      <li class="fragment">
+        Use <mark>real browser</mark> environments when possible
+      </li>
+      <li class="fragment">
+        Consider <mark>visual regression</mark> tests for UI components
+      </li>
+    </ul>
+  </section>
+</section>

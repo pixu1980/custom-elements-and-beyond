@@ -1,0 +1,149 @@
+<section>
+  <section data-transition="slide">
+    <h3>Advanced Topics <mark>Recap</mark></h3>
+    <p>Mastering Custom Elements development</p>
+  </section>
+  <section data-transition="slide">
+    <h4>What We Covered</h4>
+    <div class="two-columns">
+      <div>
+        <h5>Performance & Optimization</h5>
+        <ul>
+          <li>DOM manipulation best practices</li>
+          <li>Virtual scrolling</li>
+          <li>Lazy loading</li>
+          <li>Memory management</li>
+          <li>CSS containment</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Content Management</h5>
+        <ul>
+          <li>Content distribution patterns</li>
+          <li>Named regions</li>
+          <li>Dynamic wrapping</li>
+          <li>Template cloning</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>What We Covered (continued)</h4>
+    <div class="two-columns">
+      <div>
+        <h5>Lifecycle & Events</h5>
+        <ul>
+          <li>Lazy initialization</li>
+          <li>Cleanup management</li>
+          <li>Reconnection handling</li>
+          <li>Event delegation</li>
+          <li>Event bus pattern</li>
+          <li>Throttling & debouncing</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Development Tools</h5>
+        <ul>
+          <li>TypeScript integration</li>
+          <li>Build tool configuration</li>
+          <li>Testing strategies</li>
+          <li>Debugging techniques</li>
+          <li>Versioning & compatibility</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>Key Takeaways</h4>
+    <ul>
+      <li class="fragment">
+        <mark>Performance matters</mark>: Use virtual scrolling, lazy loading, and efficient DOM manipulation
+      </li>
+      <li class="fragment">
+        <mark>Clean lifecycle</mark>: Always cleanup resources in disconnectedCallback
+      </li>
+      <li class="fragment">
+        <mark>Type safety</mark>: TypeScript adds robustness to component APIs
+      </li>
+      <li class="fragment">
+        <mark>Testing is essential</mark>: Unit test behavior, integration test communication
+      </li>
+      <li class="fragment">
+        <mark>Modern tooling</mark>: Leverage Vite, Webpack, and ES modules
+      </li>
+      <li class="fragment">
+        <mark>Versioning discipline</mark>: Semantic versioning and migration guides
+      </li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Best Practices Summary</h4>
+    <div class="best-practices">
+      <div class="fragment">
+        <h5>✅ DO</h5>
+        <ul>
+          <li>Use DocumentFragment for batch operations</li>
+          <li>Implement proper cleanup</li>
+          <li>Type your components with TypeScript</li>
+          <li>Write comprehensive tests</li>
+          <li>Profile and measure performance</li>
+          <li>Version your components semantically</li>
+          <li>Document your APIs with JSDoc</li>
+        </ul>
+      </div>
+      <div class="fragment">
+        <h5>❌ DON'T</h5>
+        <ul>
+          <li>Use innerHTML with unsanitized data</li>
+          <li>Forget to remove event listeners</li>
+          <li>Query the DOM repeatedly</li>
+          <li>Ignore memory leaks</li>
+          <li>Skip accessibility features</li>
+          <li>Break backward compatibility without warning</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>Performance Checklist</h4>
+    <ul>
+      <li class="fragment">
+        ✅ Use <code>requestAnimationFrame</code> for visual updates
+      </li>
+      <li class="fragment">
+        ✅ Implement virtual scrolling for long lists
+      </li>
+      <li class="fragment">
+        ✅ Lazy load images and heavy components
+      </li>
+      <li class="fragment">
+        ✅ Use <code>will-change</code> sparingly for animations
+      </li>
+      <li class="fragment">
+        ✅ Apply CSS containment where appropriate
+      </li>
+      <li class="fragment">
+        ✅ Batch DOM updates with DocumentFragment
+      </li>
+      <li class="fragment">
+        ✅ Profile with Performance API
+      </li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Ready for Production?</h4>
+    <div class="checklist">
+      <ul>
+        <li class="fragment">📝 Comprehensive documentation</li>
+        <li class="fragment">🧪 Unit and integration tests</li>
+        <li class="fragment">♿️ Accessibility audit passed</li>
+        <li class="fragment">🎨 Visual regression tests</li>
+        <li class="fragment">⚡️ Performance benchmarks met</li>
+        <li class="fragment">🔒 Security review completed</li>
+        <li class="fragment">🌐 Browser compatibility tested</li>
+        <li class="fragment">📦 Build pipeline configured</li>
+        <li class="fragment">📚 Migration guide prepared</li>
+      </ul>
+    </div>
+  </section>
+</section>

@@ -1,0 +1,171 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Accessibility</mark> in Custom Elements</h3>
+    <p>Inheriting and enhancing native accessibility</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Inherited Accessibility</h4>
+    <p>Extended elements inherit native accessibility features</p>
+    <ul class="fragment">
+      <li>✅ Keyboard navigation (Tab, Enter, Space)</li>
+      <li>✅ Screen reader announcements</li>
+      <li>✅ Focus management</li>
+      <li>✅ Native ARIA roles</li>
+      <li>✅ Form integration and labels</li>
+    </ul>
+    <aside class="notes">
+      This is a huge advantage over autonomous custom elements - you get
+      accessibility for free!
+    </aside>
+  </section>
+  <section data-transition="slide">
+    <h4>ARIA Attributes</h4>
+    <pre><code class="language-javascript">class ExpandableButton extends HTMLButtonElement {
+  connectedCallback() {
+    // Set ARIA attributes
+    this.setAttribute('aria-expanded', 'false');
+    this.setAttribute('aria-controls', this.dataset.controls);
+    
+    this.addEventListener('click', this.toggle);
+  }
+
+  toggle = () => {
+    const expanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', String(!expanded));
+    
+    // Update controlled element
+    const panel = document.getElementById(this.dataset.controls);
+    panel?.classList.toggle('hidden', expanded);
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Keyboard Navigation</h4>
+    <pre><code class="language-javascript">class MenuButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.setAttribute('aria-haspopup', 'menu');
+    
+    this.addEventListener('click', this.openMenu);
+    this.addEventListener('keydown', this.handleKeydown);
+  }
+
+  handleKeydown = (event) => {
+    switch (event.key) {
+      case 'ArrowDown':
+      case 'ArrowUp':
+        event.preventDefault();
+        this.openMenu();
+        this.focusFirstMenuItem();
+        break;
+      case 'Escape':
+        this.closeMenu();
+        this.focus();
+        break;
+    }
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Focus Management</h4>
+    <pre><code class="language-javascript">class DialogButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.addEventListener('click', this.openDialog);
+  }
+
+  openDialog = () => {
+    const dialog = document.getElementById(this.dataset.dialog);
+    
+    if (dialog) {
+      // Store focus for return
+      this._previousFocus = document.activeElement;
+      
+      dialog.showModal();
+      
+      // Focus first focusable element
+      const firstFocusable = dialog.querySelector(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      firstFocusable?.focus();
+    }
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Screen Reader Support</h4>
+    <pre><code class="language-javascript">class StatusButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.setupLiveRegion();
+  }
+
+  setupLiveRegion() {
+    this.liveRegion = document.createElement('div');
+    this.liveRegion.setAttribute('role', 'status');
+    this.liveRegion.setAttribute('aria-live', 'polite');
+    this.liveRegion.className = 'sr-only';
+    document.body.appendChild(this.liveRegion);
+  }
+
+  announce(message) {
+    this.liveRegion.textContent = message;
+  }
+
+  disconnectedCallback() {
+    this.liveRegion?.remove();
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Form Integration</h4>
+    <pre><code class="language-javascript">class RatingInput extends HTMLInputElement {
+  connectedCallback() {
+    this.type = 'hidden';
+    this.setAttribute('aria-label', 'Rating');
+    
+    this.createStars();
+  }
+
+  createStars() {
+    const container = document.createElement('div');
+    container.setAttribute('role', 'radiogroup');
+    container.setAttribute('aria-label', 'Rate from 1 to 5 stars');
+    
+    for (let i = 1; i <= 5; i++) {
+      const star = this.createStar(i);
+      container.appendChild(star);
+    }
+    
+    this.after(container);
+  }
+
+  createStar(value) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('role', 'radio');
+    button.setAttribute('aria-checked', 'false');
+    button.textContent = '⭐';
+    button.onclick = () => this.setRating(value);
+    return button;
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Testing Accessibility</h4>
+    <ul>
+      <li class="fragment">
+        Use <mark>axe DevTools</mark> for automated testing
+      </li>
+      <li class="fragment">
+        Test with <mark>screen readers</mark> (NVDA, JAWS, VoiceOver)
+      </li>
+      <li class="fragment">
+        Verify <mark>keyboard navigation</mark> works without mouse
+      </li>
+      <li class="fragment">
+        Check <mark>color contrast</mark> ratios (WCAG AA/AAA)
+      </li>
+      <li class="fragment">
+        Test <mark>focus indicators</mark> are visible
+      </li>
+    </ul>
+  </section>
+</section>

@@ -1,0 +1,72 @@
+<section>
+  <section data-transition="slide">
+    <h3>Wrappers & <mark>Adapters</mark></h3>
+    <p>Publish once, consume anywhere</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Distribution Targets</h4>
+    <ul>
+      <li class="fragment">Vanilla ES modules</li>
+      <li class="fragment">React wrapper (forwardRef)</li>
+      <li class="fragment">Vue wrapper (defineProps/defineEmits)</li>
+      <li class="fragment">Angular directive</li>
+      <li class="fragment">Svelte actions</li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>React Wrapper Quickstart</h4>
+    <pre><code class="language-javascript">export function wrapReact(tagName, events = []){
+  return forwardRef(({ children, ...props }, ref) => {
+    const elRef = ref || useRef(null);
+
+    useEffect(() => {
+      const el = elRef.current; if (!el) return;
+      Object.entries(props).forEach(([k,v]) => { if (k in el) el[k] = v; });
+    }, [props]);
+
+    useEffect(() => {
+      const el = elRef.current; if (!el) return;
+      const cleanups = events.map(ev => {
+        const h = props[`on${ev[0].toUpperCase()+ev.slice(1)}`];
+        if (!h) return () => {};
+        el.addEventListener(ev, h); return () => el.removeEventListener(ev, h);
+      });
+      return () => cleanups.forEach(fn => fn());
+    }, [props]);
+
+    return createElement(tagName, { ref: elRef }, children);
+  });
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Vue Adapter Quickstart</h4>
+    <pre><code class="language-javascript">export function wrapVue(name){
+  return {
+    name,
+    props: ['modelValue', 'items', 'variant'],
+    emits: ['update:modelValue', 'change'],
+    mounted(){
+      const el = this.$el;
+      // Sync non-attribute properties
+      if (this.items) el.items = this.items;
+      el.addEventListener('change', (e) => this.$emit('change', e.detail));
+    },
+    watch: {
+      items(v){ this.$el.items = v; },
+      modelValue(v){ this.$el.value = v; },
+    },
+    render(){ return h(name, {}, this.$slots.default?.()); }
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Adapter Best Practices</h4>
+    <ul>
+      <li class="fragment">Mirror properties, not only attributes</li>
+      <li class="fragment">Forward and translate events</li>
+      <li class="fragment">Keep wrappers thin and typed</li>
+      <li class="fragment">Document supported events and props</li>
+      <li class="fragment">Ship ESM first, wrappers optional</li>
+    </ul>
+  </section>
+</section>

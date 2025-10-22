@@ -42,6 +42,9 @@ importers:
       posthtml-include:
         specifier: 2.0.1
         version: 2.0.1
+      prettier:
+        specifier: 3.6.2
+        version: 3.6.2
       sharp:
         specifier: 0.33.5
         version: 0.33.5
@@ -1106,6 +1109,11 @@ packages:
   posthtml@0.16.7:
     resolution: {integrity: sha512-7Hc+IvlQ7hlaIfQFZnxlRl0jnpWq2qwibORBhQYIb0QbNtuicc5ZxvKkVT71HJ4Py1wSZ/3VR1r8LfkCtoCzhw==}
     engines: {node: '>=12.0.0'}
+
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   react-refresh@0.16.0:
     resolution: {integrity: sha512-FPvF2XxTSikpJxcr+bHut2H4gJ17+18Uy20D5/F+SKzFap62R3cM5wH6b8WN3LyGSYeQilLEcJcR1fjBSI2S1A==}
@@ -2432,6 +2440,8 @@ snapshots:
     dependencies:
       posthtml-parser: 0.11.0
       posthtml-render: 3.0.0
+
+  prettier@3.6.2: {}
 
   react-refresh@0.16.0: {}
 

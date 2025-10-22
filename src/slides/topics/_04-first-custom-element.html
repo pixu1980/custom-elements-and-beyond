@@ -1,0 +1,82 @@
+<section>
+  <section data-transition="slide">
+    <h3>Your First <mark>Custom Element</mark></h3>
+    <p>Let's create an enhanced button with a click counter</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Step 1: Define the class</h4>
+    <pre><code class="language-javascript">class CounterButton extends HTMLButtonElement {
+  constructor() {
+    super();
+    this.count = 0;
+  }
+
+  connectedCallback() {
+    this.updateText();
+    this.addEventListener('click', this.handleClick);
+  }
+
+  handleClick = () => {
+    this.count++;
+    this.updateText();
+  };
+
+  updateText() {
+    this.textContent = `Clicked ${this.count} times`;
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Step 2: Register the element</h4>
+    <pre><code class="language-javascript">customElements.define('counter-button', CounterButton, {
+  extends: 'button'
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Step 3: Use in HTML</h4>
+    <pre><code class="language-html">&lt;button is="counter-button"&gt;Click me&lt;/button&gt;</code></pre>
+    <div class="fragment" style="margin-top: 2em">
+      <p><strong>Live Demo:</strong></p>
+      <button is="counter-button" style="padding: 1em 2em; font-size: 1.2em;">
+        Click me
+      </button>
+    </div>
+    <aside class="notes">
+      Notice how we inherit all button functionality: keyboard support, form
+      integration, ARIA roles, and all native events.
+    </aside>
+  </section>
+</section>
+
+<script>
+  if (!customElements.get('counter-button')) {
+    class CounterButton extends HTMLButtonElement {
+      constructor() {
+        super();
+        this.count = 0;
+      }
+
+      connectedCallback() {
+        this.updateText();
+        this.addEventListener('click', this.handleClick);
+      }
+
+      disconnectedCallback() {
+        this.removeEventListener('click', this.handleClick);
+      }
+
+      handleClick = () => {
+        this.count++;
+        this.updateText();
+      };
+
+      updateText() {
+        this.textContent = `Clicked ${this.count} times`;
+      }
+    }
+
+    customElements.define('counter-button', CounterButton, {
+      extends: 'button',
+    });
+  }
+</script>

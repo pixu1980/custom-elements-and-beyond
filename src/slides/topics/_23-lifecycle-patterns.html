@@ -1,0 +1,267 @@
+<section>
+  <section data-transition="slide">
+    <h3>Advanced <mark>Lifecycle</mark> Patterns</h3>
+    <p>Mastering component lifecycle for robust applications</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Lazy Initialization</h4>
+    <pre><code class="language-javascript">class LazyComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this._initialized = false;
+    this._initPromise = null;
+  }
+
+  connectedCallback() {
+    // Don't initialize immediately
+    // Wait for user interaction or visibility
+    this.setupLazyInit();
+  }
+
+  setupLazyInit() {
+    // Option 1: Initialize on first interaction
+    this.addEventListener('click', this.ensureInitialized, { once: true });
+    
+    // Option 2: Initialize when visible (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        this.ensureInitialized();
+        observer.disconnect();
+      }
+    });
+    observer.observe(this);
+  }
+
+  async ensureInitialized() {
+    if (this._initialized) return;
+    
+    if (!this._initPromise) {
+      this._initPromise = this.initialize();
+    }
+    
+    await this._initPromise;
+    this._initialized = true;
+  }
+
+  async initialize() {
+    // Load resources, fetch data, etc.
+    const data = await fetch('/api/data').then(r => r.json());
+    this.render(data);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Cleanup Management</h4>
+    <pre><code class="language-javascript">class ManagedComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this._cleanupFunctions = [];
+    this._eventListeners = new Map();
+  }
+
+  connectedCallback() {
+    this.setup();
+  }
+
+  disconnectedCallback() {
+    this.cleanup();
+  }
+
+  // Helper to auto-cleanup event listeners
+  addManagedListener(element, event, handler, options) {
+    element.addEventListener(event, handler, options);
+    
+    this._cleanupFunctions.push(() => {
+      element.removeEventListener(event, handler, options);
+    });
+  }
+
+  // Helper to auto-cleanup intervals
+  setManagedInterval(callback, delay) {
+    const id = setInterval(callback, delay);
+    
+    this._cleanupFunctions.push(() => {
+      clearInterval(id);
+    });
+    
+    return id;
+  }
+
+  // Helper to auto-cleanup observers
+  observeManaged(target, config) {
+    const observer = new MutationObserver((mutations) => {
+      this.handleMutations(mutations);
+    });
+    
+    observer.observe(target, config);
+    
+    this._cleanupFunctions.push(() => {
+      observer.disconnect();
+    });
+    
+    return observer;
+  }
+
+  cleanup() {
+    // Run all cleanup functions
+    this._cleanupFunctions.forEach(fn => fn());
+    this._cleanupFunctions = [];
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Reconnection Handling</h4>
+    <pre><code class="language-javascript">class ReconnectableComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this._connectionCount = 0;
+  }
+
+  connectedCallback() {
+    this._connectionCount++;
+    
+    if (this._connectionCount === 1) {
+      // First connection - full setup
+      this.initialize();
+    } else {
+      // Reconnection - restore state
+      this.restore();
+    }
+    
+    this.resume();
+  }
+
+  disconnectedCallback() {
+    // Pause ongoing operations
+    this.pause();
+    
+    // Don't cleanup immediately - component might reconnect
+    this._disconnectTimeout = setTimeout(() => {
+      this.cleanup();
+    }, 1000); // Grace period
+  }
+
+  restore() {
+    // Clear cleanup timeout
+    if (this._disconnectTimeout) {
+      clearTimeout(this._disconnectTimeout);
+      this._disconnectTimeout = null;
+    }
+    
+    // Restore preserved state
+    console.log('Component reconnected, restoring state');
+  }
+
+  pause() {
+    // Pause animations, timers, etc.
+    if (this._animationFrame) {
+      cancelAnimationFrame(this._animationFrame);
+    }
+  }
+
+  resume() {
+    // Resume operations
+    this.startAnimation();
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Adopted Callback Pattern</h4>
+    <pre><code class="language-javascript">class PortableComponent extends HTMLDivElement {
+  adoptedCallback() {
+    // Component moved to a new document
+    console.log('Component moved to new document');
+    
+    // Re-establish document-specific connections
+    this.reconnectToDocument();
+  }
+
+  reconnectToDocument() {
+    // Update references to document-level services
+    const doc = this.ownerDocument;
+    
+    // Re-query global elements
+    this._form = doc.querySelector('form#main-form');
+    
+    // Re-attach to document events
+    doc.addEventListener('theme-changed', this.handleThemeChange);
+    
+    // Update styles if needed
+    this.updateStyleContext();
+  }
+
+  // Useful for iframes and document.adoptNode scenarios
+  handleDocumentChange() {
+    // Clean up old document references
+    this.cleanupDocumentRefs();
+    
+    // Establish new ones
+    this.reconnectToDocument();
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Attribute Change Batching</h4>
+    <pre><code class="language-javascript">class BatchedComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this._pendingUpdates = new Set();
+    this._updateScheduled = false;
+  }
+
+  static get observedAttributes() {
+    return ['data', 'config', 'theme', 'layout'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    // Collect changes instead of updating immediately
+    this._pendingUpdates.add(name);
+    
+    // Schedule batch update
+    if (!this._updateScheduled) {
+      this._updateScheduled = true;
+      
+      // Use microtask for immediate batching
+      queueMicrotask(() => {
+        this.processBatchedUpdates();
+      });
+    }
+  }
+
+  processBatchedUpdates() {
+    // Process all pending attribute changes together
+    const updates = Array.from(this._pendingUpdates);
+    this._pendingUpdates.clear();
+    this._updateScheduled = false;
+    
+    console.log(`Processing ${updates.length} attribute changes together`);
+    
+    // Single render for all changes
+    this.render();
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Lifecycle Best Practices</h4>
+    <ul>
+      <li class="fragment">
+        <mark>Lazy initialize</mark> expensive operations
+      </li>
+      <li class="fragment">
+        Always <mark>cleanup</mark> in disconnectedCallback
+      </li>
+      <li class="fragment">
+        Handle <mark>reconnection</mark> gracefully
+      </li>
+      <li class="fragment">
+        <mark>Batch</mark> attribute changes when possible
+      </li>
+      <li class="fragment">
+        Use <mark>Intersection Observer</mark> for visibility-based init
+      </li>
+      <li class="fragment">
+        Consider <mark>adoptedCallback</mark> for iframe usage
+      </li>
+    </ul>
+  </section>
+</section>

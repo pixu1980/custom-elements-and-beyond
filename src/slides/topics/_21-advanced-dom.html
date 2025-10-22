@@ -1,0 +1,192 @@
+<section>
+  <section data-transition="slide">
+    <h3>Advanced <mark>DOM Manipulation</mark></h3>
+    <p>Best practices for efficient and safe DOM operations</p>
+  </section>
+  <section data-transition="slide">
+    <h4>innerHTML vs createElement</h4>
+    <pre><code class="language-javascript">class ProductCard extends HTMLDivElement {
+  // ❌ Bad: innerHTML is slower and loses event listeners
+  renderWithInnerHTML(product) {
+    this.innerHTML = `
+      &lt;h3&gt;${product.name}&lt;/h3&gt;
+      &lt;p&gt;${product.description}&lt;/p&gt;
+      &lt;button&gt;Add to Cart&lt;/button&gt;
+    `;
+    // Event listeners must be re-attached!
+  }
+
+  // ✅ Good: createElement is faster and preserves references
+  renderWithCreateElement(product) {
+    const title = document.createElement('h3');
+    title.textContent = product.name;
+    
+    const desc = document.createElement('p');
+    desc.textContent = product.description;
+    
+    const button = document.createElement('button');
+    button.textContent = 'Add to Cart';
+    button.onclick = () => this.addToCart(product);
+    
+    this.replaceChildren(title, desc, button);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>DocumentFragment for Batch Operations</h4>
+    <pre><code class="language-javascript">class ItemList extends HTMLUListElement {
+  set items(items) {
+    // ✅ Best practice: Use DocumentFragment for multiple insertions
+    const fragment = document.createDocumentFragment();
+    
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item.name;
+      li.dataset.id = item.id;
+      li.onclick = () => this.handleItemClick(item);
+      
+      fragment.appendChild(li);
+    });
+    
+    // Single reflow/repaint instead of N reflows
+    this.replaceChildren(fragment);
+  }
+
+  // ❌ Bad: Multiple DOM insertions cause multiple reflows
+  addItemsSlow(items) {
+    this.innerHTML = '';
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item.name;
+      this.appendChild(li); // Triggers reflow each time!
+    });
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>XSS Prevention</h4>
+    <pre><code class="language-javascript">class CommentBox extends HTMLDivElement {
+  // ❌ DANGER: XSS vulnerability!
+  addCommentUnsafe(text) {
+    this.innerHTML += `&lt;p&gt;${text}&lt;/p&gt;`;
+    // If text contains: &lt;img src=x onerror="alert('XSS')"&gt;
+    // The script will execute!
+  }
+
+  // ✅ Safe: Use textContent or sanitize
+  addCommentSafe(text) {
+    const p = document.createElement('p');
+    p.textContent = text; // Automatically escapes HTML
+    this.appendChild(p);
+  }
+
+  // ✅ Safe: Use DOMPurify for rich content
+  addCommentWithHTML(html) {
+    const clean = DOMPurify.sanitize(html);
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = clean;
+    this.appendChild(wrapper);
+  }
+
+  // ✅ Safe: Use template literals with sanitization
+  addCommentTemplate(author, text) {
+    const sanitizedAuthor = this.escapeHTML(author);
+    const sanitizedText = this.escapeHTML(text);
+    
+    this.insertAdjacentHTML('beforeend', `
+      &lt;article&gt;
+        &lt;strong&gt;${sanitizedAuthor}&lt;/strong&gt;
+        &lt;p&gt;${sanitizedText}&lt;/p&gt;
+      &lt;/article&gt;
+    `);
+  }
+
+  escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Efficient DOM Queries</h4>
+    <pre><code class="language-javascript">class DataGrid extends HTMLTableElement {
+  constructor() {
+    super();
+    // ✅ Cache DOM references
+    this._tbody = null;
+    this._headerRow = null;
+  }
+
+  connectedCallback() {
+    // Query once and cache
+    this._tbody = this.querySelector('tbody');
+    this._headerRow = this.querySelector('thead tr');
+  }
+
+  // ❌ Bad: Queries DOM every time
+  getCellSlow(row, col) {
+    return this.querySelector(`tbody tr:nth-child(${row}) td:nth-child(${col})`);
+  }
+
+  // ✅ Good: Use cached references
+  getCellFast(row, col) {
+    const rows = this._tbody.children;
+    if (row < rows.length) {
+      const cells = rows[row].children;
+      if (col < cells.length) {
+        return cells[col];
+      }
+    }
+    return null;
+  }
+
+  // ✅ Best: Use data structures
+  updateCell(rowIndex, colIndex, value) {
+    if (!this._cellCache) {
+      this._cellCache = Array.from(this._tbody.children)
+        .map(row => Array.from(row.children));
+    }
+    
+    const cell = this._cellCache[rowIndex]?.[colIndex];
+    if (cell) {
+      cell.textContent = value;
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Performance Monitoring</h4>
+    <pre><code class="language-javascript">class PerformantComponent extends HTMLDivElement {
+  render() {
+    // Measure render performance
+    const startTime = performance.now();
+    
+    // Do rendering work
+    this.buildDOM();
+    
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+    
+    // Log slow renders
+    if (duration > 16) { // More than one frame (60fps)
+      console.warn(`Slow render: ${duration.toFixed(2)}ms`);
+    }
+    
+    // Use Performance API for detailed metrics
+    performance.measure('component-render', {
+      start: startTime,
+      end: endTime,
+    });
+  }
+
+  buildDOM() {
+    // Use requestAnimationFrame for smooth updates
+    requestAnimationFrame(() => {
+      const fragment = this.createContent();
+      this.replaceChildren(fragment);
+    });
+  }
+}</code></pre>
+  </section>
+</section>

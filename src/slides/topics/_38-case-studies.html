@@ -1,0 +1,216 @@
+<section>
+  <section data-transition="slide">
+    <h3>Real-World <mark>Case Studies</mark></h3>
+    <p>Success stories from production applications</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Case Study 1: GitHub</h4>
+    <div class="case-study">
+      <h5>Challenge</h5>
+      <p>Modernize legacy Rails app with progressive enhancement</p>
+      
+      <h5>Solution</h5>
+      <ul>
+        <li>Custom Elements extending native HTML</li>
+        <li>Progressive enhancement strategy</li>
+        <li>Server-side rendering + client-side enhancement</li>
+      </ul>
+
+      <h5>Example Components</h5>
+      <ul>
+        <li><code>&lt;time-ago&gt;</code> - Relative time display</li>
+        <li><code>&lt;details-dialog&gt;</code> - Enhanced dialogs</li>
+        <li><code>&lt;auto-complete&gt;</code> - Search suggestions</li>
+        <li><code>&lt;clipboard-copy&gt;</code> - Copy to clipboard</li>
+      </ul>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>GitHub Example: time-ago</h4>
+    <pre><code class="language-html">&lt;!-- Server renders static time --&gt;
+&lt;time-ago datetime="2025-10-22T10:00:00Z"&gt;
+  October 22, 2025
+&lt;/time-ago&gt;
+
+&lt;!-- JavaScript enhances with relative time --&gt;
+&lt;script type="module"&gt;
+  class TimeAgoElement extends HTMLTimeElement {
+    connectedCallback() {
+      this.update();
+      this._timer = setInterval(() => this.update(), 60000);
+    }
+
+    disconnectedCallback() {
+      clearInterval(this._timer);
+    }
+
+    update() {
+      const date = new Date(this.getAttribute('datetime'));
+      this.textContent = this.getRelativeTime(date);
+    }
+
+    getRelativeTime(date) {
+      const now = new Date();
+      const seconds = Math.floor((now - date) / 1000);
+      
+      if (seconds < 60) return 'just now';
+      if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+      if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+      return `${Math.floor(seconds / 86400)}d ago`;
+    }
+  }
+
+  customElements.define('time-ago', TimeAgoElement, { extends: 'time' });
+&lt;/script&gt;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Case Study 2: Salesforce Lightning</h4>
+    <div class="case-study">
+      <h5>Challenge</h5>
+      <p>Build enterprise design system for multiple platforms</p>
+      
+      <h5>Solution</h5>
+      <ul>
+        <li>Lightning Web Components (LWC)</li>
+        <li>Based on Web Components standards</li>
+        <li>Shared across Salesforce ecosystem</li>
+      </ul>
+
+      <h5>Key Benefits</h5>
+      <ul>
+        <li>✅ Performance: 40% faster than previous framework</li>
+        <li>✅ Standards-based: Built on web platform</li>
+        <li>✅ Portable: Works across multiple apps</li>
+        <li>✅ Developer experience: Modern tooling</li>
+      </ul>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>Case Study 3: YouTube</h4>
+    <div class="case-study">
+      <h5>Challenge</h5>
+      <p>Migrate massive app to modern architecture</p>
+      
+      <h5>Solution</h5>
+      <ul>
+        <li>Incremental migration to Custom Elements</li>
+        <li>Polymer framework (now LitElement)</li>
+        <li>Component-based architecture</li>
+      </ul>
+
+      <h5>Results</h5>
+      <ul>
+        <li>📦 Reduced bundle size</li>
+        <li>⚡️ Improved performance</li>
+        <li>🔄 Better code reusability</li>
+        <li>🛠 Easier maintenance</li>
+      </ul>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>Case Study 4: ING Bank</h4>
+    <div class="case-study">
+      <h5>Challenge</h5>
+      <p>Unified design system across multiple teams and tech stacks</p>
+      
+      <h5>Solution</h5>
+      <ul>
+        <li>Lion Web Components library</li>
+        <li>Framework-agnostic components</li>
+        <li>Focus on accessibility and forms</li>
+      </ul>
+
+      <h5>Example: Form System</h5>
+      <pre><code class="language-html">&lt;form is="lion-form"&gt;
+  &lt;input 
+    is="lion-input" 
+    name="email"
+    type="email"
+    label="Email"
+    validators="required email"
+  /&gt;
+  
+  &lt;button is="lion-button" type="submit"&gt;
+    Submit
+  &lt;/button&gt;
+&lt;/form&gt;</code></pre>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>Case Study 5: Adobe Spectrum</h4>
+    <div class="case-study">
+      <h5>Challenge</h5>
+      <p>Consistent UI across all Adobe products</p>
+      
+      <h5>Solution</h5>
+      <ul>
+        <li>Spectrum Web Components</li>
+        <li>Built with LitElement</li>
+        <li>Extends native elements</li>
+        <li>Design tokens for theming</li>
+      </ul>
+
+      <h5>Architecture</h5>
+      <pre><code class="language-plaintext">Spectrum Design System
+├── Design Tokens (CSS Variables)
+├── Base Components (Web Components)
+├── React Wrappers (React Spectrum)
+└── Theme Provider (Multiple themes)</code></pre>
+    </div>
+  </section>
+  <section data-transition="slide">
+    <h4>Lessons Learned</h4>
+    <ul>
+      <li class="fragment">
+        <mark>Progressive enhancement</mark> - Start with working HTML
+      </li>
+      <li class="fragment">
+        <mark>Standards-first</mark> - Use web platform APIs
+      </li>
+      <li class="fragment">
+        <mark>Accessibility</mark> - Inherit from native elements
+      </li>
+      <li class="fragment">
+        <mark>Performance</mark> - Lazy load and optimize bundles
+      </li>
+      <li class="fragment">
+        <mark>Interoperability</mark> - Framework-agnostic design
+      </li>
+      <li class="fragment">
+        <mark>Documentation</mark> - Clear examples and API docs
+      </li>
+      <li class="fragment">
+        <mark>Gradual adoption</mark> - Migrate incrementally
+      </li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Resources</h4>
+    <ul>
+      <li>
+        <strong>GitHub Primer:</strong> 
+        <a href="https://primer.style">primer.style</a>
+      </li>
+      <li>
+        <strong>Salesforce LWC:</strong> 
+        <a href="https://lwc.dev">lwc.dev</a>
+      </li>
+      <li>
+        <strong>ING Lion:</strong> 
+        <a href="https://lion-web.netlify.app">lion-web.netlify.app</a>
+      </li>
+      <li>
+        <strong>Adobe Spectrum:</strong> 
+        <a href="https://opensource.adobe.com/spectrum-web-components">
+          spectrum-web-components
+        </a>
+      </li>
+      <li>
+        <strong>Awesome Web Components:</strong> 
+        <a href="https://github.com/web-padawan/awesome-web-components">
+          github.com/web-padawan/awesome-web-components
+        </a>
+      </li>
+    </ul>
+  </section>
+</section>

@@ -1,0 +1,56 @@
+<section>
+  <section data-transition="slide">
+    <h3>SSR and <mark>Progressive Enhancement</mark></h3>
+    <p>Server first HTML, then enhance with Custom Elements</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Server Renders HTML</h4>
+    <pre><code class="language-html">&lt;!-- Server output (no JS required to read) --&gt;
+&lt;article&gt;
+  &lt;h2&gt;Latest News&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/news/1"&gt;Item 1&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/news/2"&gt;Item 2&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/article&gt;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Enhance when defined</h4>
+    <pre><code class="language-javascript">// Enhance progressively
+class NewsList extends HTMLUListElement {
+  connectedCallback(){
+    this.classList.add('enhanced');
+    // Optional: client-side sorting, filtering, etc.
+  }
+}
+
+customElements.define('news-list', NewsList, { extends: 'ul' });
+
+// Hydrate only if needed
+customElements.whenDefined('news-list').then(() => {
+  document.querySelectorAll('ul[is="news-list"]').forEach(el => el.classList.add('hydrated'));
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Islands Architecture</h4>
+    <pre><code class="language-html">&lt;!-- Static page with interactive islands --&gt;
+&lt;main&gt;
+  &lt;article&gt;...static content...&lt;/article&gt;
+  &lt;aside&gt;
+    &lt;button is="counter-button"&gt;Count: 0&lt;/button&gt;
+  &lt;/aside&gt;
+&lt;/main&gt;</code></pre>
+    <pre><code class="language-javascript">// Load only the island script
+import('/components/counter-button.js');</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>SSR Tips</h4>
+    <ul>
+      <li class="fragment">Do not rely on client init for critical content</li>
+      <li class="fragment">Keep HTML semantic and accessible</li>
+      <li class="fragment">Use whenDefined for safe hydration</li>
+      <li class="fragment">Defer non critical islands</li>
+      <li class="fragment">Measure hydration costs</li>
+    </ul>
+  </section>
+</section>

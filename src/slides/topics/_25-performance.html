@@ -1,0 +1,266 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Performance</mark> Optimization</h3>
+    <p>Making components fast and efficient</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Rendering Optimization</h4>
+    <pre><code class="language-javascript">class OptimizedList extends HTMLUListElement {
+  constructor() {
+    super();
+    this._renderScheduled = false;
+    this._pendingData = null;
+  }
+
+  set items(items) {
+    this._pendingData = items;
+    
+    // Batch multiple updates into single render
+    if (!this._renderScheduled) {
+      this._renderScheduled = true;
+      requestAnimationFrame(() => {
+        this.render();
+        this._renderScheduled = false;
+      });
+    }
+  }
+
+  render() {
+    if (!this._pendingData) return;
+    
+    // Use virtual scrolling for large lists
+    if (this._pendingData.length > 100) {
+      this.renderVirtual(this._pendingData);
+    } else {
+      this.renderFull(this._pendingData);
+    }
+  }
+
+  renderVirtual(items) {
+    // Only render visible items
+    const itemHeight = 50;
+    const scrollTop = this.scrollTop || 0;
+    const visibleCount = Math.ceil(this.clientHeight / itemHeight);
+    const startIndex = Math.floor(scrollTop / itemHeight);
+    const endIndex = startIndex + visibleCount;
+    
+    const visibleItems = items.slice(startIndex, endIndex);
+    
+    // Set total height for scrollbar
+    this.style.minHeight = `${items.length * itemHeight}px`;
+    
+    // Render only visible items
+    this.renderItems(visibleItems, startIndex * itemHeight);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Lazy Loading Content</h4>
+    <pre><code class="language-javascript">class LazyImage extends HTMLImageElement {
+  connectedCallback() {
+    // Don't load image immediately
+    this._originalSrc = this.src;
+    this.src = this.dataset.placeholder || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    
+    // Load when visible
+    this.observeVisibility();
+  }
+
+  observeVisibility() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.loadImage();
+          observer.disconnect();
+        }
+      });
+    }, {
+      rootMargin: '50px', // Start loading slightly before visible
+    });
+    
+    observer.observe(this);
+  }
+
+  loadImage() {
+    // Load actual image
+    const img = new Image();
+    img.onload = () => {
+      this.src = this._originalSrc;
+      this.classList.add('loaded');
+    };
+    img.onerror = () => {
+      this.classList.add('error');
+    };
+    img.src = this._originalSrc;
+  }
+}
+
+customElements.define('lazy-image', LazyImage, { extends: 'img' });</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Memory Management</h4>
+    <pre><code class="language-javascript">class MemoryEfficientComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this._cache = new WeakMap(); // Auto garbage collected
+    this._listeners = new WeakMap();
+  }
+
+  // Use WeakMap for automatic cleanup
+  setCachedData(element, data) {
+    this._cache.set(element, data);
+  }
+
+  getCachedData(element) {
+    return this._cache.get(element);
+  }
+
+  // Avoid memory leaks with proper cleanup
+  attachListener(element, event, handler) {
+    element.addEventListener(event, handler);
+    
+    // Store reference for cleanup
+    if (!this._listeners.has(element)) {
+      this._listeners.set(element, []);
+    }
+    this._listeners.get(element).push({ event, handler });
+  }
+
+  disconnectedCallback() {
+    // Clean up all listeners
+    this._listeners.forEach((listeners, element) => {
+      listeners.forEach(({ event, handler }) => {
+        element.removeEventListener(event, handler);
+      });
+    });
+    
+    // Clear references
+    this._cache = new WeakMap();
+    this._listeners = new WeakMap();
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>CSS Containment</h4>
+    <pre><code class="language-javascript">class ContainedComponent extends HTMLDivElement {
+  connectedCallback() {
+    // Use CSS containment for better performance
+    // Tells browser this element's internals don't affect outside
+    this.style.contain = 'layout style paint';
+    
+    // For components with fixed size
+    if (this.hasAttribute('width') && this.hasAttribute('height')) {
+      this.style.contain = 'strict';
+    }
+    
+    // For absolutely positioned content
+    if (this.dataset.isolated === 'true') {
+      this.style.contain = 'layout paint';
+    }
+    
+    this.render();
+  }
+}</code></pre>
+    <pre><code class="language-css">/* CSS containment for better rendering performance */
+.component {
+  /* Layout: Internal layout doesn't affect external elements */
+  contain: layout;
+  
+  /* Paint: Element's contents don't paint outside its bounds */
+  contain: paint;
+  
+  /* Size: Element's size doesn't depend on descendants */
+  contain: size;
+  
+  /* Style: Properties don't escape element boundary */
+  contain: style;
+  
+  /* Strict: All containment types */
+  contain: strict;
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>will-change Property</h4>
+    <pre><code class="language-javascript">class AnimatedComponent extends HTMLDivElement {
+  connectedCallback() {
+    this.setupAnimation();
+  }
+
+  setupAnimation() {
+    // Hint to browser about upcoming changes
+    this.addEventListener('mouseenter', () => {
+      // Prepare for animation
+      this.style.willChange = 'transform, opacity';
+    });
+    
+    this.addEventListener('mouseleave', () => {
+      // Remove hint after animation
+      this.style.willChange = 'auto';
+    });
+  }
+
+  animate() {
+    // Apply will-change before expensive operations
+    this.style.willChange = 'transform';
+    
+    requestAnimationFrame(() => {
+      this.style.transform = 'scale(1.2)';
+      
+      // Remove after animation completes
+      setTimeout(() => {
+        this.style.willChange = 'auto';
+      }, 300);
+    });
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Performance Measurement</h4>
+    <pre><code class="language-javascript">class MeasuredComponent extends HTMLDivElement {
+  connectedCallback() {
+    performance.mark('component-connect-start');
+    
+    this.initialize();
+    
+    performance.mark('component-connect-end');
+    performance.measure(
+      'component-connection',
+      'component-connect-start',
+      'component-connect-end'
+    );
+    
+    // Log performance
+    const measure = performance.getEntriesByName('component-connection')[0];
+    console.log(`Component connected in ${measure.duration.toFixed(2)}ms`);
+  }
+
+  render() {
+    const renderStart = performance.now();
+    
+    // Do rendering
+    this.buildDOM();
+    
+    const renderEnd = performance.now();
+    const duration = renderEnd - renderStart;
+    
+    // Track slow renders
+    if (duration > 16.67) { // More than one frame at 60fps
+      console.warn(`Slow render detected: ${duration.toFixed(2)}ms`);
+    }
+  }
+
+  // Use Performance Observer for monitoring
+  static startMonitoring() {
+    const observer = new PerformanceObserver((list) => {
+      list.getEntries().forEach(entry => {
+        if (entry.duration > 50) {
+          console.warn(`Long task detected: ${entry.duration.toFixed(2)}ms`);
+        }
+      });
+    });
+    
+    observer.observe({ entryTypes: ['measure', 'longtask'] });
+  }
+}</code></pre>
+  </section>
+</section>

@@ -1,0 +1,212 @@
+<section>
+  <section data-transition="slide">
+    <h3>Real-World <mark>Examples</mark></h3>
+    <p>Putting it all together with complete implementations</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Example 1: Notification Toast</h4>
+    <pre><code class="language-javascript">class ToastNotification extends HTMLDivElement {
+  static get observedAttributes() {
+    return ['type', 'duration', 'dismissible'];
+  }
+
+  connectedCallback() {
+    this.render();
+    this.setupDismiss();
+    this.autoClose();
+  }
+
+  render() {
+    const type = this.getAttribute('type') || 'info';
+    const dismissible = this.hasAttribute('dismissible');
+
+    this.className = `toast toast-${type}`;
+    this.setAttribute('role', 'alert');
+    this.setAttribute('aria-live', 'polite');
+
+    if (dismissible) {
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = '×';
+      closeBtn.className = 'toast-close';
+      closeBtn.setAttribute('aria-label', 'Close notification');
+      closeBtn.onclick = () => this.dismiss();
+      this.appendChild(closeBtn);
+    }
+  }
+
+  autoClose() {
+    const duration = parseInt(this.getAttribute('duration')) || 5000;
+    if (duration > 0) {
+      setTimeout(() => this.dismiss(), duration);
+    }
+  }
+
+  dismiss() {
+    this.classList.add('dismissing');
+    setTimeout(() => this.remove(), 300);
+  }
+}
+
+customElements.define('toast-notification', ToastNotification, {
+  extends: 'div',
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Usage: Toast</h4>
+    <pre><code class="language-html">&lt;div is="toast-notification" 
+     type="success" 
+     duration="3000" 
+     dismissible&gt;
+  ✅ Changes saved successfully!
+&lt;/div&gt;</code></pre>
+    <pre class="fragment"><code class="language-javascript">// Programmatic creation
+function showToast(message, type = 'info') {
+  const toast = document.createElement('div', { 
+    is: 'toast-notification' 
+  });
+  toast.textContent = message;
+  toast.setAttribute('type', type);
+  toast.setAttribute('duration', '4000');
+  toast.setAttribute('dismissible', '');
+  
+  document.body.appendChild(toast);
+  
+  return toast;
+}
+
+showToast('Hello World!', 'success');</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Example 2: Accordion Panel</h4>
+    <pre><code class="language-javascript">class AccordionPanel extends HTMLDetailsElement {
+  connectedCallback() {
+    this.setupAccessibility();
+    this.setupAnimation();
+  }
+
+  setupAccessibility() {
+    const summary = this.querySelector('summary');
+    if (summary) {
+      summary.setAttribute('role', 'button');
+      summary.setAttribute('aria-expanded', String(this.open));
+      
+      this.addEventListener('toggle', () => {
+        summary.setAttribute('aria-expanded', String(this.open));
+      });
+    }
+  }
+
+  setupAnimation() {
+    const content = this.querySelector('.accordion-content');
+    if (!content) return;
+
+    this.addEventListener('toggle', () => {
+      if (this.open) {
+        this.animateOpen(content);
+      } else {
+        this.animateClose(content);
+      }
+    });
+  }
+
+  animateOpen(element) {
+    element.style.overflow = 'hidden';
+    const height = element.scrollHeight;
+    element.animate([
+      { height: '0px', opacity: 0 },
+      { height: `${height}px`, opacity: 1 }
+    ], {
+      duration: 300,
+      easing: 'ease-out'
+    });
+  }
+
+  animateClose(element) {
+    const height = element.scrollHeight;
+    element.animate([
+      { height: `${height}px`, opacity: 1 },
+      { height: '0px', opacity: 0 }
+    ], {
+      duration: 300,
+      easing: 'ease-in'
+    });
+  }
+}
+
+customElements.define('accordion-panel', AccordionPanel, {
+  extends: 'details',
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Example 3: Copy Button</h4>
+    <pre><code class="language-javascript">class CopyButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.textContent = this.getAttribute('label') || 'Copy';
+    this.addEventListener('click', this.copyToClipboard);
+  }
+
+  async copyToClipboard() {
+    const targetId = this.getAttribute('target');
+    const target = document.getElementById(targetId);
+    
+    if (!target) return;
+
+    try {
+      const text = target.textContent || target.value;
+      await navigator.clipboard.writeText(text);
+      
+      this.showSuccess();
+      this.dispatchEvent(new CustomEvent('copied', {
+        detail: { text },
+        bubbles: true,
+      }));
+    } catch (error) {
+      this.showError();
+      console.error('Copy failed:', error);
+    }
+  }
+
+  showSuccess() {
+    const original = this.textContent;
+    this.textContent = '✅ Copied!';
+    this.disabled = true;
+    
+    setTimeout(() => {
+      this.textContent = original;
+      this.disabled = false;
+    }, 2000);
+  }
+
+  showError() {
+    this.textContent = '❌ Failed';
+    setTimeout(() => {
+      this.textContent = this.getAttribute('label') || 'Copy';
+    }, 2000);
+  }
+}
+
+customElements.define('copy-button', CopyButton, {
+  extends: 'button',
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Resources</h4>
+    <ul>
+      <li class="fragment">
+        📚 <strong>MDN Web Docs:</strong> Complete Custom Elements documentation
+      </li>
+      <li class="fragment">
+        💻 <strong>GitHub:</strong> Open-source component libraries
+      </li>
+      <li class="fragment">
+        🎨 <strong>CodePen:</strong> Interactive examples and demos
+      </li>
+      <li class="fragment">
+        🔧 <strong>Web.dev:</strong> Best practices and patterns
+      </li>
+    </ul>
+    <p class="fragment" style="margin-top: 2em">
+      🔗 Links to full examples available in the slides repository
+    </p>
+  </section>
+</section>

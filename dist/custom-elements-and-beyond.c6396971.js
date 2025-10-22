@@ -53049,6 +53049,6 @@ window.pixuTalks = {
     }
 };
 
-},{}]},["llFaT","8JWvp"], "8JWvp", "parcelRequire4ccd", {})
+},{}]},["llFaT","8JWvp"], "8JWvp", "parcelRequirec12c", {})
 
-//# sourceMappingURL=talk-template.c6396971.js.map
+//# sourceMappingURL=custom-elements-and-beyond.c6396971.js.map

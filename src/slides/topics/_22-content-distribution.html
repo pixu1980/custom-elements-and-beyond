@@ -1,0 +1,235 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Content Distribution</mark> Patterns</h3>
+    <p>Managing child content without Shadow DOM slots</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Named Regions Pattern</h4>
+    <pre><code class="language-javascript">class CardLayout extends HTMLDivElement {
+  connectedCallback() {
+    this.distributeContent();
+  }
+
+  distributeContent() {
+    // Find content by data attributes
+    const header = this.querySelector('[slot="header"]');
+    const body = this.querySelector('[slot="body"]');
+    const footer = this.querySelector('[slot="footer"]');
+    
+    // Create structure
+    const wrapper = document.createDocumentFragment();
+    
+    if (header) {
+      const headerDiv = document.createElement('div');
+      headerDiv.className = 'card-header';
+      headerDiv.appendChild(header);
+      wrapper.appendChild(headerDiv);
+    }
+    
+    if (body) {
+      const bodyDiv = document.createElement('div');
+      bodyDiv.className = 'card-body';
+      bodyDiv.appendChild(body);
+      wrapper.appendChild(bodyDiv);
+    }
+    
+    if (footer) {
+      const footerDiv = document.createElement('div');
+      footerDiv.className = 'card-footer';
+      footerDiv.appendChild(footer);
+      wrapper.appendChild(footerDiv);
+    }
+    
+    this.replaceChildren(wrapper);
+  }
+}</code></pre>
+    <pre><code class="language-html">&lt;div is="card-layout"&gt;
+  &lt;h2 slot="header"&gt;Card Title&lt;/h2&gt;
+  &lt;p slot="body"&gt;Card content goes here&lt;/p&gt;
+  &lt;button slot="footer"&gt;Action&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Content Projection with Classes</h4>
+    <pre><code class="language-javascript">class TabContainer extends HTMLDivElement {
+  connectedCallback() {
+    this.setupTabs();
+  }
+
+  setupTabs() {
+    // Find all tab panels by class
+    const panels = Array.from(this.querySelectorAll('.tab-panel'));
+    
+    // Create tab navigation
+    const nav = document.createElement('nav');
+    nav.className = 'tab-nav';
+    nav.setAttribute('role', 'tablist');
+    
+    panels.forEach((panel, index) => {
+      const title = panel.dataset.title || `Tab ${index + 1}`;
+      const button = this.createTabButton(title, panel, index);
+      nav.appendChild(button);
+      
+      // Set up panel
+      panel.hidden = index !== 0;
+      panel.setAttribute('role', 'tabpanel');
+    });
+    
+    // Insert navigation before panels
+    this.insertBefore(nav, this.firstChild);
+  }
+
+  createTabButton(title, panel, index) {
+    const button = document.createElement('button');
+    button.textContent = title;
+    button.setAttribute('role', 'tab');
+    button.onclick = () => this.showTab(panel);
+    return button;
+  }
+
+  showTab(targetPanel) {
+    this.querySelectorAll('.tab-panel').forEach(panel => {
+      panel.hidden = panel !== targetPanel;
+    });
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Dynamic Content Wrapping</h4>
+    <pre><code class="language-javascript">class GridLayout extends HTMLDivElement {
+  connectedCallback() {
+    this.wrapChildren();
+    this.observeChanges();
+  }
+
+  wrapChildren() {
+    // Wrap each direct child in a grid item
+    const children = Array.from(this.children);
+    const fragment = document.createDocumentFragment();
+    
+    children.forEach(child => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'grid-item';
+      wrapper.appendChild(child);
+      fragment.appendChild(wrapper);
+    });
+    
+    this.replaceChildren(fragment);
+  }
+
+  observeChanges() {
+    // Watch for new children being added
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === 1 && !node.classList.contains('grid-item')) {
+            this.wrapChild(node);
+          }
+        });
+      });
+    });
+    
+    observer.observe(this, { childList: true });
+  }
+
+  wrapChild(child) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'grid-item';
+    child.replaceWith(wrapper);
+    wrapper.appendChild(child);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Content Filtering</h4>
+    <pre><code class="language-javascript">class FilterableList extends HTMLUListElement {
+  constructor() {
+    super();
+    this._originalChildren = [];
+  }
+
+  connectedCallback() {
+    // Store original children
+    this._originalChildren = Array.from(this.children);
+    this.setupFilter();
+  }
+
+  setupFilter() {
+    const input = document.createElement('input');
+    input.type = 'search';
+    input.placeholder = 'Filter items...';
+    input.oninput = (e) => this.filter(e.target.value);
+    
+    this.insertBefore(input, this.firstChild);
+  }
+
+  filter(query) {
+    const lowerQuery = query.toLowerCase();
+    
+    // Hide/show items based on query
+    this._originalChildren.forEach(child => {
+      const text = child.textContent.toLowerCase();
+      const matches = text.includes(lowerQuery);
+      
+      child.hidden = !matches;
+      child.setAttribute('aria-hidden', String(!matches));
+    });
+    
+    // Announce results
+    const visibleCount = this._originalChildren.filter(c => !c.hidden).length;
+    this.announceResults(visibleCount);
+  }
+
+  announceResults(count) {
+    const announcement = `${count} items found`;
+    this.setAttribute('aria-label', announcement);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Template Cloning</h4>
+    <pre><code class="language-javascript">class RepeatList extends HTMLUListElement {
+  set items(items) {
+    // Get template from within component
+    const template = this.querySelector('template');
+    if (!template) return;
+    
+    const fragment = document.createDocumentFragment();
+    
+    items.forEach(item => {
+      // Clone template content
+      const clone = template.content.cloneNode(true);
+      
+      // Fill in data
+      this.populateTemplate(clone, item);
+      fragment.appendChild(clone);
+    });
+    
+    // Replace all children except template
+    const children = Array.from(this.children)
+      .filter(child => child.tagName !== 'TEMPLATE');
+    children.forEach(child => child.remove());
+    
+    this.appendChild(fragment);
+  }
+
+  populateTemplate(clone, data) {
+    // Find and fill placeholders
+    clone.querySelectorAll('[data-bind]').forEach(el => {
+      const key = el.dataset.bind;
+      if (data[key]) {
+        el.textContent = data[key];
+      }
+    });
+  }
+}</code></pre>
+    <pre><code class="language-html">&lt;ul is="repeat-list"&gt;
+  &lt;template&gt;
+    &lt;li&gt;
+      &lt;strong data-bind="name"&gt;&lt;/strong&gt;
+      &lt;span data-bind="description"&gt;&lt;/span&gt;
+    &lt;/li&gt;
+  &lt;/template&gt;
+&lt;/ul&gt;</code></pre>
+  </section>
+</section>

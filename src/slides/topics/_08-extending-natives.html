@@ -1,0 +1,122 @@
+<section>
+  <section data-transition="slide">
+    <h3>Extending Different <mark>Native Elements</mark></h3>
+    <p>Choose the right base element for your needs</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Extending <mark>Buttons</mark></h4>
+    <pre><code class="language-javascript">class IconButton extends HTMLButtonElement {
+  connectedCallback() {
+    const icon = this.getAttribute('icon');
+    this.innerHTML = `
+      &lt;span class="icon"&gt;${icon}&lt;/span&gt;
+      &lt;span class="text"&gt;${this.textContent}&lt;/span&gt;
+    `;
+  }
+}
+
+customElements.define('icon-button', IconButton, {
+  extends: 'button'
+});</code></pre>
+    <pre class="fragment"><code class="language-html">&lt;button is="icon-button" icon="🚀"&gt;Launch&lt;/button&gt;</code></pre>
+    <p class="fragment">
+      ✅ Inherits: click events, form submission, keyboard support, disabled
+      state
+    </p>
+  </section>
+  <section data-transition="slide">
+    <h4>Extending <mark>Inputs</mark></h4>
+    <pre><code class="language-javascript">class DateInput extends HTMLInputElement {
+  connectedCallback() {
+    this.type = 'date';
+    this.setAttribute('aria-label', 'Select date');
+    
+    this.addEventListener('change', () => {
+      console.log('Date selected:', this.value);
+    });
+  }
+}
+
+customElements.define('date-input', DateInput, {
+  extends: 'input'
+});</code></pre>
+    <p class="fragment">
+      ✅ Inherits: form integration, validation, value property, focus
+      management
+    </p>
+  </section>
+  <section data-transition="slide">
+    <h4>Extending <mark>Divs</mark></h4>
+    <pre><code class="language-javascript">class CollapsiblePanel extends HTMLDivElement {
+  connectedCallback() {
+    this.setAttribute('role', 'region');
+    const header = this.querySelector('[slot="header"]');
+    
+    header?.addEventListener('click', () => {
+      this.classList.toggle('collapsed');
+      const expanded = !this.classList.contains('collapsed');
+      this.setAttribute('aria-expanded', String(expanded));
+    });
+  }
+}
+
+customElements.define('collapsible-panel', CollapsiblePanel, {
+  extends: 'div'
+});</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Extending <mark>Lists</mark></h4>
+    <pre><code class="language-javascript">class SortableList extends HTMLUListElement {
+  connectedCallback() {
+    this.setAttribute('role', 'list');
+    
+    const sortButton = document.createElement('button');
+    sortButton.textContent = 'Sort';
+    sortButton.onclick = () => this.sort();
+    
+    this.before(sortButton);
+  }
+  
+  sort() {
+    const items = Array.from(this.children);
+    items.sort((a, b) => 
+      a.textContent.localeCompare(b.textContent)
+    );
+    this.append(...items);
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Choosing the right base</h4>
+    <table style="font-size: 0.7em">
+      <tr>
+        <th>Element</th>
+        <th>Use when you need</th>
+      </tr>
+      <tr class="fragment">
+        <td><code>&lt;button&gt;</code></td>
+        <td>Clickable actions, form submission</td>
+      </tr>
+      <tr class="fragment">
+        <td><code>&lt;input&gt;</code></td>
+        <td>User input, form data, validation</td>
+      </tr>
+      <tr class="fragment">
+        <td><code>&lt;div&gt;</code></td>
+        <td>Generic container, layout</td>
+      </tr>
+      <tr class="fragment">
+        <td><code>&lt;a&gt;</code></td>
+        <td>Navigation, links</td>
+      </tr>
+      <tr class="fragment">
+        <td><code>&lt;img&gt;</code></td>
+        <td>Image display with enhancements</td>
+      </tr>
+    </table>
+    <p class="fragment" style="margin-top: 1em">
+      💡 <strong>Pro tip:</strong> Always extend the most
+      <mark>semantic</mark> element
+    </p>
+  </section>
+</section>

@@ -1,0 +1,139 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>State Management</mark> in Components</h3>
+    <p>Managing component state effectively</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Local Component State</h4>
+    <pre><code class="language-javascript">class TodoItem extends HTMLLIElement {
+  constructor() {
+    super();
+    this._state = {
+      completed: false,
+      text: '',
+      id: null,
+    };
+  }
+
+  connectedCallback() {
+    this._state.id = this.dataset.id;
+    this._state.text = this.textContent;
+    this._state.completed = this.hasAttribute('completed');
+    
+    this.render();
+  }
+
+  toggle() {
+    this._state.completed = !this._state.completed;
+    this.render();
+    this.dispatchStateChange();
+  }
+
+  render() {
+    this.classList.toggle('completed', this._state.completed);
+    this.setAttribute('aria-checked', String(this._state.completed));
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>State Synchronization</h4>
+    <pre><code class="language-javascript">class CounterButton extends HTMLButtonElement {
+  constructor() {
+    super();
+    this._count = 0;
+  }
+
+  get count() {
+    return this._count;
+  }
+
+  set count(value) {
+    const oldValue = this._count;
+    this._count = value;
+    
+    // Reflect to attribute
+    this.setAttribute('count', value);
+    
+    // Update UI
+    this.updateDisplay();
+    
+    // Notify listeners
+    this.dispatchEvent(new CustomEvent('count-changed', {
+      detail: { oldValue, newValue: value },
+      bubbles: true,
+    }));
+  }
+
+  updateDisplay() {
+    this.textContent = `Count: ${this._count}`;
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Immutability Pattern</h4>
+    <pre><code class="language-javascript">class DataList extends HTMLUListElement {
+  set items(newItems) {
+    // Don't mutate original array
+    this._items = [...newItems];
+    this.render();
+  }
+
+  get items() {
+    // Return copy to prevent external mutation
+    return [...this._items];
+  }
+
+  addItem(item) {
+    // Create new array instead of mutating
+    this.items = [...this._items, item];
+  }
+
+  removeItem(id) {
+    this.items = this._items.filter(item => item.id !== id);
+  }
+
+  updateItem(id, updates) {
+    this.items = this._items.map(item =>
+      item.id === id ? { ...item, ...updates } : item
+    );
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Change Detection</h4>
+    <pre><code class="language-javascript">class SmartComponent extends HTMLDivElement {
+  constructor() {
+    super();
+    this._state = {};
+    this._stateProxy = new Proxy(this._state, {
+      set: (target, prop, value) => {
+        const oldValue = target[prop];
+        target[prop] = value;
+        
+        // Trigger re-render on change
+        if (oldValue !== value) {
+          this.requestUpdate(prop, oldValue, value);
+        }
+        
+        return true;
+      },
+    });
+  }
+
+  get state() {
+    return this._stateProxy;
+  }
+
+  requestUpdate(prop, oldValue, newValue) {
+    // Batch updates
+    if (!this._updateScheduled) {
+      this._updateScheduled = true;
+      requestAnimationFrame(() => {
+        this.update();
+        this._updateScheduled = false;
+      });
+    }
+  }
+}</code></pre>
+  </section>
+</section>

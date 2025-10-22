@@ -1,0 +1,244 @@
+<section>
+  <section data-transition="slide">
+    <h3>Integration with <mark>Angular</mark></h3>
+    <p>Using Custom Elements in Angular applications</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Angular Configuration</h4>
+    <pre><code class="language-typescript">// app.module.ts (Angular with NgModule)
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+// Import custom elements
+import './components/counter-button.js';
+import './components/data-list.js';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  providers: [],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // ⭐ Enable custom elements
+})
+export class AppModule {}</code></pre>
+    <pre><code class="language-typescript">// app.config.ts (Angular standalone)
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    // Custom elements work out of the box with standalone
+  ],
+};</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Using in Templates</h4>
+    <pre><code class="language-typescript">// app.component.ts
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    &lt;div class="app"&gt;
+      &lt;h1&gt;Angular + Custom Elements&lt;/h1&gt;
+      
+      &lt;!-- Use custom element --&gt;
+      &lt;button 
+        is="counter-button"
+        #counterButton
+        [attr.variant]="variant"
+        (count-changed)="onCountChange($event)"
+      &gt;
+        Count: {{ count }}
+      &lt;/button&gt;
+
+      &lt;button (click)="resetCount()"&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  `,
+  standalone: true,
+})
+export class AppComponent implements AfterViewInit {
+  @ViewChild('counterButton') counterButton!: ElementRef;
+
+  count = 0;
+  variant = 'primary';
+
+  ngAfterViewInit() {
+    // Set properties that can't be set via attributes
+    const button = this.counterButton.nativeElement;
+    button.count = this.count;
+  }
+
+  onCountChange(event: CustomEvent) {
+    this.count = event.detail.newValue;
+  }
+
+  resetCount() {
+    this.count = 0;
+    this.counterButton.nativeElement.count = 0;
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Property Binding</h4>
+    <pre><code class="language-typescript">// data-list.component.ts
+import { Component, ViewChild, ElementRef, Input, OnChanges } from '@angular/core';
+
+interface DataItem {
+  id: number;
+  name: string;
+}
+
+@Component({
+  selector: 'app-data-list',
+  template: `
+    &lt;ul is="data-list" #listElement&gt;&lt;/ul&gt;
+  `,
+  standalone: true,
+})
+export class DataListComponent implements OnChanges {
+  @ViewChild('listElement') listElement!: ElementRef;
+  @Input() items: DataItem[] = [];
+
+  ngOnChanges() {
+    // Sync items property
+    if (this.listElement) {
+      this.listElement.nativeElement.items = this.items;
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Directive Wrapper</h4>
+    <pre><code class="language-typescript">// counter-button.directive.ts
+import { 
+  Directive, 
+  ElementRef, 
+  Input, 
+  Output, 
+  EventEmitter,
+  OnInit,
+  OnDestroy 
+} from '@angular/core';
+
+@Directive({
+  selector: '[counterButton]',
+  standalone: true,
+})
+export class CounterButtonDirective implements OnInit, OnDestroy {
+  @Input() count = 0;
+  @Output() countChange = new EventEmitter&lt;number&gt;();
+
+  private element: any;
+  private eventHandler: (e: CustomEvent) => void;
+
+  constructor(private elementRef: ElementRef) {
+    this.element = elementRef.nativeElement;
+  }
+
+  ngOnInit() {
+    // Set initial property
+    this.element.count = this.count;
+
+    // Listen to custom event
+    this.eventHandler = (event: CustomEvent) => {
+      this.countChange.emit(event.detail.newValue);
+    };
+    
+    this.element.addEventListener('count-changed', this.eventHandler);
+  }
+
+  ngOnDestroy() {
+    this.element.removeEventListener('count-changed', this.eventHandler);
+  }
+
+  @Input() set count(value: number) {
+    if (this.element) {
+      this.element.count = value;
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Using the Directive</h4>
+    <pre><code class="language-typescript">// app.component.ts
+import { Component } from '@angular/core';
+import { CounterButtonDirective } from './counter-button.directive';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    &lt;button 
+      is="counter-button"
+      counterButton
+      [count]="count"
+      (countChange)="count = $event"
+    &gt;
+      Count: {{ count }}
+    &lt;/button&gt;
+  `,
+  standalone: true,
+  imports: [CounterButtonDirective],
+})
+export class AppComponent {
+  count = 0;
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Service for Custom Elements</h4>
+    <pre><code class="language-typescript">// custom-elements.service.ts
+import { Injectable } from '@angular/core';
+import { Observable, fromEvent } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CustomElementsService {
+  // Wait for custom element to be defined
+  async whenDefined(elementName: string): Promise&lt;void&gt; {
+    await customElements.whenDefined(elementName);
+  }
+
+  // Get element reference with type safety
+  getElement&lt;T extends HTMLElement&gt;(elementRef: any): T {
+    return elementRef.nativeElement as T;
+  }
+
+  // Convert custom events to Observable
+  fromCustomEvent&lt;T = any&gt;(
+    element: HTMLElement,
+    eventName: string
+  ): Observable&lt;T&gt; {
+    return fromEvent&lt;CustomEvent&lt;T&gt;&gt;(element, eventName)
+      .pipe(map(event => event.detail));
+  }
+
+  // Set multiple properties
+  setProperties(element: HTMLElement, props: Record&lt;string, any&gt;): void {
+    Object.entries(props).forEach(([key, value]) => {
+      (element as any)[key] = value;
+    });
+  }
+}
+
+// Usage in component
+import { CustomElementsService } from './custom-elements.service';
+
+export class MyComponent {
+  constructor(private customElements: CustomElementsService) {}
+
+  async ngAfterViewInit() {
+    await this.customElements.whenDefined('counter-button');
+    
+    const button = this.customElements.getElement(this.buttonRef);
+    
+    this.customElements.fromCustomEvent(button, 'count-changed')
+      .subscribe(detail => {
+        console.log('Count changed:', detail);
+      });
+  }
+}</code></pre>
+  </section>
+</section>

@@ -1,0 +1,117 @@
+<section>
+  <section data-transition="slide">
+    <h3>Event Handling & <mark>Communication</mark></h3>
+    <p>How components talk to each other</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Custom Events</h4>
+    <pre><code class="language-javascript">class SelectButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.addEventListener('click', this.handleClick);
+  }
+
+  handleClick = () => {
+    // Dispatch custom event with detail
+    this.dispatchEvent(
+      new CustomEvent('item-selected', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          id: this.dataset.id,
+          value: this.dataset.value,
+          timestamp: Date.now(),
+        },
+      })
+    );
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Listening to custom events</h4>
+    <pre><code class="language-javascript">class SelectContainer extends HTMLDivElement {
+  connectedCallback() {
+    // Listen for events from children
+    this.addEventListener('item-selected', this.handleSelection);
+  }
+
+  handleSelection = (event) => {
+    const { id, value } = event.detail;
+    console.log(`Selected: ${value} (${id})`);
+    
+    // Update UI or state
+    this.setAttribute('selected-id', id);
+    
+    // Forward event to parent if needed
+    this.dispatchEvent(
+      new CustomEvent('selection-changed', {
+        bubbles: true,
+        detail: event.detail,
+      })
+    );
+  };
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Parent-Child Communication</h4>
+    <pre><code class="language-javascript">// Parent calls child methods directly
+class ParentContainer extends HTMLDivElement {
+  connectedCallback() {
+    this.querySelector('[is="child-element"]')?.initialize();
+  }
+}
+
+// Child notifies parent via events
+class ChildElement extends HTMLButtonElement {
+  initialize() {
+    this.dispatchEvent(
+      new CustomEvent('initialized', { bubbles: true })
+    );
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Event delegation pattern</h4>
+    <pre><code class="language-javascript">class ListContainer extends HTMLUListElement {
+  connectedCallback() {
+    // Single listener for all items
+    this.addEventListener('click', this.handleItemClick);
+  }
+
+  handleItemClick = (event) => {
+    const listItem = event.target.closest('li[is="list-item"]');
+    
+    if (listItem) {
+      const itemId = listItem.dataset.id;
+      this.selectItem(itemId);
+    }
+  };
+
+  selectItem(id) {
+    // Handle selection
+    this.querySelectorAll('li').forEach(item => {
+      item.classList.toggle('selected', item.dataset.id === id);
+    });
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Best Practices</h4>
+    <ul>
+      <li class="fragment">
+        Use <code>bubbles: true</code> for events that should propagate
+      </li>
+      <li class="fragment">
+        Include relevant data in <code>event.detail</code>
+      </li>
+      <li class="fragment">
+        Use <mark>event delegation</mark> for dynamic content
+      </li>
+      <li class="fragment">
+        Always <mark>clean up</mark> event listeners in disconnectedCallback
+      </li>
+      <li class="fragment">
+        Follow native event naming conventions (lowercase, hyphenated)
+      </li>
+    </ul>
+  </section>
+</section>

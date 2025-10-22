@@ -1,0 +1,247 @@
+<section>
+  <section data-transition="slide">
+    <h3><mark>Interoperability</mark> & Standards</h3>
+    <p>Making components work seamlessly across ecosystems</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Web Standards Foundation</h4>
+    <ul>
+      <li class="fragment">
+        <mark>Custom Elements</mark> - Define new HTML elements
+      </li>
+      <li class="fragment">
+        <mark>HTML</mark> - Semantic markup and native elements
+      </li>
+      <li class="fragment">
+        <mark>DOM</mark> - Standard DOM APIs for manipulation
+      </li>
+      <li class="fragment">
+        <mark>Events</mark> - CustomEvent for communication
+      </li>
+      <li class="fragment">
+        <mark>CSS</mark> - Standard styling with custom properties
+      </li>
+      <li class="fragment">
+        <mark>Accessibility</mark> - ARIA and native semantics
+      </li>
+      <li class="fragment">
+        <mark>Forms</mark> - ElementInternals for form participation
+      </li>
+    </ul>
+  </section>
+  <section data-transition="slide">
+    <h4>Standard Communication Patterns</h4>
+    <pre><code class="language-javascript">// Parent-Child Communication
+class ParentComponent extends HTMLDivElement {
+  connectedCallback() {
+    // Listen to child events
+    this.addEventListener('child-event', (event) => {
+      console.log('Child said:', event.detail);
+    });
+  }
+
+  updateChild(data) {
+    // Set child properties
+    const child = this.querySelector('[is="child-component"]');
+    if (child) {
+      child.data = data;
+    }
+  }
+}
+
+class ChildComponent extends HTMLDivElement {
+  notifyParent(message) {
+    // Emit event to parent
+    this.dispatchEvent(new CustomEvent('child-event', {
+      detail: message,
+      bubbles: true, // Event bubbles up
+    }));
+  }
+}
+
+// Sibling Communication (via parent)
+class SiblingA extends HTMLDivElement {
+  sendToSibling(data) {
+    // Emit to parent, parent routes to sibling
+    this.dispatchEvent(new CustomEvent('sibling-message', {
+      detail: { target: 'sibling-b', data },
+      bubbles: true,
+    }));
+  }
+}
+
+class SiblingB extends HTMLDivElement {
+  connectedCallback() {
+    // Listen for messages at parent level
+    this.parentElement?.addEventListener('sibling-message', (event) => {
+      if (event.detail.target === 'sibling-b') {
+        this.handleMessage(event.detail.data);
+      }
+    });
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Form Participation</h4>
+    <pre><code class="language-javascript">// Standard form integration
+class CustomInput extends HTMLInputElement {
+  constructor() {
+    super();
+    
+    // Use ElementInternals for form participation
+    if (this.attachInternals) {
+      this._internals = this.attachInternals();
+    }
+  }
+
+  connectedCallback() {
+    this.addEventListener('input', this.handleInput);
+  }
+
+  handleInput = () => {
+    const value = this.value;
+    
+    // Update form value
+    if (this._internals) {
+      this._internals.setFormValue(value);
+      
+      // Set validity
+      if (this.required && !value) {
+        this._internals.setValidity(
+          { valueMissing: true },
+          'This field is required'
+        );
+      } else {
+        this._internals.setValidity({});
+      }
+    }
+  };
+
+  // Standard form reset
+  formResetCallback() {
+    this.value = '';
+    this._internals?.setFormValue('');
+  }
+
+  // Standard form state restore
+  formStateRestoreCallback(state) {
+    this.value = state;
+  }
+}
+
+customElements.define('custom-input', CustomInput, { extends: 'input' });</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>CSS Custom Properties Bridge</h4>
+    <pre><code class="language-css">/* Design tokens that work everywhere */
+:root {
+  /* Namespace your tokens */
+  --ds-color-primary: #2196f3;
+  --ds-color-secondary: #f50057;
+  --ds-spacing-unit: 8px;
+  --ds-border-radius: 4px;
+}
+
+/* Components consume tokens */
+button[is="ds-button"] {
+  background: var(--ds-color-primary);
+  padding: calc(var(--ds-spacing-unit) * 2);
+  border-radius: var(--ds-border-radius);
+}
+
+/* Frameworks can override tokens */
+.vue-app {
+  --ds-color-primary: #42b983;
+}
+
+.react-app {
+  --ds-color-primary: #61dafb;
+}
+
+.angular-app {
+  --ds-color-primary: #dd0031;
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Accessibility Standards</h4>
+    <pre><code class="language-javascript">// Accessible by default
+class AccessibleButton extends HTMLButtonElement {
+  connectedCallback() {
+    // Inherit native button accessibility
+    // Already has: role="button", keyboard support, focus management
+    
+    // Add ARIA attributes when needed
+    if (this.loading) {
+      this.setAttribute('aria-busy', 'true');
+      this.setAttribute('aria-live', 'polite');
+    }
+    
+    // Announce state changes
+    this.addEventListener('statechange', (event) => {
+      this.announceToScreenReader(event.detail.message);
+    });
+  }
+
+  announceToScreenReader(message) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('role', 'status');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.className = 'sr-only';
+    announcement.textContent = message;
+    
+    document.body.appendChild(announcement);
+    setTimeout(() => announcement.remove(), 1000);
+  }
+}
+
+// Works with screen readers across all frameworks!</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Module System Compatibility</h4>
+    <pre><code class="language-javascript">// ESM (Modern)
+export class MyComponent extends HTMLDivElement {
+  // ...
+}
+
+customElements.define('my-component', MyComponent, { extends: 'div' });
+
+// Works with:
+import { MyComponent } from './my-component.js';
+
+// Dynamic import
+const { MyComponent } = await import('./my-component.js');
+
+// Script tag
+&lt;script type="module" src="./my-component.js"&gt;&lt;/script&gt;</code></pre>
+    <pre><code class="language-javascript">// UMD for legacy support
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define([], factory); // AMD
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(); // CommonJS
+  } else {
+    root.MyComponent = factory(); // Global
+  }
+}(typeof self !== 'undefined' ? self : this, function() {
+  class MyComponent extends HTMLDivElement {
+    // ...
+  }
+  customElements.define('my-component', MyComponent, { extends: 'div' });
+  return MyComponent;
+}));</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Interoperability Checklist</h4>
+    <ul>
+      <li class="fragment">✅ Use <mark>standard web APIs</mark> only</li>
+      <li class="fragment">✅ Follow <mark>semantic HTML</mark> principles</li>
+      <li class="fragment">✅ Emit <mark>standard CustomEvents</mark></li>
+      <li class="fragment">✅ Support <mark>form participation</mark> with ElementInternals</li>
+      <li class="fragment">✅ Use <mark>CSS custom properties</mark> for theming</li>
+      <li class="fragment">✅ Provide <mark>TypeScript definitions</mark></li>
+      <li class="fragment">✅ Include <mark>accessibility</mark> features</li>
+      <li class="fragment">✅ Test across <mark>multiple frameworks</mark></li>
+      <li class="fragment">✅ Document <mark>compatibility</mark> requirements</li>
+    </ul>
+  </section>
+</section>

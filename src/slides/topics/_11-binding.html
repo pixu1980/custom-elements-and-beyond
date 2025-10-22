@@ -1,0 +1,86 @@
+<section>
+  <section data-transition="slide">
+    <h3>Attribute & Property <mark>Binding</mark></h3>
+    <p>Creating reactive and data-driven components</p>
+  </section>
+  <section data-transition="slide">
+    <h4>Two-way binding example</h4>
+    <pre><code class="language-javascript">class RangeInput extends HTMLInputElement {
+  connectedCallback() {
+    this.type = 'range';
+    this.render();
+    
+    this.addEventListener('input', () => {
+      this.updateValue();
+    });
+  }
+
+  render() {
+    const display = document.createElement('span');
+    display.className = 'range-value';
+    this.after(display);
+    this.updateValue();
+  }
+
+  updateValue() {
+    const display = this.nextElementSibling;
+    if (display) {
+      display.textContent = this.value;
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Property synchronization</h4>
+    <pre><code class="language-javascript">class SyncedInput extends HTMLInputElement {
+  static get observedAttributes() {
+    return ['value', 'placeholder'];
+  }
+
+  // Reflect property to attribute
+  get value() {
+    return this.getAttribute('value') || '';
+  }
+
+  set value(val) {
+    this.setAttribute('value', val);
+    super.value = val; // Update native value
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'value' && this.value !== newValue) {
+      super.value = newValue;
+      this.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+}</code></pre>
+  </section>
+  <section data-transition="slide">
+    <h4>Data binding with objects</h4>
+    <pre><code class="language-javascript">class DataBoundList extends HTMLUListElement {
+  set data(items) {
+    this._data = items;
+    this.render();
+  }
+
+  get data() {
+    return this._data;
+  }
+
+  render() {
+    this.innerHTML = '';
+    
+    (this._data || []).forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item.name;
+      li.dataset.id = item.id;
+      this.appendChild(li);
+    });
+  }
+}</code></pre>
+    <p class="fragment">
+      💡 Use <mark>properties</mark> for complex data, <mark>attributes</mark>
+      for simple values
+    </p>
+  </section>
+</section>
