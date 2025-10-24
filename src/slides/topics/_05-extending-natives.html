@@ -6,51 +6,61 @@
   <section>
     <h4>Extending <mark>Buttons</mark></h4>
     <pre>
-      <code class="hljs language-javascript" data-trim data-line-numbers>
+      <code class="hljs javascript" data-trim data-line-numbers>
 class IconButton extends HTMLButtonElement {
   connectedCallback() {
     const icon = this.getAttribute('icon');
+    
     this.innerHTML = `
       &lt;span class="icon"&gt;${icon}&lt;/span&gt;
-      &lt;span class="text"&gt;${this.textContent}&lt;/span&gt;
+      ${this.textContent}
     `;
   }
 }
 
-customElements.define('icon-button', IconButton, {
-  extends: 'button'
-});
+customElements.define('icon-button', IconButton, { extends: 'button' });
       </code>
     </pre>
-    <pre class="fragment">
-      <code class="hljs language-html" data-trim data-line-numbers>
+    <pre>
+      <code class="hljs html" data-trim data-line-numbers>
 &lt;button is="icon-button" icon="🚀"&gt;Launch&lt;/button&gt;
+&lt;button is="icon-button" icon="✨"&gt;Shine&lt;/button&gt;
       </code>
     </pre>
-
-    <div class="demo" style="margin-top: 0.75rem; display: flex; gap: 0.5rem; align-items: center">
+    <div class="demo-button fragment">
       <style>
-        button[is='icon-button'] {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.4rem;
-        }
-        button[is='icon-button'] .icon {
-          display: inline-block;
-          width: 1em;
-          text-align: center;
+        .demo-button {
+          display: flex;
+          gap: 0.5rem;
+          place-content: center;
+          place-items: center;
+
+          margin: 3rem auto;
+
+          button[is='icon-button'] {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            font-size: 3rem;
+            gap: 0.4rem;
+          }
+          button[is='icon-button'] .icon {
+            display: inline-block;
+            width: 1em;
+            text-align: center;
+          }
         }
       </style>
       <button is="icon-button" icon="🚀">Launch</button>
       <button is="icon-button" icon="✨">Shine</button>
     </div>
     <!-- Component definition is loaded globally from src/scripts/components/icon-button.js -->
-    <p class="fragment">✅ Inherits: click events, form submission, keyboard support, disabled state</p>
+    <small class="fragment">✅ Inherits: click events, form submission, keyboard support, disabled state</small>
   </section>
   <section>
     <h4>Extending <mark>Inputs</mark></h4>
     <pre>
-      <code class="hljs language-javascript" data-trim data-line-numbers>
+      <code class="hljs javascript" data-trim data-line-numbers>
 class DateInput extends HTMLInputElement {
   connectedCallback() {
     this.type = 'date';
@@ -65,27 +75,52 @@ class DateInput extends HTMLInputElement {
 customElements.define('date-input', DateInput, {
   extends: 'input'
 });
+
+const input = document.querySelector('input[is="date-input"]');
+const output = document.getElementById('date-demo-out');
+
+input.addEventListener('change', () => {
+  output.textContent = input.value ? `Selected: ${input.value}` : '';
+});
+
       </code>
     </pre>
-    <p class="fragment">✅ Inherits: form integration, validation, value property, focus management</p>
-    <div class="demo" style="margin-top: 0.75rem; display: flex; align-items: center; gap: 0.75rem">
+    <div class="demo-input fragment">
+      <style>
+        .demo-input {
+          display: flex;
+          flex-flow: column nowrap;
+          place-content: center;
+          place-items: center;
+          gap: 0.75rem;
+
+          input[is='date-input'] {
+            margin-top: 1rem;
+            padding: 0.5rem 1.5rem;
+            font-size: 2.5rem;
+          }
+        }
+      </style>
       <input is="date-input" aria-describedby="date-demo-out" />
-      <output id="date-demo-out" aria-live="polite"></output>
+      <small>
+        <output id="date-demo-out" aria-live="polite">No date selected yet!</output>
+      </small>
     </div>
+    <small class="fragment">✅ Inherits: form integration, validation, value property, focus management</small>
     <script>
-      // Demo wiring only (definitions are imported globally)
-      (() => {
-        const demo = document.querySelector('input[is="date-input"]');
-        const out = document.getElementById('date-demo-out');
-        if (demo && out) demo.addEventListener('change', () => (out.textContent = demo.value ? `Selected: ${demo.value}` : ''));
-      })();
+      const demo = document.querySelector('input[is="date-input"]');
+      const out = document.getElementById('date-demo-out');
+
+      demo.addEventListener('change', () => {
+        out.textContent = demo.value ? `Selected: ${demo.value}` : '';
+      });
     </script>
   </section>
   <section>
     <h4>Extending <mark>Divs</mark></h4>
     <pre>
-      <code class="hljs language-javascript" data-trim data-line-numbers>
-class CollapsiblePanel extends HTMLDivElement {
+      <code class="hljs javascript" data-trim data-line-numbers>
+class CollapsiblePanel extends HTMLDetailsElement {
   connectedCallback() {
     this.setAttribute('role', 'region');
     const header = this.querySelector('[slot="header"]');
@@ -99,70 +134,81 @@ class CollapsiblePanel extends HTMLDivElement {
 }
 
 customElements.define('collapsible-panel', CollapsiblePanel, {
-  extends: 'div'
+  extends: 'details'
 });
       </code>
     </pre>
-    <div class="demo" style="margin-top: 0.75rem">
+    <div class="demo-details" style="margin-top: 0.75rem">
       <style>
-        [is='collapsible-panel'] {
-          border: 1px solid #cdcdcd;
-          border-radius: 6px;
-          padding: 0.5rem 0.75rem;
-        }
-        [is='collapsible-panel'].collapsed > :not([slot='header']) {
-          display: none;
-        }
-        [is='collapsible-panel'] [slot='header'] {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          cursor: pointer;
-          user-select: none;
+        .demo-details {
+          details {
+            display: flex;
+            flex-flow: column nowrap;
+            text-align: left;
+            inline-size: 100%;
+            border: 1px solid #cdcdcd;
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+          }
+          details > summary {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            list-style: none;
+          }
+          /* Hide default marker for a cleaner look */
+          details > summary::-webkit-details-marker {
+            display: block;
+          }
+          details > summary::marker {
+            content: '';
+          }
         }
       </style>
-      <div is="collapsible-panel" aria-expanded="true">
-        <button type="button" slot="header" aria-label="Toggle panel">Toggle</button>
-        <p style="margin: 0.5rem 0 0">This content is shown or hidden when you press Toggle.</p>
-      </div>
+      <details is="collapsible-panel" open>
+        <summary><small>Toggle</small></summary>
+        <small style="margin: 0.5rem 0 0">This content is shown or hidden when you press Toggle.</small>
+      </details>
     </div>
-    <!-- Component definition is loaded globally from src/scripts/components/collapsible-panel.js -->
+    <!-- This demo uses native <details> and <summary> for accessibility and zero JS -->
   </section>
   <section>
-    <h4>Extending <mark>Lists</mark></h4>
+    <h4>Extending <mark>Links</mark></h4>
     <pre>
-      <code class="hljs language-javascript" data-trim data-line-numbers>
-class SortableList extends HTMLUListElement {
+      <code class="hljs javascript" data-trim data-line-numbers>
+class SafeLink extends HTMLAnchorElement {
   connectedCallback() {
-    this.setAttribute('role', 'list');
-    
-    const sortButton = document.createElement('button');
-    sortButton.textContent = 'Sort';
-    sortButton.onclick = () => this.sort();
-    
-    this.before(sortButton);
-  }
-  
-  sort() {
-    const items = Array.from(this.children);
-    items.sort((a, b) => 
-      a.textContent.localeCompare(b.textContent)
-    );
-    this.append(...items);
+    if (this.target === '_blank') {
+      const rel = new Set((this.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+      rel.add('noopener');
+      rel.add('noreferrer');
+      this.setAttribute('rel', Array.from(rel).join(' '));
+    }
+    const confirmMsg = this.getAttribute('data-confirm');
+    if (confirmMsg) {
+      this.addEventListener('click', (e) => {
+        if (!confirm(confirmMsg)) e.preventDefault();
+      });
+    }
   }
 }
+
+customElements.define('safe-link', SafeLink, { extends: 'a' });
       </code>
     </pre>
-    <div class="demo" style="margin-top: 0.75rem">
-      <ul is="sortable-list" style="padding-left: 1.25rem; margin: 0">
-        <li>Banana</li>
-        <li>Apple</li>
-        <li>Cherry</li>
-        <li>Date</li>
-      </ul>
+    <pre>
+      <code class="hljs html" data-trim data-line-numbers>
+&lt;a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?"&gt;External link&lt;/a&gt;
+      </code>
+    </pre>
+    <div class="demo">
+      <a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?">External link</a>
     </div>
-    <!-- Component definition is loaded globally from src/scripts/components/sortable-list.js -->
+    <!-- Definition is loaded globally from src/scripts/components/safe-link.js -->
   </section>
+
   <section>
     <h4>Choosing the right base</h4>
     <table style="font-size: 0.7em">
@@ -191,69 +237,8 @@ class SortableList extends HTMLUListElement {
         <td>Image display with enhancements</td>
       </tr>
     </table>
-    <p class="fragment" style="margin-top: 1em">💡 <strong>Pro tip:</strong> Always extend the most <mark>semantic</mark> element</p>
-  </section>
-  <section>
-    <h4>Extending <mark>Links</mark></h4>
-    <pre>
-      <code class="hljs language-javascript" data-trim data-line-numbers>
-class SafeLink extends HTMLAnchorElement {
-  connectedCallback() {
-    if (this.target === '_blank') {
-      const rel = new Set((this.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
-      rel.add('noopener');
-      rel.add('noreferrer');
-      this.setAttribute('rel', Array.from(rel).join(' '));
-    }
-    const confirmMsg = this.getAttribute('data-confirm');
-    if (confirmMsg) {
-      this.addEventListener('click', (e) => {
-        if (!confirm(confirmMsg)) e.preventDefault();
-      });
-    }
-  }
-}
-
-customElements.define('safe-link', SafeLink, { extends: 'a' });
-      </code>
-    </pre>
-    <pre class="fragment">
-      <code class="hljs language-html" data-trim data-line-numbers>
-&lt;a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?"&gt;External link&lt;/a&gt;
-      </code>
-    </pre>
-    <div class="demo" style="margin-top: 0.75rem">
-      <a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?">External link</a>
-    </div>
-    <!-- Definition is loaded globally from src/scripts/components/safe-link.js -->
-  </section>
-  <section>
-    <h4>Extending <mark>Images</mark></h4>
-    <pre>
-      <code class="hljs language-javascript" data-trim data-line-numbers>
-class SmartImg extends HTMLImageElement {
-  connectedCallback() {
-    if (!this.hasAttribute('loading')) this.setAttribute('loading', 'lazy');
-    const fallback = this.getAttribute('data-fallback');
-    if (fallback) {
-      this.addEventListener('error', () => {
-        if (this.src !== fallback) this.src = fallback;
-      });
-    }
-  }
-}
-
-customElements.define('smart-img', SmartImg, { extends: 'img' });
-      </code>
-    </pre>
-    <pre class="fragment">
-      <code class="hljs language-html" data-trim data-line-numbers>
-&lt;img is="smart-img" data-fallback="/assets/logo/logo-192.png" alt="Fallback example" width="96" height="96" /&gt;
-      </code>
-    </pre>
-    <div class="demo" style="margin-top: 0.75rem">
-      <img is="smart-img" data-fallback="/assets/logo/logo-192.png" alt="Fallback example" width="96" height="96" />
-    </div>
-    <!-- Definition is loaded globally from src/scripts/components/smart-img.js -->
+    <small balance class="fragment" style="margin-top: 1em">
+      💡 <strong>Pro <mark>tip</mark>:</strong> Always extend the most <mark>semantic</mark> element
+    </small>
   </section>
 </section>

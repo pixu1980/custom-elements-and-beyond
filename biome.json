@@ -16,9 +16,8 @@
     }
   },
   "files": {
-    "includes": ["."],
+    "includes": [".", "!!**/dist", "!!**/.parcel-cache"],
     "maxSize": 1048576,
-    "ignoreUnknown": true,
-    "experimentalScannerIgnores": ["dist/**", ".parcel-cache/**"]
+    "ignoreUnknown": true
   }
 }

@@ -3,14 +3,14 @@
     <h4>
       Expected Question #1: <br />
       "Nice, so do I have to write <br />
-      all this "<mark>boilerplate</mark>" code... <span class="fragment"><mark>every time</mark>??"</span>
+      all this `<mark>boilerplate</mark>` code... <span class="fragment"><mark>every time</mark>??"</span>
     </h4>
     <p class="fragment">Of course <mark>not</mark>!</p>
   </section>
   <section>
     <h4>
       Expected Question #2: <br />
-      "So it's possible to replicate or mimic the most common features of Lit, Angular, React, Vue??"
+      "So it's possible to replicate or mimic the <mark>most common features</mark> of Lit, Angular, React, Vue??"
     </h4>
     <p class="fragment">Well, <mark>yes</mark>!</p>
   </section>
@@ -51,43 +51,7 @@ export class Details extends HTMLDetailsElement {
 }
 </code>
     </pre>
-  </section>
-  <section>
-    <h4>Yep, no base classes!</h4>
-  </section>
-  <section>
-    <h4>Metaprogramming!</h4>
-    <pre class="fragment">
-      <code class="hljs javascript" data-trim="" data-line-numbers="|1-7|1-11|12-16|18-22|24">
-/**
-* Button class
-*
-* @export
-* @class Button 
-* @extends {HTMLButtonElement}
-*/
-export class Button extends HTMLButtonElement {
-  static name = "pixu-button";
-  static extends = "button";
- 
-  static attributes = {
-    disabled: (oldValue, newValue) => {
-      console.log("disabled changed", oldValue, newValue, this.textContent); 
-    }
-  }
- 
-  static events = {
-    click: function (e) {
-      console.log("button clicked", this.textContent);
-    },
-  }
-  
-  // Yippie Kai Yay... motherf... metaprogramming!
- 
- ...
-}
-      </code>
-    </pre>
+    <h4 class="fragment">Yep, no base classes!</h4>
   </section>
   <section>
     <h4>
@@ -96,7 +60,7 @@ export class Button extends HTMLButtonElement {
     <pre class="fragment">
       <code class="hljs javascript" data-trim="" data-line-numbers="1-4|6-11|6-14|19|13,19|21">
 export class Button extends HTMLButtonElement {
-  static name = "wcag-button";
+  static name = "pix-button";
 
   ...
   
@@ -113,7 +77,7 @@ export class Button extends HTMLButtonElement {
  ...
 }
 
-// import '@wcag-ui/button';
+// import '@pix-ui/button';
 
 //Yippie Kai Yay... motherf... static initialization blocks!
   </code>
@@ -142,8 +106,8 @@ export function defineCustomElement(component) {
 export function buildExtendOptions(mixins) {
   return mixins.extends ? { extends: mixins.extends } : undefined;
   
-  // this allows to <button is="wcag-button"></button>
-  // instead of <wcag-button></wcag-button>
+  // this allows to <button is="pix-button"></button>
+  // instead of <pix-button></pix-button>
 }
 
 export function applyMixins(component) {
@@ -163,6 +127,40 @@ export function applyMixins(component) {
 
 // Yippie Kai Yay... motherf... decorators!
   </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Metaprogramming!</h4>
+    <pre class="fragment">
+      <code class="hljs javascript" data-trim="" data-line-numbers="|1-7|1-11|12-16|18-22|24">
+/**
+* PixUI Button class
+*
+* @export
+* @class Button 
+* @extends {HTMLButtonElement}
+*/
+export class Button extends HTMLButtonElement {
+  static name = "pix-button";
+  static extends = "button";
+ 
+  static attributes = {
+    disabled: (oldValue, newValue) => {
+      console.log("disabled changed", oldValue, newValue, this.textContent); 
+    }
+  }
+ 
+  static events = {
+    click: function (e) {
+      console.log("button clicked", this.textContent);
+    },
+  }
+  
+  // Yippie Kai Yay... motherf... metaprogramming!
+ 
+ ...
+}
+      </code>
     </pre>
   </section>
   <section>

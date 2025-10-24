@@ -52985,99 +52985,61 @@ customElements.define("baseline-status", $f40552b16c7e3e8d$export$26cf4b949b341e
 // Customized built-in: <button is="icon-button">
 // Extends: HTMLButtonElement
 // Semantics: button (inherits native semantics and keyboard behavior)
-if (!customElements.get("icon-button")) {
+if (!customElements.get('icon-button')) {
     class IconButton extends HTMLButtonElement {
         connectedCallback() {
-            const icon = this.getAttribute("icon") ?? "";
+            const icon = this.getAttribute('icon') ?? '';
             const text = this.textContent;
-            this.innerHTML = `<span class="icon">${icon}</span><span class="text">${text}</span>`;
+            this.innerHTML = `
+        <span class="icon">${icon}</span>
+        ${text}
+      `;
         }
     }
-    try {
-        customElements.define("icon-button", IconButton, {
-            extends: "button"
-        });
-    } catch (e) {
-        console.warn("[icon-button] Customized built-ins not supported in this browser.", e);
-    }
+    customElements.define('icon-button', IconButton, {
+        extends: 'button'
+    });
 }
 
 
 // Customized built-in: <input is="date-input">
 // Extends: HTMLInputElement
 // Semantics: input type date, inherits form participation and validation
-if (!customElements.get("date-input")) {
+if (!customElements.get('date-input')) {
     class DateInput extends HTMLInputElement {
         connectedCallback() {
-            this.type = "date";
-            this.setAttribute("aria-label", "Select date");
-            this.addEventListener("change", ()=>{
+            this.type = 'date';
+            this.setAttribute('aria-label', 'Select date');
+            this.addEventListener('change', ()=>{
                 // Keep the demo console log to show behavior
-                console.log("Date selected:", this.value);
+                console.log('Date selected:', this.value);
             });
         }
     }
-    try {
-        customElements.define("date-input", DateInput, {
-            extends: "input"
-        });
-    } catch (e) {
-        console.warn("[date-input] Customized built-ins not supported in this browser.", e);
-    }
+    customElements.define('date-input', DateInput, {
+        extends: 'input'
+    });
 }
 
 
 // Customized built-in: <div is="collapsible-panel">
 // Extends: HTMLDivElement
 // Adds collapsible behavior toggled by a child element with slot="header"
-if (!customElements.get("collapsible-panel")) {
-    class CollapsiblePanel extends HTMLDivElement {
+if (!customElements.get('collapsible-panel')) {
+    class CollapsiblePanel extends HTMLDetailsElement {
         connectedCallback() {
-            this.setAttribute("role", "region");
+            this.setAttribute('role', 'region');
             const header = this.querySelector('[slot="header"]');
-            header?.addEventListener("click", ()=>{
-                this.classList.toggle("collapsed");
-                const expanded = !this.classList.contains("collapsed");
-                this.setAttribute("aria-expanded", String(expanded));
+            header?.addEventListener('click', ()=>{
+                this.classList.toggle('collapsed');
+                const expanded = !this.classList.contains('collapsed');
+                this.setAttribute('aria-expanded', String(expanded));
             });
         }
     }
-    try {
-        customElements.define("collapsible-panel", CollapsiblePanel, {
-            extends: "div"
-        });
-    } catch (e) {
-        console.warn("[collapsible-panel] Customized built-ins not supported in this browser.", e);
-    }
-}
-
-
-// Customized built-in: <ul is="sortable-list">
-// Extends: HTMLUListElement
-// Adds a Sort button before the list and provides alphabetical sort of <li>
-if (!customElements.get("sortable-list")) {
-    class SortableList extends HTMLUListElement {
-        connectedCallback() {
-            this.setAttribute("role", "list");
-            const sortButton = document.createElement("button");
-            sortButton.type = "button";
-            sortButton.textContent = "Sort";
-            sortButton.onclick = ()=>this.sort();
-            this.before(sortButton);
-        }
-        sort() {
-            const items = Array.from(this.children);
-            items.sort((a, b)=>a.textContent.localeCompare(b.textContent));
-            this.append(...items);
-        }
-    }
-    try {
-        customElements.define("sortable-list", SortableList, {
-            extends: "ul"
-        });
-    } catch (e) {
-        console.warn("[sortable-list] Customized built-ins not supported in this browser.", e);
-    }
+    customElements.define('collapsible-panel', CollapsiblePanel, {
+        extends: 'details'
+    });
 }
 
 
@@ -53105,69 +53067,38 @@ if (!customElements.get('counter-button')) {
             this.setAttribute('aria-live', 'polite');
         }
     }
-    try {
-        customElements.define('counter-button', CounterButton, {
-            extends: 'button'
-        });
-    } catch (e) {
-        console.warn('[counter-button] Customized built-ins not supported in this browser.', e);
-    }
+    customElements.define('counter-button', CounterButton, {
+        extends: 'button'
+    });
 }
 
 
 // Customized built-in: <a is="safe-link">
 // Extends: HTMLAnchorElement
 // Adds security attributes for external links and optional confirm prompt via data-confirm
-if (!customElements.get("safe-link")) {
+if (!customElements.get('safe-link')) {
     class SafeLink extends HTMLAnchorElement {
         connectedCallback() {
             // Ensure security attributes for target _blank
-            if (this.target === "_blank") {
-                const rel = new Set((this.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
-                rel.add("noopener");
-                rel.add("noreferrer");
-                this.setAttribute("rel", Array.from(rel).join(" "));
+            if (this.target === '_blank') {
+                const rel = new Set((this.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+                rel.add('noopener');
+                rel.add('noreferrer');
+                this.setAttribute('rel', Array.from(rel).join(' '));
             }
             // Optional confirm prompt for external navigation
-            const confirmMsg = this.getAttribute("data-confirm");
-            if (confirmMsg) this.addEventListener("click", (e)=>{
+            const confirmMsg = this.getAttribute('data-confirm');
+            if (confirmMsg) this.addEventListener('click', (e)=>{
                 if (!confirm(confirmMsg)) e.preventDefault();
             });
         }
     }
-    try {
-        customElements.define("safe-link", SafeLink, {
-            extends: "a"
-        });
-    } catch (e) {
-        console.warn("[safe-link] Customized built-ins not supported in this browser.", e);
-    }
-}
-
-
-// Customized built-in: <img is="smart-img">
-// Extends: HTMLImageElement
-// Adds lazy loading by default and optional fallback via data-fallback on error
-if (!customElements.get("smart-img")) {
-    class SmartImg extends HTMLImageElement {
-        connectedCallback() {
-            if (!this.hasAttribute("loading")) this.setAttribute("loading", "lazy");
-            const fallback = this.getAttribute("data-fallback");
-            if (fallback) this.addEventListener("error", ()=>{
-                if (this.src !== fallback) this.src = fallback;
-            });
-        }
-    }
-    try {
-        customElements.define("smart-img", SmartImg, {
-            extends: "img"
-        });
-    } catch (e) {
-        console.warn("[smart-img] Customized built-ins not supported in this browser.", e);
-    }
+    customElements.define('safe-link', SafeLink, {
+        extends: 'a'
+    });
 }
 
 
 
 
-//# sourceMappingURL=custom-elements-and-beyond.156df2e2.js.map
+//# sourceMappingURL=custom-elements-and-beyond.f2a811b9.js.map

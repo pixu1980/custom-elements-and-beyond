@@ -28,11 +28,7 @@ if (!customElements.get('counter-button')) {
     }
   }
 
-  try {
-    customElements.define('counter-button', CounterButton, {
-      extends: 'button',
-    });
-  } catch (e) {
-    console.warn('[counter-button] Customized built-ins not supported in this browser.', e);
-  }
+  customElements.define('counter-button', CounterButton, {
+    extends: 'button',
+  });
 }

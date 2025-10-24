@@ -4,62 +4,93 @@
   </section>
   <section>
     <h4><code>constructor()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim data-line-numbers>class MyElement extends HTMLButtonElement {
+    <small balance>Called when element is created</small>
+    <pre><code class="hljs javascript" data-trim data-line-numbers>
+class PixButton extends HTMLButtonElement {
   constructor() {
-    super(); // Must be first!
+    super();
+    
     // Initialize state
     this.count = 0;
-    // Don't manipulate DOM or attributes here
   }
-}</code></pre>
-    <p class="fragment">⚠️ <strong>Rules:</strong> Call <code>super()</code> first, don't modify DOM or attributes</p>
+  
+  ...
+}
+    </code></pre>
   </section>
   <section>
     <h4><code>connectedCallback()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim data-line-numbers>connectedCallback() {
-  // Element added to DOM
-  this.render();
-  this.addEventListener('click', this.handleClick);
+    <small balance>Called when element is <mark>inserted into DOM</mark></small>
+    <pre><code class="hljs javascript" data-trim data-line-numbers>
+class PixButton extends HTMLButtonElement {
+  ...
   
-  // Safe to access DOM and attributes here
-  console.log(this.getAttribute('data-value'));
-}</code></pre>
-    <p class="fragment">✅ Called when element is <mark>inserted into DOM</mark></p>
+  // Element added to DOM
+  connectedCallback() {
+    // Initial render
+    this.render();
+
+    // Attach event listeners
+    this.addEventListener('click', this.handleClick);
+    
+    // Safe to access DOM and attributes here
+    console.log(this.getAttribute('value'));
+  }
+  
+  ...
+  
+}
+    </code></pre>
   </section>
   <section>
     <h4><code>disconnectedCallback()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim data-line-numbers>disconnectedCallback() {
-  // Element removed from DOM
-  this.removeEventListener('click', this.handleClick);
+    <small balance>Called when element is <mark>removed from DOM</mark></small>
+    <pre><code class="hljs javascript" data-trim data-line-numbers>
+class PixButton extends HTMLButtonElement {
   
-  // Clean up resources, timers, observers
-  if (this.interval) {
-    clearInterval(this.interval);
+  ...
+  
+  // Element removed from DOM
+  disconnectedCallback() {
+    // Remove event listeners
+    this.removeEventListener('click', this.handleClick);
+    
+    // Clean up resources, timers, observers
+    this.interval && clearInterval(this.interval);
   }
-}</code></pre>
-    <p class="fragment">✅ Called when element is <mark>removed from DOM</mark></p>
+  
+  ...
+}
+    </code></pre>
   </section>
   <section>
     <h4><code>attributeChangedCallback()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim data-line-numbers>static get observedAttributes() {
-  return ['value', 'disabled'];
-}
+    <small balance>Called when <mark>observed attributes</mark> change</small>
+    <pre><code class="hljs language-javascript" data-trim data-line-numbers>
+class PixButton extends HTMLButtonElement {
 
-attributeChangedCallback(name, oldValue, newValue) {
-  if (name === 'value') {
-    this.updateDisplay(newValue);
+  ...
+  
+  // Specify observed attributes
+  static get observedAttributes() {
+    return ['value', 'disabled'];
   }
-}</code></pre>
-    <p class="fragment">✅ Called when <mark>observed attributes</mark> change</p>
+
+  // Called when observed attributes change
+  attributeChangedCallback(name, oldValue, newValue) {
+    name === 'value' && this.updateValue(newValue);
+  }
+}
+    </code></pre>
   </section>
   <section>
-    <h4>Lifecycle Timeline</h4>
-    <div style="text-align: left; font-size: 0.8em">
-      <p>1️⃣ <code>constructor()</code> - Element created</p>
-      <p class="fragment">2️⃣ <code>connectedCallback()</code> - Added to DOM</p>
-      <p class="fragment">3️⃣ <code>attributeChangedCallback()</code> - Attributes change</p>
-      <p class="fragment">4️⃣ <code>disconnectedCallback()</code> - Removed from DOM</p>
-    </div>
+    <h4>Lifecycle <mark>Timeline</mark></h4>
+    <small align="left">
+      <p>1️⃣ <mark>constructor()</mark> - Element created</p>
+      <p>2️⃣ <mark>connectedCallback()</mark> - Added to DOM</p>
+      <p>3️⃣ <mark>attributeChangedCallback()</mark> - Attributes change</p>
+      <p>4️⃣ <mark>disconnectedCallback()</mark> - Removed from DOM</p>
+    </small>
     <aside class="notes">Understanding the lifecycle is crucial for proper resource management and avoiding memory leaks.</aside>
   </section>
 </section>

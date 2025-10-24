@@ -130,64 +130,7 @@
 </section>
 
 
-<section>
-  <section>
-    <h4>What are we going to <br><mark>talk about</mark> today?</h4>
-  </section>
-  <section>
-    <h4><mark>Fundamentals</mark></h4>
-    <small>
-      <ul>
-        <li class="fragment">customElements v1 API</li>
-        <li class="fragment">Lifecycle callbacks</li>
-        <li class="fragment">Browser support and Baseline status</li>
-      </ul>
-    </small>
-  </section>
-  <section>
-    <h4>Practical <mark>patterns</mark></h4>
-    <small>
-      <ul>
-        <li class="fragment">Composition and reusability</li>
-        <li class="fragment">Attribute and binding</li>
-        <li class="fragment">Event handling</li>
-        <li class="fragment">Styling strategies</li>
-      </ul>
-    </small>
-  </section>
-  <section>
-    <h4><mark>Advanced</mark> techniques</h4>
-    <small>
-      <ul>
-        <li class="fragment">Accessibility considerations</li>
-        <li class="fragment">Performance optimization</li>
-        <li class="fragment">Testing Web Components</li>
-        <li class="fragment">Memory management and cleanup</li>
-      </ul>
-    </small>
-  </section>
-  <section>
-    <h4><mark>Integration</mark> with modern frameworks</h4>
-    <small>
-      <ul>
-        <li class="fragment">Vue, React, Angular interoperability</li>
-        <li class="fragment">Building framework-agnostic design systems</li>
-      </ul>
-    </small>
-  </section>
-  <section>
-    <h4><mark>Future features</mark> and the road ahead</h4>
-    <small>
-      <ul>
-        <li class="fragment">Improved ElementInternals API</li>
-        <li class="fragment">Better form integration</li>
-        <li class="fragment">Enhanced accessibility features</li>
-        <li class="fragment">Where the standard is heading</li>
-      </ul>
-    </small>
-  </section>
-</section>
-
+<!-- <include src="./slides/summary/_topics.html"></include> -->
 <section class="slide-dive-in" data-auto-animate="">
   <div sr-only="" data-menu-title="">Let's dive in</div>
   <dive-in>
@@ -210,7 +153,7 @@
   <section>
     <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="1-7|9-12|14-17|19-23">
 // standard way to define custom elements
-class PixuButtonStd extends HTMLButtonElement {
+class PixButtonStd extends HTMLButtonElement {
   constructor() {
     super();    
     this.setAttribute('role', 'button');
@@ -219,25 +162,25 @@ class PixuButtonStd extends HTMLButtonElement {
 
 // register in the standard way
 customElements.define(
-  'pixu-button-std', PixuButtonStd
+  'pix-button-std', PixButtonStd
 );
 
 // usage
-&lt;pixu-button-std&gt;
+&lt;pix-button-std&gt;
   Click me!
-&lt;/pixu-button-std&gt;
+&lt;/pix-button-std&gt;
 
 // runtime
-&lt;pixu-button-std type="button"&gt;
+&lt;pix-button-std type="button"&gt;
   Click me!
-&lt;/pixu-button-std&gt;
+&lt;/pix-button-std&gt;
       </code>
     </pre>
   </section>
   <section>
     <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="1-7|9-13|15-18|20-23">
 // extends pattern way to define custom elements
-class PixuButton extends HTMLButtonElement {
+class PixButton extends HTMLButtonElement {
   constructor() {
     super();    
     this.setAttribute('role', 'button');
@@ -246,17 +189,17 @@ class PixuButton extends HTMLButtonElement {
   
 // register with the extends option
 customElements.define(
-  'pixu-button', PixuButton,
+  'pix-button', PixButton,
   { extends: 'button' }
 );
 
 // usage
-&lt;button is="pixu-button"&gt;
+&lt;button is="pix-button"&gt;
   Click me!
 &lt;/button&gt;
 
 // runtime
-&lt;button is="pixu-button" type="button"&gt;
+&lt;button is="pix-button" type="button"&gt;
   Click me!
 &lt;/button&gt;
       </code>
@@ -336,98 +279,139 @@ customElements.define('counter-button', CounterButton, {
   </section>
   <section>
     <h4><code>constructor()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim="" data-line-numbers="">class MyElement extends HTMLButtonElement {
+    <small balance="">Called when element is created</small>
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+class PixButton extends HTMLButtonElement {
   constructor() {
-    super(); // Must be first!
+    super();
+    
     // Initialize state
     this.count = 0;
-    // Don't manipulate DOM or attributes here
   }
-}</code></pre>
-    <p class="fragment">⚠️ <strong>Rules:</strong> Call <code>super()</code> first, don't modify DOM or attributes</p>
+  
+  ...
+}
+    </code></pre>
   </section>
   <section>
     <h4><code>connectedCallback()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim="" data-line-numbers="">connectedCallback() {
-  // Element added to DOM
-  this.render();
-  this.addEventListener('click', this.handleClick);
+    <small balance="">Called when element is <mark>inserted into DOM</mark></small>
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+class PixButton extends HTMLButtonElement {
+  ...
   
-  // Safe to access DOM and attributes here
-  console.log(this.getAttribute('data-value'));
-}</code></pre>
-    <p class="fragment">✅ Called when element is <mark>inserted into DOM</mark></p>
+  // Element added to DOM
+  connectedCallback() {
+    // Initial render
+    this.render();
+
+    // Attach event listeners
+    this.addEventListener('click', this.handleClick);
+    
+    // Safe to access DOM and attributes here
+    console.log(this.getAttribute('value'));
+  }
+  
+  ...
+  
+}
+    </code></pre>
   </section>
   <section>
     <h4><code>disconnectedCallback()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim="" data-line-numbers="">disconnectedCallback() {
-  // Element removed from DOM
-  this.removeEventListener('click', this.handleClick);
+    <small balance="">Called when element is <mark>removed from DOM</mark></small>
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+class PixButton extends HTMLButtonElement {
   
-  // Clean up resources, timers, observers
-  if (this.interval) {
-    clearInterval(this.interval);
+  ...
+  
+  // Element removed from DOM
+  disconnectedCallback() {
+    // Remove event listeners
+    this.removeEventListener('click', this.handleClick);
+    
+    // Clean up resources, timers, observers
+    this.interval &amp;&amp; clearInterval(this.interval);
   }
-}</code></pre>
-    <p class="fragment">✅ Called when element is <mark>removed from DOM</mark></p>
+  
+  ...
+}
+    </code></pre>
   </section>
   <section>
     <h4><code>attributeChangedCallback()</code></h4>
-    <pre><code class="hljs language-javascript" data-trim="" data-line-numbers="">static get observedAttributes() {
-  return ['value', 'disabled'];
-}
+    <small balance="">Called when <mark>observed attributes</mark> change</small>
+    <pre><code class="hljs language-javascript" data-trim="" data-line-numbers="">
+class PixButton extends HTMLButtonElement {
 
-attributeChangedCallback(name, oldValue, newValue) {
-  if (name === 'value') {
-    this.updateDisplay(newValue);
+  ...
+  
+  // Specify observed attributes
+  static get observedAttributes() {
+    return ['value', 'disabled'];
   }
-}</code></pre>
-    <p class="fragment">✅ Called when <mark>observed attributes</mark> change</p>
+
+  // Called when observed attributes change
+  attributeChangedCallback(name, oldValue, newValue) {
+    name === 'value' &amp;&amp; this.updateValue(newValue);
+  }
+}
+    </code></pre>
   </section>
   <section>
-    <h4>Lifecycle Timeline</h4>
-    <div style="text-align: left; font-size: .8em">
-      <p>1️⃣ <code>constructor()</code> - Element created</p>
-      <p class="fragment">2️⃣ <code>connectedCallback()</code> - Added to DOM</p>
-      <p class="fragment">3️⃣ <code>attributeChangedCallback()</code> - Attributes change</p>
-      <p class="fragment">4️⃣ <code>disconnectedCallback()</code> - Removed from DOM</p>
-    </div>
+    <h4>Lifecycle <mark>Timeline</mark></h4>
+    <small align="left">
+      <p>1️⃣ <mark>constructor()</mark> - Element created</p>
+      <p>2️⃣ <mark>connectedCallback()</mark> - Added to DOM</p>
+      <p>3️⃣ <mark>attributeChangedCallback()</mark> - Attributes change</p>
+      <p>4️⃣ <mark>disconnectedCallback()</mark> - Removed from DOM</p>
+    </small>
     <aside class="notes">Understanding the lifecycle is crucial for proper resource management and avoiding memory leaks.</aside>
   </section>
 </section>
 
 <section>
   <section>
-    <h3>Attributes vs <mark>Properties</mark></h3>
-    <p>Understanding the difference is key to effective customElements</p>
+    <h3><mark>Attributes</mark> vs Properties</h3>
+    <p balance="">Understanding the <mark>difference is key</mark> to effective customElements</p>
   </section>
   <section>
     <h4>Attributes (HTML)</h4>
-    <pre><code class="language-html">&lt;button is="my-button" value="42" disabled&gt;
+    <pre><code class="hljs html" data-trim="" data-line-numbers="">
+&lt;button is="my-button" value="42" disabled&gt;
   Click me
-&lt;/button&gt;</code></pre>
-    <ul class="fragment">
-      <li>Always <mark>strings</mark> (or null)</li>
-      <li>Defined in <mark>HTML</mark></li>
-      <li>Accessible via <code>getAttribute()</code></li>
-      <li>Trigger <code>attributeChangedCallback()</code></li>
-    </ul>
+&lt;/button&gt;
+    </code></pre>
+    <small>
+      <ul class="fragment">
+        <li>Always <mark>strings</mark> (or null)</li>
+        <li>Defined in <mark>HTML</mark></li>
+        <li>Accessible via <mark>getAttribute()</mark></li>
+        <li>Trigger <mark>attributeChangedCallback()</mark></li>
+      </ul>
+    </small>
   </section>
   <section>
     <h4>Properties (JavaScript)</h4>
-    <pre><code class="language-javascript">const button = document.querySelector('[is="my-button"]');
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+const button = document.querySelector('[is="my-button"]');
+
 button.value = 42;        // Number
 button.disabled = true;   // Boolean
-button.data = { foo: 'bar' }; // Object</code></pre>
-    <ul class="fragment">
-      <li>Can be any <mark>JavaScript type</mark></li>
-      <li>Accessed in <mark>JavaScript</mark></li>
-      <li>Don't trigger callbacks automatically</li>
-    </ul>
+button.data = { foo: 'bar' }; // Object
+    </code></pre>
+    <small>
+      <ul class="fragment">
+        <li>Can be any <mark>JavaScript type</mark></li>
+        <li>Accessed in <mark>JavaScript</mark></li>
+        <li>Don't trigger callbacks automatically</li>
+      </ul>
+    </small>
   </section>
   <section>
     <h4>Reflection Pattern</h4>
-    <pre><code class="language-javascript">class MyButton extends HTMLButtonElement {
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+class MyButton extends HTMLButtonElement {
   get value() {
     return this.getAttribute('value');
   }
@@ -435,80 +419,80 @@ button.data = { foo: 'bar' }; // Object</code></pre>
   set value(val) {
     this.setAttribute('value', val);
   }
-}</code></pre>
-    <p class="fragment">Sync properties with attributes for <mark>consistency</mark></p>
-  </section>
-  <section>
-    <h4>Best Practices</h4>
-    <ul>
-      <li class="fragment">Use <mark>attributes</mark> for simple, serializable values</li>
-      <li class="fragment">Use <mark>properties</mark> for complex objects or functions</li>
-      <li class="fragment">Reflect simple properties to attributes when possible</li>
-      <li class="fragment">Follow native element patterns (e.g., <code>disabled</code>, <code>value</code>)</li>
-    </ul>
+}
+    </code></pre>
+    <small class="fragment">Sync properties with attributes for <mark>consistency</mark></small>
   </section>
   <section>
     <h3>Observed Attributes &amp; <mark>Reactivity</mark></h3>
-    <p>Make your elements respond to attribute changes</p>
+    <p>Make your elements <mark>respond to attribute changes</mark></p>
   </section>
   <section>
-    <h4>Declaring observed attributes</h4>
-    <pre><code class="language-javascript">class ColorButton extends HTMLButtonElement {
+    <h4><mark>Declaring</mark> observed attributes</h4>
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+class ColorButton extends HTMLButtonElement {
   static get observedAttributes() {
     return ['color', 'size'];
   }
   
   attributeChangedCallback(name, oldValue, newValue) {
     console.log(`${name} changed: ${oldValue} → ${newValue}`);
-    
-    if (name === 'color') {
-      this.style.backgroundColor = newValue;
-    }
-    if (name === 'size') {
-      this.style.fontSize = newValue;
-    }
+
+    name === 'color' &amp;&amp; 
+      (this.style.backgroundColor = newValue);
+      
+    name === 'size' &amp;&amp; 
+      (this.style.fontSize = newValue);
   }
-}</code></pre>
+}
+    </code></pre>
   </section>
   <section>
-    <h4>Complete example</h4>
-    <pre><code class="language-javascript">class ValidatedInput extends HTMLInputElement {
+    <h4>Example</h4>
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+class ValidatedInput extends HTMLInputElement {
   static get observedAttributes() {
     return ['pattern', 'required'];
+  }
+
+  validate() {
+    const isValid = this.checkValidity();
+    this.classList.toggle('invalid', !isValid);
+    this.setAttribute('aria-invalid', String(!isValid));
   }
 
   connectedCallback() {
     this.addEventListener('input', this.validate);
     this.validate();
   }
-
-  validate = () =&gt; {
-    const isValid = this.checkValidity();
-    this.classList.toggle('invalid', !isValid);
-    this.setAttribute('aria-invalid', String(!isValid));
-  };
+  
+  disconnectedCallback() {
+    this.removeEventListener('input', this.validate);
+  }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this.isConnected) {
-      this.validate();
-    }
+    this.isConnected &amp;&amp; this.validate();
   }
-}</code></pre>
+}
+    </code></pre>
   </section>
   <section>
     <h4>Usage</h4>
-    <pre><code class="language-html">&lt;input 
+    <pre><code class="hljs html" data-trim="" data-line-numbers="">
+&lt;input 
   is="validated-input" 
   type="email" 
   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
   required
-/&gt;</code></pre>
-    <p class="fragment">Changes to <code>pattern</code> or <code>required</code> automatically re-validate</p>
+/&gt;
+    </code></pre>
+    <small balance="" class="fragment">Changes to <mark>pattern</mark> or <mark>required</mark> attributes automatically re-validate</small>
   </section>
   <section>
-    <h4>Performance tip</h4>
-    <p>Only observe attributes you actually need to react to</p>
-    <pre class="fragment"><code class="language-javascript">// ❌ Don't do this
+    <h4>Performance <mark>tip</mark></h4>
+    <small balance="">Only observe attributes you <mark>actually need to react</mark> to</small>
+    <pre><code class="hljs javascript" data-trim="" data-line-numbers="">
+// ❌ Don't do this
 static get observedAttributes() {
   return ['id', 'class', 'data-foo', 'data-bar', ...];
 }
@@ -516,7 +500,19 @@ static get observedAttributes() {
 // ✅ Do this
 static get observedAttributes() {
   return ['value', 'disabled']; // Only what you need
-}</code></pre>
+}
+    </code></pre>
+  </section>
+  <section>
+    <h4><mark>Best</mark> Practices</h4>
+    <small>
+      <ul>
+        <li class="fragment">Use <mark>attributes</mark> for simple, serializable values</li>
+        <li class="fragment">Use <mark>properties</mark> for complex objects or functions</li>
+        <li class="fragment"><mark>Reflect</mark> simple properties to attributes <mark>when possible</mark></li>
+        <li class="fragment"><mark>Prefer native attributes</mark> element (e.g., <mark>disabled</mark>, <mark>value</mark>)</li>
+      </ul>
+    </small>
   </section>
 </section>
 
@@ -527,49 +523,58 @@ static get observedAttributes() {
   </section>
   <section>
     <h4>Extending <mark>Buttons</mark></h4>
-    <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="">
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
 class IconButton extends HTMLButtonElement {
   connectedCallback() {
     const icon = this.getAttribute('icon');
+    
     this.innerHTML = `
       &lt;span class="icon"&gt;${icon}&lt;/span&gt;
-      &lt;span class="text"&gt;${this.textContent}&lt;/span&gt;
+      ${this.textContent}
     `;
   }
 }
 
-customElements.define('icon-button', IconButton, {
-  extends: 'button'
-});
+customElements.define('icon-button', IconButton, { extends: 'button' });
       </code>
     </pre>
-    <pre class="fragment">      <code class="hljs language-html" data-trim="" data-line-numbers="">
+    <pre>      <code class="hljs html" data-trim="" data-line-numbers="">
 &lt;button is="icon-button" icon="🚀"&gt;Launch&lt;/button&gt;
+&lt;button is="icon-button" icon="✨"&gt;Shine&lt;/button&gt;
       </code>
     </pre>
+    <div class="demo-button fragment">
+      <style>.demo-button {
+  place-content: center;
+  place-items: center;
+  gap: .5rem;
+  margin: 3rem auto;
+  display: flex;
 
-    <div class="demo" style="align-items: center; gap: .5rem; margin-top: .75rem; display: flex">
-      <style>button[is="icon-button"] {
-  align-items: center;
-  gap: .4rem;
-  display: inline-flex;
-}
+  & button[is="icon-button"] {
+    align-items: center;
+    gap: .4rem;
+    padding: 1rem 2rem;
+    font-size: 3rem;
+    display: inline-flex;
+  }
 
-button[is="icon-button"] .icon {
-  text-align: center;
-  width: 1em;
-  display: inline-block;
+  & button[is="icon-button"] .icon {
+    text-align: center;
+    width: 1em;
+    display: inline-block;
+  }
 }
 </style>
       <button is="icon-button" icon="🚀">Launch</button>
       <button is="icon-button" icon="✨">Shine</button>
     </div>
     <!-- Component definition is loaded globally from src/scripts/components/icon-button.js -->
-    <p class="fragment">✅ Inherits: click events, form submission, keyboard support, disabled state</p>
+    <small class="fragment">✅ Inherits: click events, form submission, keyboard support, disabled state</small>
   </section>
   <section>
     <h4>Extending <mark>Inputs</mark></h4>
-    <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="">
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
 class DateInput extends HTMLInputElement {
   connectedCallback() {
     this.type = 'date';
@@ -584,26 +589,49 @@ class DateInput extends HTMLInputElement {
 customElements.define('date-input', DateInput, {
   extends: 'input'
 });
+
+const input = document.querySelector('input[is="date-input"]');
+const output = document.getElementById('date-demo-out');
+
+input.addEventListener('change', () =&gt; {
+  output.textContent = input.value ? `Selected: ${input.value}` : '';
+});
+
       </code>
     </pre>
-    <p class="fragment">✅ Inherits: form integration, validation, value property, focus management</p>
-    <div class="demo" style="align-items: center; gap: .75rem; margin-top: .75rem; display: flex">
+    <div class="demo-input fragment">
+      <style>.demo-input {
+  flex-flow: column;
+  place-content: center;
+  place-items: center;
+  gap: .75rem;
+  display: flex;
+
+  & input[is="date-input"] {
+    margin-top: 1rem;
+    padding: .5rem 1.5rem;
+    font-size: 2.5rem;
+  }
+}
+</style>
       <input is="date-input" aria-describedby="date-demo-out">
-      <output id="date-demo-out" aria-live="polite"></output>
+      <small>
+        <output id="date-demo-out" aria-live="polite">No date selected yet!</output>
+      </small>
     </div>
-    <script>// Demo wiring only (definitions are imported globally)
-(()=>{
-    const demo = document.querySelector('input[is="date-input"]');
-    const out = document.getElementById('date-demo-out');
-    if (demo && out) demo.addEventListener('change', ()=>out.textContent = demo.value ? `Selected: ${demo.value}` : '');
-})();
+    <small class="fragment">✅ Inherits: form integration, validation, value property, focus management</small>
+    <script>const demo = document.querySelector('input[is="date-input"]');
+const out = document.getElementById('date-demo-out');
+demo.addEventListener('change', ()=>{
+    out.textContent = demo.value ? `Selected: ${demo.value}` : '';
+});
 
 </script>
   </section>
   <section>
     <h4>Extending <mark>Divs</mark></h4>
-    <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="">
-class CollapsiblePanel extends HTMLDivElement {
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
+class CollapsiblePanel extends HTMLDetailsElement {
   connectedCallback() {
     this.setAttribute('role', 'region');
     const header = this.querySelector('[slot="header"]');
@@ -617,70 +645,80 @@ class CollapsiblePanel extends HTMLDivElement {
 }
 
 customElements.define('collapsible-panel', CollapsiblePanel, {
-  extends: 'div'
+  extends: 'details'
 });
       </code>
     </pre>
-    <div class="demo" style="margin-top: .75rem">
-      <style>[is="collapsible-panel"] {
-  border: 1px solid #cdcdcd;
-  border-radius: 6px;
-  padding: .5rem .75rem;
-}
+    <div class="demo-details" style="margin-top: .75rem">
+      <style>.demo-details {
+  & details {
+    text-align: left;
+    border: 1px solid #cdcdcd;
+    border-radius: 6px;
+    flex-flow: column;
+    inline-size: 100%;
+    padding: .5rem .75rem;
+    display: flex;
+  }
 
-[is="collapsible-panel"].collapsed > :not([slot="header"]) {
-  display: none;
-}
+  & details > summary {
+    cursor: pointer;
+    user-select: none;
+    align-items: center;
+    gap: .5rem;
+    list-style: none;
+    display: flex;
+  }
 
-[is="collapsible-panel"] [slot="header"] {
-  cursor: pointer;
-  user-select: none;
-  align-items: center;
-  gap: .5rem;
-  display: inline-flex;
+  & details > summary::-webkit-details-marker {
+    display: block;
+  }
+
+  & details > summary::marker {
+    content: "";
+  }
 }
 </style>
-      <div is="collapsible-panel" aria-expanded="true">
-        <button type="button" slot="header" aria-label="Toggle panel">Toggle</button>
-        <p style="margin: .5rem 0 0">This content is shown or hidden when you press Toggle.</p>
-      </div>
+      <details is="collapsible-panel" open="">
+        <summary><small>Toggle</small></summary>
+        <small style="margin: .5rem 0 0">This content is shown or hidden when you press Toggle.</small>
+      </details>
     </div>
-    <!-- Component definition is loaded globally from src/scripts/components/collapsible-panel.js -->
+    <!-- This demo uses native <details> and <summary> for accessibility and zero JS -->
   </section>
   <section>
-    <h4>Extending <mark>Lists</mark></h4>
-    <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="">
-class SortableList extends HTMLUListElement {
+    <h4>Extending <mark>Links</mark></h4>
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
+class SafeLink extends HTMLAnchorElement {
   connectedCallback() {
-    this.setAttribute('role', 'list');
-    
-    const sortButton = document.createElement('button');
-    sortButton.textContent = 'Sort';
-    sortButton.onclick = () =&gt; this.sort();
-    
-    this.before(sortButton);
-  }
-  
-  sort() {
-    const items = Array.from(this.children);
-    items.sort((a, b) =&gt; 
-      a.textContent.localeCompare(b.textContent)
-    );
-    this.append(...items);
+    if (this.target === '_blank') {
+      const rel = new Set((this.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+      rel.add('noopener');
+      rel.add('noreferrer');
+      this.setAttribute('rel', Array.from(rel).join(' '));
+    }
+    const confirmMsg = this.getAttribute('data-confirm');
+    if (confirmMsg) {
+      this.addEventListener('click', (e) =&gt; {
+        if (!confirm(confirmMsg)) e.preventDefault();
+      });
+    }
   }
 }
+
+customElements.define('safe-link', SafeLink, { extends: 'a' });
       </code>
     </pre>
-    <div class="demo" style="margin-top: .75rem">
-      <ul is="sortable-list" style="margin: 0; padding-left: 1.25rem">
-        <li>Banana</li>
-        <li>Apple</li>
-        <li>Cherry</li>
-        <li>Date</li>
-      </ul>
+    <pre>      <code class="hljs html" data-trim="" data-line-numbers="">
+&lt;a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?"&gt;External link&lt;/a&gt;
+      </code>
+    </pre>
+    <div class="demo">
+      <a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?">External link</a>
     </div>
-    <!-- Component definition is loaded globally from src/scripts/components/sortable-list.js -->
+    <!-- Definition is loaded globally from src/scripts/components/safe-link.js -->
   </section>
+
   <section>
     <h4>Choosing the right base</h4>
     <table style="font-size: .7em">
@@ -709,436 +747,176 @@ class SortableList extends HTMLUListElement {
         <td>Image display with enhancements</td>
       </tr>
     </tbody></table>
-    <p class="fragment" style="margin-top: 1em">💡 <strong>Pro tip:</strong> Always extend the most <mark>semantic</mark> element</p>
-  </section>
-  <section>
-    <h4>Extending <mark>Links</mark></h4>
-    <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="">
-class SafeLink extends HTMLAnchorElement {
-  connectedCallback() {
-    if (this.target === '_blank') {
-      const rel = new Set((this.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
-      rel.add('noopener');
-      rel.add('noreferrer');
-      this.setAttribute('rel', Array.from(rel).join(' '));
-    }
-    const confirmMsg = this.getAttribute('data-confirm');
-    if (confirmMsg) {
-      this.addEventListener('click', (e) =&gt; {
-        if (!confirm(confirmMsg)) e.preventDefault();
-      });
-    }
-  }
-}
-
-customElements.define('safe-link', SafeLink, { extends: 'a' });
-      </code>
-    </pre>
-    <pre class="fragment">      <code class="hljs language-html" data-trim="" data-line-numbers="">
-&lt;a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?"&gt;External link&lt;/a&gt;
-      </code>
-    </pre>
-    <div class="demo" style="margin-top: .75rem">
-      <a is="safe-link" href="https://example.com" target="_blank" data-confirm="Open external site?">External link</a>
-    </div>
-    <!-- Definition is loaded globally from src/scripts/components/safe-link.js -->
-  </section>
-  <section>
-    <h4>Extending <mark>Images</mark></h4>
-    <pre>      <code class="hljs language-javascript" data-trim="" data-line-numbers="">
-class SmartImg extends HTMLImageElement {
-  connectedCallback() {
-    if (!this.hasAttribute('loading')) this.setAttribute('loading', 'lazy');
-    const fallback = this.getAttribute('data-fallback');
-    if (fallback) {
-      this.addEventListener('error', () =&gt; {
-        if (this.src !== fallback) this.src = fallback;
-      });
-    }
-  }
-}
-
-customElements.define('smart-img', SmartImg, { extends: 'img' });
-      </code>
-    </pre>
-    <pre class="fragment">      <code class="hljs language-html" data-trim="" data-line-numbers="">
-&lt;img is="smart-img" data-fallback="/assets/logo/logo-192.png" alt="Fallback example" width="96" height="96" /&gt;
-      </code>
-    </pre>
-    <div class="demo" style="margin-top: .75rem">
-      <img is="smart-img" data-fallback="/assets/logo/logo-192.png" alt="Fallback example" width="96" height="96">
-    </div>
-    <!-- Definition is loaded globally from src/scripts/components/smart-img.js -->
+    <small balance="" class="fragment" style="margin-top: 1em">
+      💡 <strong>Pro <mark>tip</mark>:</strong> Always extend the most <mark>semantic</mark> element
+    </small>
   </section>
 </section>
 
 <section>
   <section>
     <h3>Styling <mark>Extended Elements</mark></h3>
-    <p>CSS strategies without Shadow DOM</p>
+    <p>Practical CSS without Shadow DOM: custom properties, @layer, @scope</p>
   </section>
+
   <section>
-    <h4>Using attribute selectors</h4>
-    <pre><code class="language-css">/* Target extended button */
+    <h4>Targeting extended elements</h4>
+    <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
+/* Low specificity selectors */
 button[is="icon-button"] {
   display: inline-flex;
-  align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
 }
-
-/* Specific states */
-button[is="icon-button"]:hover {
-  transform: scale(1.05);
-}
-
-button[is="icon-button"][disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}</code></pre>
+/* States (hover, disabled) */
+button[is="icon-button"]:hover { transform: scale(1.05); }
+button[is="icon-button"][disabled] { opacity: 0.5; cursor: not-allowed; }
+      </code>
+    </pre>
+    <p class="fragment">✅ Use attribute selectors and keep specificity low</p>
   </section>
+
   <section>
-    <h4>CSS Custom Properties for theming</h4>
-    <pre><code class="language-css">button[is="themed-button"] {
+    <h4>Custom properties for theming</h4>
+    <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
+button[is="themed-button"] {
   background: var(--button-bg, #007bff);
   color: var(--button-color, white);
   border-radius: var(--button-radius, 4px);
   padding: var(--button-padding, 0.5rem 1rem);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
+  transition: 0.2s;
 }
-
-button[is="themed-button"]:hover {
-  background: var(--button-bg-hover, #0056b3);
-}</code></pre>
+.theme-dark { --button-bg: #1a1a1a; --button-color: #ffffff; }
+.theme-light { --button-bg: #f0f0f0; --button-color: #000000; }
+      </code>
+    </pre>
+    <pre class="fragment">      <code class="hljs html" data-trim="" data-line-numbers="">
+&lt;div class="theme-dark"&gt;&lt;button is="themed-button"&gt;Dark&lt;/button&gt;&lt;/div&gt;
+&lt;div class="theme-light"&gt;&lt;button is="themed-button"&gt;Light&lt;/button&gt;&lt;/div&gt;
+      </code>
+    </pre>
   </section>
+
   <section>
-    <h4>Setting themes dynamically</h4>
-    <pre><code class="language-html">&lt;div class="theme-dark"&gt;
-  &lt;button is="themed-button"&gt;Dark Theme&lt;/button&gt;
-&lt;/div&gt;
-
-&lt;div class="theme-light"&gt;
-  &lt;button is="themed-button"&gt;Light Theme&lt;/button&gt;
-&lt;/div&gt;</code></pre>
-    <pre class="fragment"><code class="language-css">.theme-dark {
-  --button-bg: #1a1a1a;
-  --button-color: #ffffff;
-  --button-bg-hover: #2a2a2a;
-}
-
-.theme-light {
-  --button-bg: #f0f0f0;
-  --button-color: #000000;
-  --button-bg-hover: #e0e0e0;
-}</code></pre>
-  </section>
-  <section>
-    <h4>Cascade and specificity</h4>
-    <pre><code class="language-css">/* Base styles - low specificity */
-button[is="my-button"] {
-  padding: 0.5rem;
-}
-
-/* Override for specific context */
-.card button[is="my-button"] {
-  padding: 1rem;
-}
-
-/* Override with data attributes */
-button[is="my-button"][data-size="large"] {
-  padding: 1.5rem 3rem;
-  font-size: 1.2rem;
-}</code></pre>
-    <p class="fragment">✅ Normal CSS cascade rules apply - no Shadow DOM barriers!</p>
-  </section>
-  <section>
-    <h4>Complete example</h4>
-    <pre><code class="language-javascript">class ThemedButton extends HTMLButtonElement {
-  connectedCallback() {
-    this.updateTheme();
-  }
-  
-  updateTheme() {
-    const theme = this.getAttribute('theme') || 'primary';
-    this.setAttribute('data-theme', theme);
-  }
-  
-  static get observedAttributes() {
-    return ['theme'];
-  }
-  
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'theme') this.updateTheme();
-  }
-}</code></pre>
-  </section>
-  <section>
-    <h4>CSS for the example</h4>
-    <pre><code class="language-css">button[is="themed-button"] {
-  border: none;
-  border-radius: 4px;
-  padding: 0.75rem 1.5rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-button[is="themed-button"][data-theme="primary"] {
-  background: #007bff;
-  color: white;
-}
-
-button[is="themed-button"][data-theme="success"] {
-  background: #28a745;
-  color: white;
-}
-
-button[is="themed-button"][data-theme="danger"] {
-  background: #dc3545;
-  color: white;
-}</code></pre>
-  </section>
-  <section>
-    <h3>Component <mark>Styling</mark> Strategies</h3>
-    <p>Organizing CSS for maintainable components</p>
-  </section>
-  <section>
-    <h4>BEM with customElements</h4>
-    <pre><code class="language-css">/* Block */
-button[is="card-button"] {
-  display: flex;
-  padding: 1rem;
-}
-
-/* Element */
-button[is="card-button"] .card-button__icon {
-  margin-right: 0.5rem;
-}
-
-/* Modifier */
-button[is="card-button"][data-variant="primary"] {
-  background: var(--primary-color);
-}
-
-button[is="card-button"][data-size="large"] {
-  font-size: 1.2em;
-  padding: 1.5rem;
-}</code></pre>
-  </section>
-  <section>
-    <h4>CSS Custom Properties Architecture</h4>
-    <pre><code class="language-css">/* Component defines tokens */
-button[is="themed-button"] {
-  /* Public API - can be customized */
-  background: var(--button-bg, #007bff);
-  color: var(--button-color, white);
-  padding: var(--button-padding, 0.5rem 1rem);
-  
-  /* Private tokens - internal use */
-  --_button-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --_button-transition: all 0.2s ease;
-  
-  box-shadow: var(--_button-shadow);
-  transition: var(--_button-transition);
-}
-
-button[is="themed-button"]:hover {
-  background: var(--button-bg-hover, #0056b3);
-}</code></pre>
-  </section>
-  <section>
-    <h4>Theme Layers</h4>
-    <pre><code class="language-css">/* Global theme */
+    <h4>Design tokens and component contract</h4>
+    <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
 :root {
-  --primary: #007bff;
-  --secondary: #6c757d;
-  --spacing-unit: 0.5rem;
-}
-
-/* Context theme */
-.dark-mode {
-  --button-bg: #1a1a1a;
-  --button-color: #ffffff;
-}
-
-/* Component overrides */
-.card[is="feature-card"] button[is="themed-button"] {
-  --button-padding: calc(var(--spacing-unit) * 2);
-}</code></pre>
-  </section>
-  <section>
-    <h4>State-based styling</h4>
-    <pre><code class="language-css">/* Data attributes for state */
-button[is="toggle-button"][data-state="active"] {
-  background: var(--active-bg);
-  border-color: var(--active-border);
-}
-
-/* ARIA states */
-button[is="menu-button"][aria-expanded="true"] {
-  transform: rotate(180deg);
-}
-
-/* Pseudo-classes */
-input[is="validated-input"]:invalid {
-  border-color: var(--error-color);
-}
-
-input[is="validated-input"]:focus {
-  outline: 2px solid var(--focus-color);
-  outline-offset: 2px;
-}</code></pre>
-  </section>
-  <section>
-    <h4>Organizational Best Practices</h4>
-    <ul>
-      <li class="fragment">Use <code>data-*</code> attributes for <mark>component state</mark></li>
-      <li class="fragment">Prefix private custom properties with <code>--_</code></li>
-      <li class="fragment">Group related styles with <mark>CSS comments</mark></li>
-      <li class="fragment">Keep specificity <mark>low</mark> for easier overrides</li>
-      <li class="fragment">Document custom properties as <mark>public API</mark></li>
-    </ul>
-  </section>
-
-  <section>
-    <h3>CSS Custom Properties for <mark>Theming</mark></h3>
-    <p>Building flexible, themeable component systems</p>
-  </section>
-  <section>
-    <h4>Design Tokens</h4>
-    <pre><code class="language-css">:root {
-  /* Colors */
   --color-primary: #007bff;
-  --color-success: #28a745;
-  --color-danger: #dc3545;
-  
-  /* Spacing */
-  --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
-  --space-lg: 2rem;
-  
-  /* Typography */
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.25rem;
-  
-  /* Radius */
   --radius-sm: 4px;
-  --radius-md: 8px;
-}</code></pre>
-  </section>
-  <section>
-    <h4>Component Theme Contract</h4>
-    <pre><code class="language-css">button[is="themed-button"] {
-  /* Component consumes design tokens */
+  --font-size-base: 1rem;
+}
+button[is="themed-button"] {
   background: var(--button-bg, var(--color-primary));
   color: var(--button-color, white);
   padding: var(--button-padding, var(--space-sm) var(--space-md));
   border-radius: var(--button-radius, var(--radius-sm));
   font-size: var(--button-font-size, var(--font-size-base));
-  
-  /* Computed values */
-  border: 1px solid var(--button-border, transparent);
-  transition: all 0.2s ease;
+  filter: var(--button-filter, none);
+}
+      </code>
+    </pre>
+  </section>
+
+  <section>
+    <h4>Organize with @layer</h4>
+    <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
+@layer reset, base, components, utilities, themes;
+
+/* reset/base */
+@layer reset {
+  *,*::before,*::after { box-sizing: border-box; }
+}
+@layer base {
+  :root { --space-sm: 0.5rem; --space-md: 1rem; }
 }
 
-button[is="themed-button"]:hover {
-  filter: brightness(1.1);
-}</code></pre>
+/* components */
+@layer components {
+  button[is="themed-button"] { padding: var(--space-sm) var(--space-md); }
+}
+
+/* themes come last to win over components */
+@layer themes {
+  :root[data-theme="dark"] {
+    --button-bg: #1a1a1a; --button-color: #ffffff;
+  }
+}
+      </code>
+    </pre>
+    <p class="fragment">✅ Layers control cascade without specificity hacks</p>
   </section>
+
   <section>
-    <h4>Dark Mode Implementation</h4>
-    <pre><code class="language-javascript">class ThemeToggle extends HTMLButtonElement {
+    <h4>Encapsulate with @scope</h4>
+    <pre>      <code class="hljs html" data-trim="" data-line-numbers="">
+&lt;div class="card"&gt;
+  &lt;h3&gt;Title&lt;/h3&gt;
+  &lt;button is="themed-button"&gt;Action&lt;/button&gt;
+&lt;/div&gt;
+      </code>
+    </pre>
+    <pre class="fragment">      <code class="hljs css" data-trim="" data-line-numbers="">
+@scope (.card) {
+  :scope { padding: 1rem; border: 1px solid #ddd; }
+  h3 { margin: 0 0 0.5rem; font-size: 1.25rem; }
+  button[is="themed-button"] { --button-bg: #e8f0ff; }
+}
+      </code>
+    </pre>
+    <p class="fragment">✅ Scoped styles avoid Shadow DOM while limiting reach</p>
+  </section>
+
+  <section>
+    <h4>State driven styling</h4>
+    <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
+/* data-* states */
+button[is="toggle-button"][data-state="active"] { background: var(--active-bg); }
+/* ARIA states */
+button[is="menu-button"][aria-expanded="true"] { transform: rotate(180deg); }
+/* Pseudo-classes */
+input[is="validated-input"]:invalid { border-color: var(--error-color); }
+input[is="validated-input"]:focus { outline: 2px solid var(--focus-color); outline-offset: 2px; }
+      </code>
+    </pre>
+  </section>
+
+  <section>
+    <h4>Dark mode and preferences</h4>
+    <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
+/* System preference as default */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { --bg-primary: #1a1a1a; --text-primary: #ffffff; }
+}
+/* Manual override */
+:root[data-theme="dark"] { --bg-primary: #1a1a1a; --text-primary: #ffffff; }
+      </code>
+    </pre>
+    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="">
+class ThemeToggle extends HTMLButtonElement {
   connectedCallback() {
     this.textContent = '🌙';
-    this.addEventListener('click', this.toggleTheme);
-    this.applyTheme(this.getCurrentTheme());
-  }
-
-  toggleTheme = () =&gt; {
-    const current = this.getCurrentTheme();
-    const next = current === 'light' ? 'dark' : 'light';
-    this.applyTheme(next);
-    localStorage.setItem('theme', next);
-  };
-
-  getCurrentTheme() {
-    return localStorage.getItem('theme') || 'light';
-  }
-
-  applyTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    this.textContent = theme === 'light' ? '🌙' : '☀️';
-  }
-}</code></pre>
-  </section>
-  <section>
-    <h4>CSS for Dark Mode</h4>
-    <pre><code class="language-css">/* Light theme (default) */
-:root {
-  --bg-primary: #ffffff;
-  --text-primary: #000000;
-  --button-bg: #007bff;
-}
-
-/* Dark theme */
-[data-theme="dark"] {
-  --bg-primary: #1a1a1a;
-  --text-primary: #ffffff;
-  --button-bg: #0056b3;
-}
-
-/* System preference */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    --bg-primary: #1a1a1a;
-    --text-primary: #ffffff;
-  }
-}</code></pre>
-  </section>
-  <section>
-    <h4>Dynamic Theme Updates</h4>
-    <pre><code class="language-javascript">class ThemeProvider extends HTMLDivElement {
-  connectedCallback() {
-    this.setupTheme();
-  }
-
-  setupTheme() {
-    const theme = {
-      primary: this.getAttribute('primary') || '#007bff',
-      secondary: this.getAttribute('secondary') || '#6c757d',
-      spacing: this.getAttribute('spacing') || '1rem',
-    };
-
-    Object.entries(theme).forEach(([key, value]) =&gt; {
-      this.style.setProperty(`--theme-${key}`, value);
+    this.addEventListener('click', () =&gt; {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      this.textContent = next === 'light' ? '🌙' : '☀️';
     });
   }
-
-  static get observedAttributes() {
-    return ['primary', 'secondary', 'spacing'];
-  }
-
-  attributeChangedCallback() {
-    this.setupTheme();
-  }
-}</code></pre>
+}
+customElements.define('theme-toggle', ThemeToggle, { extends: 'button' });
+      </code>
+    </pre>
   </section>
+
   <section>
     <h4>Usage</h4>
-    <pre><code class="language-html">&lt;div is="theme-provider" 
-     primary="#ff6b6b" 
-     secondary="#4ecdc4"
-     spacing="1.5rem"&gt;
-  
-  &lt;button is="themed-button"&gt;Themed Button&lt;/button&gt;
-  &lt;input is="themed-input" /&gt;
-  
-&lt;/div&gt;</code></pre>
-    <p class="fragment">✅ All children inherit theme from provider via CSS cascade</p>
+    <pre>      <code class="hljs html" data-trim="" data-line-numbers="">
+&lt;button is="theme-toggle"&gt;🌙&lt;/button&gt;
+&lt;button is="themed-button"&gt;Themed Button&lt;/button&gt;
+      </code>
+    </pre>
+    <p class="fragment">✅ Children inherit tokens; layers and scope orchestrate overrides</p>
   </section>
 </section>
 
@@ -1147,14 +925,14 @@ button[is="themed-button"]:hover {
     <h4>
       Expected Question #1: <br>
       "Nice, so do I have to write <br>
-      all this "<mark>boilerplate</mark>" code... <span class="fragment"><mark>every time</mark>??"</span>
+      all this `<mark>boilerplate</mark>` code... <span class="fragment"><mark>every time</mark>??"</span>
     </h4>
     <p class="fragment">Of course <mark>not</mark>!</p>
   </section>
   <section>
     <h4>
       Expected Question #2: <br>
-      "So it's possible to replicate or mimic the most common features of Lit, Angular, React, Vue??"
+      "So it's possible to replicate or mimic the <mark>most common features</mark> of Lit, Angular, React, Vue??"
     </h4>
     <p class="fragment">Well, <mark>yes</mark>!</p>
   </section>
@@ -1193,42 +971,7 @@ export class Details extends HTMLDetailsElement {
 }
 </code>
     </pre>
-  </section>
-  <section>
-    <h4>Yep, no base classes!</h4>
-  </section>
-  <section>
-    <h4>Metaprogramming!</h4>
-    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="|1-7|1-11|12-16|18-22|24">
-/**
-* Button class
-*
-* @export
-* @class Button 
-* @extends {HTMLButtonElement}
-*/
-export class Button extends HTMLButtonElement {
-  static name = "pixu-button";
-  static extends = "button";
- 
-  static attributes = {
-    disabled: (oldValue, newValue) =&gt; {
-      console.log("disabled changed", oldValue, newValue, this.textContent); 
-    }
-  }
- 
-  static events = {
-    click: function (e) {
-      console.log("button clicked", this.textContent);
-    },
-  }
-  
-  // Yippie Kai Yay... motherf... metaprogramming!
- 
- ...
-}
-      </code>
-    </pre>
+    <h4 class="fragment">Yep, no base classes!</h4>
   </section>
   <section>
     <h4>
@@ -1236,7 +979,7 @@ export class Button extends HTMLButtonElement {
     </h4>
     <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="1-4|6-11|6-14|19|13,19|21">
 export class Button extends HTMLButtonElement {
-  static name = "wcag-button";
+  static name = "pix-button";
 
   ...
   
@@ -1253,7 +996,7 @@ export class Button extends HTMLButtonElement {
  ...
 }
 
-// import '@wcag-ui/button';
+// import '@pix-ui/button';
 
 //Yippie Kai Yay... motherf... static initialization blocks!
   </code>
@@ -1281,8 +1024,8 @@ export function defineCustomElement(component) {
 export function buildExtendOptions(mixins) {
   return mixins.extends ? { extends: mixins.extends } : undefined;
   
-  // this allows to <button is="wcag-button"></button>
-  // instead of <wcag-button></wcag-button>
+  // this allows to <button is="pix-button"></button>
+  // instead of <pix-button></pix-button>
 }
 
 export function applyMixins(component) {
@@ -1302,6 +1045,39 @@ export function applyMixins(component) {
 
 // Yippie Kai Yay... motherf... decorators!
   </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Metaprogramming!</h4>
+    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="|1-7|1-11|12-16|18-22|24">
+/**
+* PixUI Button class
+*
+* @export
+* @class Button 
+* @extends {HTMLButtonElement}
+*/
+export class Button extends HTMLButtonElement {
+  static name = "pix-button";
+  static extends = "button";
+ 
+  static attributes = {
+    disabled: (oldValue, newValue) =&gt; {
+      console.log("disabled changed", oldValue, newValue, this.textContent); 
+    }
+  }
+ 
+  static events = {
+    click: function (e) {
+      console.log("button clicked", this.textContent);
+    },
+  }
+  
+  // Yippie Kai Yay... motherf... metaprogramming!
+ 
+ ...
+}
+      </code>
     </pre>
   </section>
   <section>
@@ -1622,7 +1398,7 @@ export function buildLifecycleMethods(component) {
 </a>
 
     </main>
-    <script src="custom-elements-and-beyond.156df2e2.js" type="module"></script>
+    <script src="custom-elements-and-beyond.f2a811b9.js" type="module"></script>
   
 
 </body></html>

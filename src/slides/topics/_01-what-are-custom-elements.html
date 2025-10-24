@@ -6,7 +6,7 @@
     <pre>
       <code class="hljs language-javascript" data-trim data-line-numbers="1-7|9-12|14-17|19-23">
 // standard way to define custom elements
-class PixuButtonStd extends HTMLButtonElement {
+class PixButtonStd extends HTMLButtonElement {
   constructor() {
     super();    
     this.setAttribute('role', 'button');
@@ -15,18 +15,18 @@ class PixuButtonStd extends HTMLButtonElement {
 
 // register in the standard way
 customElements.define(
-  'pixu-button-std', PixuButtonStd
+  'pix-button-std', PixButtonStd
 );
 
 // usage
-&lt;pixu-button-std&gt;
+&lt;pix-button-std&gt;
   Click me!
-&lt;/pixu-button-std&gt;
+&lt;/pix-button-std&gt;
 
 // runtime
-&lt;pixu-button-std type="button"&gt;
+&lt;pix-button-std type="button"&gt;
   Click me!
-&lt;/pixu-button-std&gt;
+&lt;/pix-button-std&gt;
       </code>
     </pre>
   </section>
@@ -34,7 +34,7 @@ customElements.define(
     <pre>
       <code class="hljs language-javascript" data-trim data-line-numbers="1-7|9-13|15-18|20-23">
 // extends pattern way to define custom elements
-class PixuButton extends HTMLButtonElement {
+class PixButton extends HTMLButtonElement {
   constructor() {
     super();    
     this.setAttribute('role', 'button');
@@ -43,17 +43,17 @@ class PixuButton extends HTMLButtonElement {
   
 // register with the extends option
 customElements.define(
-  'pixu-button', PixuButton,
+  'pix-button', PixButton,
   { extends: 'button' }
 );
 
 // usage
-&lt;button is="pixu-button"&gt;
+&lt;button is="pix-button"&gt;
   Click me!
 &lt;/button&gt;
 
 // runtime
-&lt;button is="pixu-button" type="button"&gt;
+&lt;button is="pix-button" type="button"&gt;
   Click me!
 &lt;/button&gt;
       </code>
