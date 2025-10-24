@@ -2,7 +2,7 @@
 
 ## Project Context
 
-This is an HTML talk/presentation about Custom Elements, exploring how to extend native HTML elements using the `{extends: "elementName"}` pattern and the `is="custom-name"` attribute approach. This presentation focuses on practical, framework-agnostic web components without Shadow DOM or HTML templates.
+This is an HTML talk/presentation about Custom Elements, exploring how to extend native HTML elements using the `{extends: "elementName"}` pattern and the `is="custom-name"` attribute approach. This presentation focuses on practical, framework-agnostic components built with the Custom Elements API only, with no Shadow DOM and no HTML template usage.
 
 **Duration:** 45-60 minutes  
 **Format:** HTML presentation with reveal.js  
@@ -16,13 +16,27 @@ This is an HTML talk/presentation about Custom Elements, exploring how to extend
 - Explore lifecycle hooks and APIs for extended elements
 - Show integration with modern frameworks and tools
 - Present best practices and performance considerations
-- Focus on simplicity without Shadow DOM complexity
+- Focus on simplicity without Shadow DOM or template complexity
+
+## Scope and Terminology
+
+- Myth vs Fact
+  - Myth: Custom Elements == Web Components
+  - Fact: Web Components is an umbrella of three APIs:
+    1. Custom Elements API
+    2. Shadow DOM API
+    3. HTML Template API (the `<template>` element)
+- This talk focuses only on the Custom Elements API and the customized built ins pattern:
+  - Always define with `{extends: "elementName"}`
+  - Always use `is="custom-name"` in HTML
+  - We do not use Shadow DOM or `<template>` in code examples
 
 ## Slide Structure
 
 Each slide must follow these principles:
 
 ### General Guidelines
+
 - **One concept per slide**: Each major topic gets its dedicated slide
 - **Code examples**: Clear, working code snippets for every technical concept
 - **Live demos**: Inline demos when possible; external links for complex examples
@@ -32,11 +46,13 @@ Each slide must follow these principles:
 ### Slide Categories
 
 #### Introduction (Slides 1-3)
+
 - Speaker introduction and background
 - Talk overview and learning objectives
 - Why Web Components matter
 
 #### Fundamentals (Slides 4-12)
+
 - What are Custom Elements
 - Custom Elements API with `{extends: "elementName"}`
 - Using the `is="custom-name"` attribute pattern
@@ -45,6 +61,7 @@ Each slide must follow these principles:
 - Lifecycle callbacks for extended elements
 
 #### Patterns and Use Cases (Slides 13-24)
+
 - Component composition patterns with extended elements
 - Attribute and property binding
 - Event handling and communication
@@ -53,6 +70,7 @@ Each slide must follow these principles:
 - Form integration with extended form controls
 
 #### Advanced Topics (Slides 25-35)
+
 - Advanced DOM manipulation patterns
 - Content distribution without slots
 - Advanced lifecycle patterns
@@ -60,12 +78,14 @@ Each slide must follow these principles:
 - Testing Custom Elements
 
 #### Integration (Slides 36-42)
+
 - Using Web Components with frameworks (Vue, React, Angular)
 - Frameworks and Web Components interoperability
 - Building design systems with Web Components
 - Real-world examples
 
 #### Future and Wrap-up (Slides 43-45)
+
 - Upcoming Web Components features
 - Resources and learning paths
 - Q&A and conclusions
@@ -73,6 +93,7 @@ Each slide must follow these principles:
 ## Technical Code Standards
 
 ### HTML/Structure
+
 - Use reveal.js for slide composition
 - Each slide section in `src/slides/`
 - Main slides file: `src/slides/slides.html`
@@ -80,12 +101,14 @@ Each slide must follow these principles:
 - PostHTML may be used for template composition
 
 ### CSS
+
 - Main styles in `src/styles/index.css`
 - Use custom properties for theming and reusable values
 - Follow mobile-first responsive design
 - Demonstrate modern CSS APIs when showcasing Web Components styling
 
 ### JavaScript
+
 - Main script in `src/scripts/index.js`
 - Keep presentation logic minimal
 - Web Component examples should be self-contained
@@ -93,8 +116,9 @@ Each slide must follow these principles:
 - Comment complex code thoroughly
 
 ### Custom Elements Examples
+
 - Each example must extend a native HTML element
-- Always use `{extends: "elementName"}` pattern
+- Always use `{extends: "elementName"}` pattern (customized built ins)
 - Always use `is="custom-name"` attribute in HTML
 - Include proper accessibility attributes (inherited from native elements)
 - Demonstrate lifecycle methods when relevant
@@ -102,6 +126,7 @@ Each slide must follow these principles:
 - Include JSDoc comments for clarity
 
 ### Language Policy (Mandatory)
+
 - **All files must be in English**: slide content, comments, scripts, and styles
 - When adding or editing content, translate any non-English text to English
 - Do not use typographic dashes (em dash —, en dash –) or non-breaking hyphens (‑)
@@ -147,7 +172,8 @@ src/
 ## Style Conventions
 
 ### Code Examples Template
-```html
+
+````html
 <section class="slide" data-markdown>
   <textarea data-template>
     ## API/Topic Name
@@ -176,10 +202,12 @@ src/
     Live demo or screenshot
   </textarea>
 </section>
-```
+````
 
 ### Notes Section
+
 Each API/topic should include:
+
 - Clear explanation of the concept
 - Browser compatibility/Baseline status
 - Practical use cases
@@ -189,10 +217,10 @@ Each API/topic should include:
 ## Build and Development
 
 ### Scripts
+
 - **Start development server**: `pnpm start`
   - Runs Parcel dev server on port 6001
   - Watch mode enabled
-  
 - **Build for production**: `pnpm build`
   - Creates optimized build in `dist/`
   - Auto-commits and pushes changes
@@ -202,6 +230,7 @@ Each API/topic should include:
   - Removes `.parcel-cache` and `dist/` directories
 
 ### Release Management
+
 - **Major release**: `pnpm run rel:major`
 - **Minor release**: `pnpm run rel:minor`
 - **Patch release**: `pnpm run rel:patch`
@@ -209,12 +238,14 @@ Each API/topic should include:
 ## Dependencies
 
 ### Production
+
 - `reveal.js`: Presentation framework
 - `@pixu-talks/core`: Core presentation utilities
 - `@pixu-talks/fonts`: Font library
 - `@pixu-talks/theme`: Theme library
 
 ### Development
+
 - `parcel`: Module bundler and dev server
 - `@biomejs/biome`: Code formatter and linter
 - `lightningcss`: CSS parser and minifier
@@ -223,17 +254,19 @@ Each API/topic should include:
 ## Code Quality
 
 ### Formatting
+
 - **Biome** for JavaScript and TypeScript
 - **Prettier** for HTML, CSS, JSON, YAML, and Markdown
 - Format before committing
 
 ### Best Practices
+
 1. **Accessibility**: Every component must be accessible
    - Proper ARIA labels
    - Keyboard navigation support
    - Screen reader friendly
 
-2. **Performance**: 
+2. **Performance**:
    - Lazy load images when possible
    - Optimize animations
    - Minimize JavaScript
@@ -275,6 +308,7 @@ Each API/topic should include:
 ## Files to Create/Modify
 
 When adding new slides:
+
 1. Create file in appropriate folder under `src/slides/`
 2. Include in parent section's HTML file
 3. Add specific styles in `src/styles/index.css` if needed

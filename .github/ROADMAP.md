@@ -20,6 +20,7 @@ From creating simple extended elements to building complex design systems, this 
 ### Phase 1: Introduction (Slides 1-3, ~5 min)
 
 #### Slide 1 – Personal Introduction
+
 - **File:** `src/slides/intro/_pixu.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -30,6 +31,7 @@ From creating simple extended elements to building complex design systems, this 
   - Social links and contact information
 
 #### Slide 2 – Main Topic and Why It Matters
+
 - **File:** `src/slides/intro/_main-topic.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -39,6 +41,7 @@ From creating simple extended elements to building complex design systems, this 
   - Learning path preview with progressive disclosure
 
 #### Slide 3 – Title Slide with Tagline
+
 - **File:** `src/slides/intro/_doodle.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -51,6 +54,7 @@ From creating simple extended elements to building complex design systems, this 
 ### Phase 2: Fundamentals (Slides 4-12, ~10-12 min)
 
 #### Slide 4 – What Are Custom Elements?
+
 - **File:** `src/slides/topics/_01-what-are-custom-elements.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -58,8 +62,12 @@ From creating simple extended elements to building complex design systems, this 
   - Core API: Extending native HTML elements
   - Why they matter (framework agnostic, standards based)
   - Inherit native behavior and accessibility
+  - Myth vs Fact: Custom Elements != Web Components
+  - Web Components is three APIs: Custom Elements, Shadow DOM, HTML Template
+  - Scope: this talk focuses only on the Custom Elements API (no Shadow DOM, no template)
 
 #### Slide 5 – Custom Elements API Overview
+
 - **File:** `src/slides/topics/_02-custom-elements-api.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -70,6 +78,7 @@ From creating simple extended elements to building complex design systems, this 
   - Three sub-sections with code examples
 
 #### Slide 6 – Browser Support and Baseline Status
+
 - **File:** `src/slides/topics/_03-browser-support.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -79,6 +88,7 @@ From creating simple extended elements to building complex design systems, this 
   - Polyfill availability
 
 #### Slide 7 – Creating Your First Custom Element
+
 - **File:** `src/slides/topics/_04-first-custom-element.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -89,6 +99,7 @@ From creating simple extended elements to building complex design systems, this 
   - Cleanup in disconnectedCallback
 
 #### Slide 8 – Understanding Lifecycle Callbacks
+
 - **File:** `src/slides/topics/_05-lifecycle-callbacks.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -98,6 +109,7 @@ From creating simple extended elements to building complex design systems, this 
   - Timeline diagram section
 
 #### Slide 9 – Attributes vs Properties
+
 - **File:** `src/slides/topics/_06-attributes-properties.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -107,6 +119,7 @@ From creating simple extended elements to building complex design systems, this 
   - Multiple code examples
 
 #### Slide 10 – Observed Attributes and Reactivity
+
 - **File:** `src/slides/topics/_07-observed-attributes.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -116,6 +129,7 @@ From creating simple extended elements to building complex design systems, this 
   - Real-world usage examples
 
 #### Slide 11 – Extending Different Native Elements
+
 - **File:** `src/slides/topics/_08-extending-natives.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -125,6 +139,7 @@ From creating simple extended elements to building complex design systems, this 
   - Accessibility inheritance highlighted
 
 #### Slide 12 – Styling Extended Elements
+
 - **File:** `src/slides/topics/_09-styling-elements.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -138,6 +153,7 @@ From creating simple extended elements to building complex design systems, this 
 ### Phase 3: Patterns and Use Cases (Slides 13-24, ~15-18 min)
 
 #### Slide 13 – Component Composition Patterns
+
 - **File:** `src/slides/topics/_10-composition-patterns.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -148,6 +164,7 @@ From creating simple extended elements to building complex design systems, this 
   - Best practices (5 sections)
 
 #### Slide 14 – Attribute and Property Binding
+
 - **File:** `src/slides/topics/_11-binding.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -157,6 +174,7 @@ From creating simple extended elements to building complex design systems, this 
   - Complete examples (4 sections)
 
 #### Slide 15 – Event Handling and Communication
+
 - **File:** `src/slides/topics/_12-event-handling.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -166,6 +184,7 @@ From creating simple extended elements to building complex design systems, this 
   - Best practices section (6 sections)
 
 #### Slide 16 – Component Styling Strategies
+
 - **File:** `src/slides/topics/_13-styling-strategies.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -176,6 +195,7 @@ From creating simple extended elements to building complex design systems, this 
   - Organizational best practices (5 sections)
 
 #### Slide 17 – CSS Custom Properties for Theming
+
 - **File:** `src/slides/topics/_14-theming.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -186,6 +206,7 @@ From creating simple extended elements to building complex design systems, this 
   - Complete working example (6 sections)
 
 #### Slide 18 – Accessibility in Custom Elements
+
 - **File:** `src/slides/topics/_15-accessibility.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -198,6 +219,7 @@ From creating simple extended elements to building complex design systems, this 
   - Testing strategies (8 sections)
 
 #### Slide 19 – Form Integration and Validation
+
 - **File:** `src/slides/topics/_16-form-integration.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -211,6 +233,7 @@ From creating simple extended elements to building complex design systems, this 
   - Browser compatibility notes (6 sections)
 
 #### Slide 20 – State Management in Components
+
 - **File:** `src/slides/topics/_17-state-management.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -220,7 +243,41 @@ From creating simple extended elements to building complex design systems, this 
   - Change detection strategies
   - Proxy-based reactivity (5 sections)
 
-#### Slide 21 – Error Handling and Resilience
+#### Slide 21 – Reactivity with Observable Pattern
+
+- **File:** `src/slides/topics/_18-reactivity-observable.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - EventTarget-based Observable implementation
+  - Subscribe/unsubscribe pattern
+  - Using Observables in Custom Elements
+  - Automatic UI updates on state change
+  - Cleanup and memory management (4 sections)
+
+#### Slide 22 – Reactivity with Signal Pattern
+
+- **File:** `src/slides/topics/_19-reactivity-signals.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Minimal Signal primitive implementation
+  - Get/set/subscribe API
+  - Using Signals in Custom Elements
+  - Derived signals (computed values)
+  - Framework-agnostic reactivity (5 sections)
+
+#### Slide 23 – Automatic Data Binding
+
+- **File:** `src/slides/topics/_20-reactivity-binding.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Creating a binding system with data-bind-\* attributes
+  - Declarative UI updates
+  - Two-way binding for inputs
+  - Complete reactive examples
+  - Benefits of declarative bindings (6 sections)
+
+#### Slide 24 – Error Handling and Resilience
+
 - **File:** `src/slides/topics/_18-error-handling.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -231,7 +288,8 @@ From creating simple extended elements to building complex design systems, this 
   - Loading states
   - Fallback content (6 sections)
 
-#### Slide 22 – Documentation and API Design
+#### Slide 25 – Documentation and API Design
+
 - **File:** `src/slides/topics/_19-api-design.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -242,7 +300,8 @@ From creating simple extended elements to building complex design systems, this 
   - TypeScript support
   - Documentation best practices (6 sections)
 
-#### Slide 23 – Real-World Component Examples
+#### Slide 26 – Real-World Component Examples
+
 - **File:** `src/slides/topics/_20-real-world-examples.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -254,9 +313,10 @@ From creating simple extended elements to building complex design systems, this 
 
 ---
 
-### Phase 4: Advanced Topics (Slides 25-35, ~15-18 min)
+### Phase 4: Advanced Topics (Slides 27-37, ~15-18 min)
 
-#### Slide 25 – Advanced DOM Manipulation
+#### Slide 27 – Advanced DOM Manipulation
+
 - **File:** `src/slides/topics/_21-advanced-dom.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -266,7 +326,8 @@ From creating simple extended elements to building complex design systems, this 
   - Efficient DOM queries
   - Performance monitoring (6 sections)
 
-#### Slide 26 – Content Distribution Patterns
+#### Slide 28 – Content Distribution Patterns
+
 - **File:** `src/slides/topics/_22-content-distribution.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -276,7 +337,108 @@ From creating simple extended elements to building complex design systems, this 
   - Content filtering
   - Template cloning (5 sections)
 
+#### Slide 29 – Advanced Lifecycle Patterns
+
+- **File:** `src/slides/topics/_23-lifecycle-patterns.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Lazy initialization with Intersection Observer
+  - Cleanup management helpers
+  - Reconnection handling
+  - Adopted callback pattern
+  - Attribute change batching
+  - Lifecycle best practices (6 sections)
+
+#### Slide 30 – Advanced Event Patterns
+
+- **File:** `src/slides/topics/_24-advanced-events.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Event delegation with data attributes
+  - Event bus pattern
+  - Throttling and debouncing
+  - Event composition (gestures)
+  - Promise-based events
+  - Event replay pattern (6 sections)
+
+#### Slide 31 – Performance Optimization
+
+- **File:** `src/slides/topics/_25-performance.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Rendering optimization and batching
+  - Lazy loading content
+  - Memory management with WeakMap
+  - CSS containment
+  - will-change property usage
+  - Performance measurement (6 sections)
+
+#### Slide 32 – Testing Custom Elements
+
+- **File:** `src/slides/topics/_26-testing.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Unit testing setup
+  - Testing lifecycle methods
+  - Testing user interactions
+  - Testing async operations
+  - Integration testing
+  - Visual regression testing
+  - Testing best practices (7 sections)
+
+#### Slide 33 – TypeScript Integration
+
+- **File:** `src/slides/topics/_27-typescript.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Basic TypeScript definitions
+  - Type-safe attributes
+  - Event type definitions
+  - Generic components
+  - Decorators (experimental)
+  - Type declaration files (6 sections)
+
+#### Slide 34 – Build Tools & Bundling
+
+- **File:** `src/slides/topics/_28-build-tools.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - No build approach
+  - Vite configuration
+  - Webpack configuration
+  - Code splitting
+  - CSS processing
+  - Development server
+  - Publishing to NPM (7 sections)
+
+#### Slide 35 – Debugging & DevTools
+
+- **File:** `src/slides/topics/_29-debugging.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Browser DevTools usage
+  - Custom debug panel
+  - Performance profiling
+  - Error tracking
+  - Logging utilities
+  - Testing in DevTools (6 sections)
+
+#### Slide 36 – Versioning & Compatibility
+
+- **File:** `src/slides/topics/_30-versioning.html`
+- **Status:** 🟩 Complete
+- **Content:**
+  - Semantic versioning
+  - Feature detection
+  - Polyfill strategy
+  - Backward compatibility
+  - Migration guides
+  - Compatibility testing (6 sections)
+
+#### Slide 37 – Advanced Topics Recap
+
 #### Slide 27 – Advanced Lifecycle Patterns
+
 - **File:** `src/slides/topics/_23-lifecycle-patterns.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -288,6 +450,7 @@ From creating simple extended elements to building complex design systems, this 
   - Lifecycle best practices (6 sections)
 
 #### Slide 28 – Advanced Event Patterns
+
 - **File:** `src/slides/topics/_24-advanced-events.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -299,6 +462,7 @@ From creating simple extended elements to building complex design systems, this 
   - Event replay pattern (6 sections)
 
 #### Slide 29 – Performance Optimization
+
 - **File:** `src/slides/topics/_25-performance.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -310,6 +474,7 @@ From creating simple extended elements to building complex design systems, this 
   - Performance measurement (6 sections)
 
 #### Slide 30 – Testing Custom Elements
+
 - **File:** `src/slides/topics/_26-testing.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -322,6 +487,7 @@ From creating simple extended elements to building complex design systems, this 
   - Testing best practices (7 sections)
 
 #### Slide 31 – TypeScript Integration
+
 - **File:** `src/slides/topics/_27-typescript.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -333,6 +499,7 @@ From creating simple extended elements to building complex design systems, this 
   - Type declaration files (6 sections)
 
 #### Slide 32 – Build Tools & Bundling
+
 - **File:** `src/slides/topics/_28-build-tools.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -345,6 +512,7 @@ From creating simple extended elements to building complex design systems, this 
   - Publishing to NPM (7 sections)
 
 #### Slide 33 – Debugging & DevTools
+
 - **File:** `src/slides/topics/_29-debugging.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -356,6 +524,7 @@ From creating simple extended elements to building complex design systems, this 
   - Testing in DevTools (6 sections)
 
 #### Slide 34 – Versioning & Compatibility
+
 - **File:** `src/slides/topics/_30-versioning.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -367,6 +536,7 @@ From creating simple extended elements to building complex design systems, this 
   - Compatibility testing (6 sections)
 
 #### Slide 35 – Advanced Topics Recap
+
 - **File:** `src/slides/topics/_31-advanced-recap.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -382,9 +552,10 @@ From creating simple extended elements to building complex design systems, this 
 
 ---
 
-### Phase 5: Integration (Slides 36-42, ~10-12 min)
+### Phase 5: Integration (Slides 38-44, ~10-12 min)
 
-#### Slide 36 – Integration with Vue.js
+#### Slide 38 – Integration with Vue.js
+
 - **File:** `src/slides/topics/_32-vue-integration.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -394,7 +565,8 @@ From creating simple extended elements to building complex design systems, this 
   - Wrapper component pattern
   - Composables with Custom Elements (6 sections)
 
-#### Slide 37 – Integration with React
+#### Slide 39 – Integration with React
+
 - **File:** `src/slides/topics/_33-react-integration.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -404,7 +576,8 @@ From creating simple extended elements to building complex design systems, this 
   - Custom hook for elements
   - React 19+ improvements (6 sections)
 
-#### Slide 38 – Integration with Angular
+#### Slide 40 – Integration with Angular
+
 - **File:** `src/slides/topics/_34-angular-integration.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -414,7 +587,8 @@ From creating simple extended elements to building complex design systems, this 
   - Directive wrapper
   - Service for Custom Elements (6 sections)
 
-#### Slide 39 – Building Design Systems
+#### Slide 41 – Building Design Systems
+
 - **File:** `src/slides/topics/_35-design-systems.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -426,7 +600,8 @@ From creating simple extended elements to building complex design systems, this 
   - Component documentation
   - Publishing to NPM (7 sections)
 
-#### Slide 40 – Framework Agnostic Components
+#### Slide 42 – Framework Agnostic Components
+
 - **File:** `src/slides/topics/_36-framework-agnostic.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -437,7 +612,8 @@ From creating simple extended elements to building complex design systems, this 
   - Testing across frameworks
   - Progressive enhancement (6 sections)
 
-#### Slide 41 – Interoperability & Standards
+#### Slide 43 – Interoperability & Standards
+
 - **File:** `src/slides/topics/_37-interoperability.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -449,7 +625,8 @@ From creating simple extended elements to building complex design systems, this 
   - Module system compatibility
   - Interoperability checklist (7 sections)
 
-#### Slide 42 – Real-World Case Studies
+#### Slide 44 – Real-World Case Studies
+
 - **File:** `src/slides/topics/_38-case-studies.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -463,9 +640,10 @@ From creating simple extended elements to building complex design systems, this 
 
 ---
 
-### Phase 6: Future and Wrap-up (Slides 43-45, ~5 min)
+### Phase 6: Future and Wrap-up (Slides 45-47, ~5 min)
 
-#### Slide 43 – Upcoming Custom Elements Features
+#### Slide 45 – Upcoming Custom Elements Features
+
 - **File:** `src/slides/topics/_43-future-features.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -476,7 +654,8 @@ From creating simple extended elements to building complex design systems, this 
   - Custom state pseudo-classes
   - Invoker commands integration
 
-#### Slide 44 – Resources and Learning Paths
+#### Slide 46 – Resources and Learning Paths
+
 - **File:** `src/slides/topics/_44-resources.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -488,7 +667,8 @@ From creating simple extended elements to building complex design systems, this 
   - Recommended courses and books
   - Conference talks
 
-#### Slide 45 – Conclusions and Call-to-Action
+#### Slide 47 – Conclusions and Call-to-Action
+
 - **File:** `src/slides/topics/_45-conclusions.html`
 - **Status:** 🟩 Complete
 - **Content:**
@@ -503,15 +683,15 @@ From creating simple extended elements to building complex design systems, this 
 
 ## Implementation Phases Summary
 
-| Phase | Slides | Duration | Status |
-|-------|--------|----------|--------|
-| Introduction | 1-3 | 5 min | 🟩 Complete |
-| Fundamentals | 4-12 | 10-12 min | 🟩 Complete |
-| Patterns & Use Cases | 13-24 | 15-18 min | � Complete |
-| Advanced Topics | 25-35 | 15-18 min | 🟩 Complete |
-| Integration | 36-42 | 10-12 min | 🟩 Complete |
-| Future & Wrap-up | 43-45 | 5 min | 🟩 Complete |
-| **TOTAL** | **45** | **45-60 min** | ✅ Done (100% complete) |
+| Phase                | Slides | Duration      | Status                  |
+| -------------------- | ------ | ------------- | ----------------------- |
+| Introduction         | 1-3    | 5 min         | 🟩 Complete             |
+| Fundamentals         | 4-12   | 10-12 min     | 🟩 Complete             |
+| Patterns & Use Cases | 13-26  | 15-18 min     | 🟩 Complete             |
+| Advanced Topics      | 27-37  | 15-18 min     | 🟩 Complete             |
+| Integration          | 38-44  | 10-12 min     | 🟩 Complete             |
+| Future & Wrap-up     | 45-47  | 5 min         | 🟩 Complete             |
+| **TOTAL**            | **47** | **45-60 min** | ✅ Done (100% complete) |
 
 ---
 
@@ -546,6 +726,7 @@ For each slide, ensure:
 ## Development Guidelines
 
 ### Content Creation
+
 1. Create slide file: `src/slides/topics/_NN-slide-name.html`
 2. Add code examples with proper syntax highlighting
 3. Include live demos or CodePen embeds
@@ -553,12 +734,14 @@ For each slide, ensure:
 5. Include notes about browser support
 
 ### Code Quality
+
 - Run `pnpm start` to test slides locally
 - Use `pnpm build` before committing
 - Ensure code formatting with appropriate tools
 - Test on Chrome, Firefox, Safari, Edge
 
 ### Documentation
+
 - Update this ROADMAP.md as slides progress
 - Link to MDN/web.dev resources
 - Include practical use cases
@@ -591,15 +774,15 @@ For each slide, ensure:
 
 ## Implementation Progress
 
-| Phase | Slides | Status | Files |
-|-------|--------|--------|-------|
-| Phase 1: Introduction | 1-3 | ✅ Complete (3/3) | _pixu, _main-topic, _doodle |
-| Phase 2: Fundamentals | 4-12 | ✅ Complete (9/9) | _01 through _09 |
-| Phase 3: Patterns & Use Cases | 13-24 | ✅ Complete (12/12) | _10 through _20 |
-| Phase 4: Advanced Topics | 25-35 | ✅ Complete (11/11) | _21 through _31 |
-| Phase 5: Integration | 36-42 | ✅ Complete (7/7) | _32 through _38 |
-| Phase 6: Future & Wrap-up | 43-45 | ✅ Complete (3/3) | _43 through _45 |
-| **TOTAL** | **45** | **100% Complete** | **45/45 slides** |
+| Phase                         | Slides | Status              | Files                          |
+| ----------------------------- | ------ | ------------------- | ------------------------------ |
+| Phase 1: Introduction         | 1-3    | ✅ Complete (3/3)   | \_pixu, \_main-topic, \_doodle |
+| Phase 2: Fundamentals         | 4-12   | ✅ Complete (9/9)   | \_01 through \_09              |
+| Phase 3: Patterns & Use Cases | 13-24  | ✅ Complete (12/12) | \_10 through \_20              |
+| Phase 4: Advanced Topics      | 25-35  | ✅ Complete (11/11) | \_21 through \_31              |
+| Phase 5: Integration          | 36-42  | ✅ Complete (7/7)   | \_32 through \_38              |
+| Phase 6: Future & Wrap-up     | 43-45  | ✅ Complete (3/3)   | \_43 through \_45              |
+| **TOTAL**                     | **45** | **100% Complete**   | **45/45 slides**               |
 
 ---
 

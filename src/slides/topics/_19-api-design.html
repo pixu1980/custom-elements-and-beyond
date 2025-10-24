@@ -1,11 +1,13 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>API Design</mark> & Documentation</h3>
     <p>Creating clear and intuitive component interfaces</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Designing Clear APIs</h4>
-    <pre><code class="language-javascript">/**
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+/**
  * Enhanced button with icon support
  * 
  * @element icon-button
@@ -28,11 +30,15 @@ class IconButton extends HTMLButtonElement {
   }
   
   // ... implementation
-}</code></pre>
+}
+      </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>JSDoc Comments</h4>
-    <pre><code class="language-javascript">class DataTable extends HTMLTableElement {
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+class DataTable extends HTMLTableElement {
   /**
    * Sets the table data
    * @param {Array&lt;Object&gt;} data - Array of row objects
@@ -65,11 +71,15 @@ class IconButton extends HTMLButtonElement {
   filter(predicate) {
     return this._data.filter(predicate);
   }
-}</code></pre>
+}
+      </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Semantic Attribute Naming</h4>
-    <pre><code class="language-javascript">class FormInput extends HTMLInputElement {
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+class FormInput extends HTMLInputElement {
   static get observedAttributes() {
     return [
       // ✅ Good: Clear, semantic names
@@ -94,11 +104,15 @@ class IconButton extends HTMLButtonElement {
       // ...
     }
   }
-}</code></pre>
+}
+      </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Property vs Attribute Guidelines</h4>
-    <pre><code class="language-javascript">class SmartList extends HTMLUListElement {
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+class SmartList extends HTMLUListElement {
   // ✅ Attribute: Simple, serializable values
   get sortOrder() {
     return this.getAttribute('sort-order') || 'asc';
@@ -127,11 +141,15 @@ class IconButton extends HTMLButtonElement {
   refresh() {
     this.render();
   }
-}</code></pre>
+}
+      </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>TypeScript Support</h4>
-    <pre><code class="language-typescript">// Custom element type definition
+    <pre>
+      <code class="hljs typescript" data-trim data-line-numbers>
+// Custom element type definition
 interface IconButtonElement extends HTMLButtonElement {
   icon: string;
   position: 'start' | 'end';
@@ -150,30 +168,19 @@ const button = document.createElement('button', {
 }) as IconButtonElement;
 
 button.icon = '🚀';
-button.variant = 'primary'; // TypeScript validates this!</code></pre>
+button.variant = 'primary'; // TypeScript validates this!
+      </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Documentation Best Practices</h4>
     <ul>
-      <li class="fragment">
-        Document <mark>all public APIs</mark> (attributes, properties, methods,
-        events)
-      </li>
-      <li class="fragment">
-        Provide <mark>usage examples</mark> in comments
-      </li>
-      <li class="fragment">
-        Use <mark>semantic naming</mark> that's self-explanatory
-      </li>
-      <li class="fragment">
-        Follow <mark>native element patterns</mark> when possible
-      </li>
-      <li class="fragment">
-        Include <mark>TypeScript definitions</mark> for type safety
-      </li>
-      <li class="fragment">
-        Document <mark>browser compatibility</mark> requirements
-      </li>
+      <li class="fragment">Document <mark>all public APIs</mark> (attributes, properties, methods, events)</li>
+      <li class="fragment">Provide <mark>usage examples</mark> in comments</li>
+      <li class="fragment">Use <mark>semantic naming</mark> that's self-explanatory</li>
+      <li class="fragment">Follow <mark>native element patterns</mark> when possible</li>
+      <li class="fragment">Include <mark>TypeScript definitions</mark> for type safety</li>
+      <li class="fragment">Document <mark>browser compatibility</mark> requirements</li>
     </ul>
   </section>
 </section>

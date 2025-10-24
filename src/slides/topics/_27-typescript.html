@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>TypeScript</mark> Integration</h3>
-    <p>Adding type safety to Custom Elements</p>
+    <p>Adding type safety to customElements</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Basic TypeScript Definition</h4>
     <pre><code class="language-typescript">// counter-button.ts
 interface CounterButtonElement extends HTMLButtonElement {
@@ -48,7 +48,7 @@ class CounterButton extends HTMLButtonElement implements CounterButtonElement {
 
 customElements.define('counter-button', CounterButton, { extends: 'button' });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Type-Safe Attributes</h4>
     <pre><code class="language-typescript">type ThemeValue = 'light' | 'dark' | 'auto';
 type SizeValue = 'small' | 'medium' | 'large';
@@ -108,7 +108,7 @@ class ThemedButton extends HTMLButtonElement {
 
 customElements.define('themed-button', ThemedButton, { extends: 'button' });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Event Type Definitions</h4>
     <pre><code class="language-typescript">// Define custom event types
 interface CountChangedEvent extends CustomEvent {
@@ -162,7 +162,7 @@ button.addEventListener('count-changed', (event) => {
   console.log(event.detail.newValue); // ✅ Autocomplete works!
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Generic Components</h4>
     <pre><code class="language-typescript">// Generic data list component
 interface DataItem {
@@ -230,7 +230,7 @@ userList.items = [
 
 const user = userList.findById(1); // Type: User | undefined</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Decorators (Experimental)</h4>
     <pre><code class="language-typescript">// Using decorators for cleaner syntax
 function customElement(tagName: string, options?: ElementDefinitionOptions) {
@@ -285,7 +285,7 @@ class FancyButton extends HTMLButtonElement {
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Type Declaration Files</h4>
     <pre><code class="language-typescript">// counter-button.d.ts
 declare global {

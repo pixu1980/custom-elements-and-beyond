@@ -1,11 +1,13 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>State Management</mark> in Components</h3>
     <p>Managing component state effectively</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Local Component State</h4>
-    <pre><code class="language-javascript">class TodoItem extends HTMLLIElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class TodoItem extends HTMLLIElement {
   constructor() {
     super();
     this._state = {
@@ -33,11 +35,15 @@
     this.classList.toggle('completed', this._state.completed);
     this.setAttribute('aria-checked', String(this._state.completed));
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>State Synchronization</h4>
-    <pre><code class="language-javascript">class CounterButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class CounterButton extends HTMLButtonElement {
   constructor() {
     super();
     this._count = 0;
@@ -67,11 +73,15 @@
   updateDisplay() {
     this.textContent = `Count: ${this._count}`;
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Immutability Pattern</h4>
-    <pre><code class="language-javascript">class DataList extends HTMLUListElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class DataList extends HTMLUListElement {
   set items(newItems) {
     // Don't mutate original array
     this._items = [...newItems];
@@ -97,11 +107,15 @@
       item.id === id ? { ...item, ...updates } : item
     );
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Change Detection</h4>
-    <pre><code class="language-javascript">class SmartComponent extends HTMLDivElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class SmartComponent extends HTMLDivElement {
   constructor() {
     super();
     this._state = {};
@@ -134,6 +148,8 @@
       });
     }
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
 </section>

@@ -1,0 +1,129 @@
+<section>
+  <section>
+    <h3><mark>Signal Pattern</mark> for Reactivity</h3>
+    <p>Minimal reactive primitive inspired by modern frameworks</p>
+    <ul class="fragment">
+      <li>Lightweight alternative to Observable</li>
+      <li>Simple get/set/subscribe API</li>
+      <li>No EventTarget overhead</li>
+      <li>Direct Set-based subscription management</li>
+    </ul>
+    <aside class="notes">Signals are even simpler than Observables. They use a Set to track subscribers instead of EventTarget.</aside>
+  </section>
+  <section>
+    <h4>Implementing a Signal Primitive</h4>
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    function Signal(initial) {
+  let value = initial;
+  const subscribers = new Set();
+  
+  return {
+    get() {
+      return value;
+    },
+    set(newValue) {
+      value = newValue;
+      subscribers.forEach((fn) => fn(value));
+    },
+    subscribe(fn) {
+      subscribers.add(fn);
+      fn(value); // Initial call
+      return () => subscribers.delete(fn);
+    },
+  };
+}
+  </code>
+    </pre>
+    <aside class="notes">This Signal implementation is about 10 lines of code. It's all you need for basic reactivity.</aside>
+  </section>
+  <section>
+    <h4>Using Signals in customElements</h4>
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    // Create signal state
+const count = Signal(0);
+
+class CounterDisplay extends HTMLSpanElement {
+  connectedCallback() {
+    this._unsubscribe = count.subscribe((value) => {
+      this.textContent = value;
+    });
+  }
+  
+  disconnectedCallback() {
+    this._unsubscribe();
+  }
+}
+
+class IncrementButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.textContent = '+1';
+    this.onclick = () => count.set(count.get() + 1);
+  }
+}
+
+class DecrementButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.textContent = '-1';
+    this.onclick = () => count.set(count.get() - 1);
+  }
+}
+
+customElements.define('counter-display', CounterDisplay, { extends: 'span' });
+customElements.define('increment-button', IncrementButton, { extends: 'button' });
+customElements.define('decrement-button', DecrementButton, { extends: 'button' });
+  </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Signal Pattern in Action</h4>
+    <pre>
+  <code class="hljs html" data-trim data-line-numbers>
+    &lt;p&gt;Current count: &lt;span is="counter-display"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;button is="increment-button"&gt;&lt;/button&gt;
+&lt;button is="decrement-button"&gt;&lt;/button&gt;
+  </code>
+    </pre>
+    <div class="fragment">
+      <p><strong>Benefits of Signals:</strong></p>
+      <ul>
+        <li>Minimal memory footprint</li>
+        <li>Explicit get/set API</li>
+        <li>Easy to compose and derive</li>
+        <li>Framework-agnostic pattern</li>
+      </ul>
+    </div>
+    <aside class="notes">Signals provide fine-grained reactivity. Each component subscribes only to the signals it needs.</aside>
+  </section>
+  <section>
+    <h4>Derived Signals (Computed Values)</h4>
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    function computed(fn, ...signals) {
+  const result = Signal(fn());
+  
+  // Subscribe to all dependencies
+  signals.forEach((signal) => {
+    signal.subscribe(() => {
+      result.set(fn());
+    });
+  });
+  
+  return result;
+}
+
+// Usage
+const count = Signal(0);
+const doubled = computed(() => count.get() * 2, count);
+const isEven = computed(() => count.get() % 2 === 0, count);
+
+// Automatically updates when count changes
+count.set(5);
+console.log(doubled.get()); // 10
+console.log(isEven.get());  // false
+  </code>
+    </pre>
+    <aside class="notes">Computed signals derive new values from existing signals. They update automatically when dependencies change.</aside>
+  </section>
+</section>

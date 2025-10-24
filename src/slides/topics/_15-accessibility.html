@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
-    <h3><mark>Accessibility</mark> in Custom Elements</h3>
+  <section>
+    <h3><mark>Accessibility</mark> in customElements</h3>
     <p>Inheriting and enhancing native accessibility</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Inherited Accessibility</h4>
     <p>Extended elements inherit native accessibility features</p>
     <ul class="fragment">
@@ -13,14 +13,13 @@
       <li>✅ Native ARIA roles</li>
       <li>✅ Form integration and labels</li>
     </ul>
-    <aside class="notes">
-      This is a huge advantage over autonomous custom elements - you get
-      accessibility for free!
-    </aside>
+    <aside class="notes">This is a huge advantage over autonomous customElements - you get accessibility for free!</aside>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>ARIA Attributes</h4>
-    <pre><code class="language-javascript">class ExpandableButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class ExpandableButton extends HTMLButtonElement {
   connectedCallback() {
     // Set ARIA attributes
     this.setAttribute('aria-expanded', 'false');
@@ -37,11 +36,15 @@
     const panel = document.getElementById(this.dataset.controls);
     panel?.classList.toggle('hidden', expanded);
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Keyboard Navigation</h4>
-    <pre><code class="language-javascript">class MenuButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class MenuButton extends HTMLButtonElement {
   connectedCallback() {
     this.setAttribute('aria-haspopup', 'menu');
     
@@ -63,11 +66,15 @@
         break;
     }
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Focus Management</h4>
-    <pre><code class="language-javascript">class DialogButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class DialogButton extends HTMLButtonElement {
   connectedCallback() {
     this.addEventListener('click', this.openDialog);
   }
@@ -88,11 +95,15 @@
       firstFocusable?.focus();
     }
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Screen Reader Support</h4>
-    <pre><code class="language-javascript">class StatusButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class StatusButton extends HTMLButtonElement {
   connectedCallback() {
     this.setupLiveRegion();
   }
@@ -112,11 +123,15 @@
   disconnectedCallback() {
     this.liveRegion?.remove();
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Form Integration</h4>
-    <pre><code class="language-javascript">class RatingInput extends HTMLInputElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class RatingInput extends HTMLInputElement {
   connectedCallback() {
     this.type = 'hidden';
     this.setAttribute('aria-label', 'Rating');
@@ -146,26 +161,18 @@
     button.onclick = () => this.setRating(value);
     return button;
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Testing Accessibility</h4>
     <ul>
-      <li class="fragment">
-        Use <mark>axe DevTools</mark> for automated testing
-      </li>
-      <li class="fragment">
-        Test with <mark>screen readers</mark> (NVDA, JAWS, VoiceOver)
-      </li>
-      <li class="fragment">
-        Verify <mark>keyboard navigation</mark> works without mouse
-      </li>
-      <li class="fragment">
-        Check <mark>color contrast</mark> ratios (WCAG AA/AAA)
-      </li>
-      <li class="fragment">
-        Test <mark>focus indicators</mark> are visible
-      </li>
+      <li class="fragment">Use <mark>axe DevTools</mark> for automated testing</li>
+      <li class="fragment">Test with <mark>screen readers</mark> (NVDA, JAWS, VoiceOver)</li>
+      <li class="fragment">Verify <mark>keyboard navigation</mark> works without mouse</li>
+      <li class="fragment">Check <mark>color contrast</mark> ratios (WCAG AA/AAA)</li>
+      <li class="fragment">Test <mark>focus indicators</mark> are visible</li>
     </ul>
   </section>
 </section>

@@ -1,0 +1,197 @@
+<section>
+  <section>
+    <h4>
+      Expected Question #1: <br />
+      "Nice, so do I have to write <br />
+      all this "<mark>boilerplate</mark>" code... <span class="fragment"><mark>every time</mark>??"</span>
+    </h4>
+    <p class="fragment">Of course <mark>not</mark>!</p>
+  </section>
+  <section>
+    <h4>
+      Expected Question #2: <br />
+      "So it's possible to replicate or mimic the most common features of Lit, Angular, React, Vue??"
+    </h4>
+    <p class="fragment">Well, <mark>yes</mark>!</p>
+  </section>
+  <section>
+    <h4 balance>
+      Expected Question #3: <br />
+      "Do you mean we can implement <span class="fragment"><mark>metaprogramming</mark>, </span><span class="fragment">static initialization blocks, </span
+      ><span class="fragment"><mark>mixins</mark>, </span><span class="fragment">decorator pattern, </span><span class="fragment"><mark>lifecycle hooks</mark>, </span>
+      <span class="fragment">two way data binding, </span><span class="fragment"><mark>reactivity</mark>??</span> <br />
+      <span class="fragment">in <mark>vanillaJS</mark> 😱?"</span>
+    </h4>
+    <p class="fragment">Hell, <mark>yeah</mark>!</p>
+  </section>
+  <section>
+    <p>Sounds like a <mark>huge "vanilla" ice cream</mark> 🍦, uh?</p>
+  </section>
+  <section>
+    <h3>
+      .talk:is(:not(<mark>[enough]</mark>));
+      <br />
+      showMe(<mark>'the &lt;code&gt;&lt;/code&gt;'</mark>);
+    </h3>
+  </section>
+  <section>
+    <h4>extending Semantic HTML elements</h4>
+    <pre class="fragment">
+      <code class="hljs javascript"  data-trim="" data-line-numbers="">
+export class Button extends HTMLButtonElement {
+}
+
+export class Input extends HTMLInputElement {
+}
+
+export class Dialog extends HTMLDialogElement {
+}
+
+export class Details extends HTMLDetailsElement {
+}
+</code>
+    </pre>
+  </section>
+  <section>
+    <h4>Yep, no base classes!</h4>
+  </section>
+  <section>
+    <h4>Metaprogramming!</h4>
+    <pre class="fragment">
+      <code class="hljs javascript" data-trim="" data-line-numbers="|1-7|1-11|12-16|18-22|24">
+/**
+* Button class
+*
+* @export
+* @class Button 
+* @extends {HTMLButtonElement}
+*/
+export class Button extends HTMLButtonElement {
+  static name = "pixu-button";
+  static extends = "button";
+ 
+  static attributes = {
+    disabled: (oldValue, newValue) => {
+      console.log("disabled changed", oldValue, newValue, this.textContent); 
+    }
+  }
+ 
+  static events = {
+    click: function (e) {
+      console.log("button clicked", this.textContent);
+    },
+  }
+  
+  // Yippie Kai Yay... motherf... metaprogramming!
+ 
+ ...
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>
+      Static Initialization Blocks (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Static_initialization_blocks" target="_blank" rel="noopener noreferrer">MDN</a>)
+    </h4>
+    <pre class="fragment">
+      <code class="hljs javascript" data-trim="" data-line-numbers="1-4|6-11|6-14|19|13,19|21">
+export class Button extends HTMLButtonElement {
+  static name = "wcag-button";
+
+  ...
+  
+  /**
+  * static initialization
+  *
+  * @static
+  * @memberof Button
+  */
+  static {
+    componentDecorator("Button", Button);
+  } 
+  
+ ...
+}
+
+// import '@wcag-ui/button';
+
+//Yippie Kai Yay... motherf... static initialization blocks!
+  </code>
+    </pre>
+  </section>
+  <section>
+    <h4><mark>Decorators</mark>?</h4>
+    <pre class="fragment">
+      <code class="hljs javascript" data-trim="" data-line-numbers="1-6|8-15|17-21|24-31|33-37|39">
+export function componentDecorator(componentName, component) {
+  assertMetaKey(component, "name");
+  defineCustomElement(component);
+  applyMixinsToComponent(component);
+  exposeComponent(componentName, component);
+}
+
+export function defineCustomElement(component) {
+  !customElements?.get(component.name) &&
+    customElements.define(
+      component.name,
+      component, 
+      buildExtendOptions(component)
+    );
+}
+
+export function buildExtendOptions(mixins) {
+  return mixins.extends ? { extends: mixins.extends } : undefined;
+  
+  // this allows to <button is="wcag-button"></button>
+  // instead of <wcag-button></wcag-button>
+}
+
+export function applyMixins(component) {
+  Object.assign(
+    component.prototype,
+    { componentName: component.name },
+    component.attributes && { ...buildAttributeHandlers(component.attributes) },
+    component.events && { ...buildEventHandlers(component.events) },
+    buildLifecycleMethods(component)
+  );
+
+  component.attributes &&
+    Object.defineProperty(component, "observedAttributes", {
+      get: () => Object.keys(component.attributes),
+    });
+}
+
+// Yippie Kai Yay... motherf... decorators!
+  </code>
+    </pre>
+  </section>
+  <section>
+    <h4><mark>Lifecycle</mark> methods?</h4>
+    <pre class="fragment">
+      <code class="hljs javascript" data-trim="" data-line-numbers="|6-8|9-13|14-18|3-5|22">
+export function buildLifecycleMethods(component) {
+  return {
+    handleEvent(e) {
+      this[`handle${pascalize(e.type)}Event`]?.(e);
+    },
+    attributeChangedCallback(name, oldValue, newValue) {
+      this[`handle${pascalize(name)}AttributeChanged`]?.(oldValue, newValue);
+    },
+    connectedCallback() {
+      for (const event of Object.keys(component.events)) {
+        this.addEventListener(event, this);
+      }
+    },
+    disconnectedCallback() {
+      for (const event of Object.keys(component.events)) {
+        this.removeEventListener(event, this);
+      }
+    },
+  };
+}
+  
+// Yippie Kai Yay... motherf... lifecycle!
+  </code>
+    </pre>
+  </section>
+</section>

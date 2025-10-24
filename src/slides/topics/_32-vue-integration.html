@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Integration with <mark>Vue.js</mark></h3>
-    <p>Using Custom Elements in Vue applications</p>
+    <p>Using customElements in Vue applications</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Vue Configuration</h4>
     <pre><code class="language-javascript">// vite.config.js (Vue 3 + Vite)
 import { defineConfig } from 'vite';
@@ -14,7 +14,7 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          // Treat all tags with a dash as custom elements
+          // Treat all tags with a dash as customElements
           isCustomElement: (tag) => tag.includes('-') || tag.startsWith('is-'),
         },
       },
@@ -25,20 +25,20 @@ export default defineConfig({
 import { createApp } from 'vue';
 import App from './App.vue';
 
-// Import custom elements
+// Import customElements
 import './components/counter-button.js';
 import './components/data-list.js';
 
 const app = createApp(App);
 
-// Tell Vue to ignore custom elements
+// Tell Vue to ignore customElements
 app.config.compilerOptions.isCustomElement = (tag) => {
   return tag.includes('-') || tag.startsWith('is-');
 };
 
 app.mount('#app');</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Using in Vue Templates</h4>
     <pre><code class="language-vue">&lt;template&gt;
   &lt;div class="app"&gt;
@@ -80,7 +80,7 @@ onMounted(() => {
 });
 &lt;/script&gt;</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Two-Way Binding with v-model</h4>
     <pre><code class="language-vue">&lt;template&gt;
   &lt;!-- Custom v-model support --&gt;
@@ -110,7 +110,7 @@ class CustomInput extends HTMLInputElement {
 
 customElements.define('custom-input', CustomInput, { extends: 'input' });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Wrapper Component Pattern</h4>
     <pre><code class="language-vue">&lt;!-- CustomButton.vue --&gt;
 &lt;template&gt;
@@ -158,8 +158,8 @@ onMounted(() => {
 });
 &lt;/script&gt;</code></pre>
   </section>
-  <section data-transition="slide">
-    <h4>Composables with Custom Elements</h4>
+  <section>
+    <h4>Composables with customElements</h4>
     <pre><code class="language-javascript">// useCustomElement.js
 import { ref, onMounted, onUnmounted } from 'vue';
 

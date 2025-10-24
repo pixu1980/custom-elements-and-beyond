@@ -1,0 +1,123 @@
+<section>
+  <section>
+    <h3>Attributes vs <mark>Properties</mark></h3>
+    <p>Understanding the difference is key to effective customElements</p>
+  </section>
+  <section>
+    <h4>Attributes (HTML)</h4>
+    <pre><code class="language-html">&lt;button is="my-button" value="42" disabled&gt;
+  Click me
+&lt;/button&gt;</code></pre>
+    <ul class="fragment">
+      <li>Always <mark>strings</mark> (or null)</li>
+      <li>Defined in <mark>HTML</mark></li>
+      <li>Accessible via <code>getAttribute()</code></li>
+      <li>Trigger <code>attributeChangedCallback()</code></li>
+    </ul>
+  </section>
+  <section>
+    <h4>Properties (JavaScript)</h4>
+    <pre><code class="language-javascript">const button = document.querySelector('[is="my-button"]');
+button.value = 42;        // Number
+button.disabled = true;   // Boolean
+button.data = { foo: 'bar' }; // Object</code></pre>
+    <ul class="fragment">
+      <li>Can be any <mark>JavaScript type</mark></li>
+      <li>Accessed in <mark>JavaScript</mark></li>
+      <li>Don't trigger callbacks automatically</li>
+    </ul>
+  </section>
+  <section>
+    <h4>Reflection Pattern</h4>
+    <pre><code class="language-javascript">class MyButton extends HTMLButtonElement {
+  get value() {
+    return this.getAttribute('value');
+  }
+  
+  set value(val) {
+    this.setAttribute('value', val);
+  }
+}</code></pre>
+    <p class="fragment">Sync properties with attributes for <mark>consistency</mark></p>
+  </section>
+  <section>
+    <h4>Best Practices</h4>
+    <ul>
+      <li class="fragment">Use <mark>attributes</mark> for simple, serializable values</li>
+      <li class="fragment">Use <mark>properties</mark> for complex objects or functions</li>
+      <li class="fragment">Reflect simple properties to attributes when possible</li>
+      <li class="fragment">Follow native element patterns (e.g., <code>disabled</code>, <code>value</code>)</li>
+    </ul>
+  </section>
+  <section>
+    <h3>Observed Attributes & <mark>Reactivity</mark></h3>
+    <p>Make your elements respond to attribute changes</p>
+  </section>
+  <section>
+    <h4>Declaring observed attributes</h4>
+    <pre><code class="language-javascript">class ColorButton extends HTMLButtonElement {
+  static get observedAttributes() {
+    return ['color', 'size'];
+  }
+  
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log(`${name} changed: ${oldValue} → ${newValue}`);
+    
+    if (name === 'color') {
+      this.style.backgroundColor = newValue;
+    }
+    if (name === 'size') {
+      this.style.fontSize = newValue;
+    }
+  }
+}</code></pre>
+  </section>
+  <section>
+    <h4>Complete example</h4>
+    <pre><code class="language-javascript">class ValidatedInput extends HTMLInputElement {
+  static get observedAttributes() {
+    return ['pattern', 'required'];
+  }
+
+  connectedCallback() {
+    this.addEventListener('input', this.validate);
+    this.validate();
+  }
+
+  validate = () => {
+    const isValid = this.checkValidity();
+    this.classList.toggle('invalid', !isValid);
+    this.setAttribute('aria-invalid', String(!isValid));
+  };
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this.isConnected) {
+      this.validate();
+    }
+  }
+}</code></pre>
+  </section>
+  <section>
+    <h4>Usage</h4>
+    <pre><code class="language-html">&lt;input 
+  is="validated-input" 
+  type="email" 
+  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+  required
+/&gt;</code></pre>
+    <p class="fragment">Changes to <code>pattern</code> or <code>required</code> automatically re-validate</p>
+  </section>
+  <section>
+    <h4>Performance tip</h4>
+    <p>Only observe attributes you actually need to react to</p>
+    <pre class="fragment"><code class="language-javascript">// ❌ Don't do this
+static get observedAttributes() {
+  return ['id', 'class', 'data-foo', 'data-bar', ...];
+}
+
+// ✅ Do this
+static get observedAttributes() {
+  return ['value', 'disabled']; // Only what you need
+}</code></pre>
+  </section>
+</section>

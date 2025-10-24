@@ -1,25 +1,73 @@
-<section data-transition="slide"></section>
-  <h3>What are <mark>Custom Elements</mark>?</h3>
-  <div class="fragment">
-    <p>
-      <strong>Custom Elements</strong> are a web standard that allows you to
-      <mark>extend native HTML elements</mark>
-    </p>
-  </div>
-  <div class="fragment">
-    <ul>
-      <li>Part of the <strong>Web Components</strong> family</li>
-      <li>Framework <mark>agnostic</mark> and standards based</li>
-      <li>
-        Extend existing elements like <code>&lt;button&gt;</code>,
-        <code>&lt;input&gt;</code>, <code>&lt;div&gt;</code>
-      </li>
-      <li>Inherit native <mark>behavior</mark> and <mark>accessibility</mark></li>
-    </ul>
-  </div>
-  <aside class="notes">
-    Custom Elements let us extend native HTML elements with custom behavior
-    while maintaining all their built-in functionality, accessibility, and
-    browser support.
-  </aside>
+<section>
+  <section>
+    <h4>Defining a <mark>customElement</mark></h4>
+  </section>
+  <section>
+    <pre>
+      <code class="hljs language-javascript" data-trim data-line-numbers="1-7|9-12|14-17|19-23">
+// standard way to define custom elements
+class PixuButtonStd extends HTMLButtonElement {
+  constructor() {
+    super();    
+    this.setAttribute('role', 'button');
+  }
+}
+
+// register in the standard way
+customElements.define(
+  'pixu-button-std', PixuButtonStd
+);
+
+// usage
+&lt;pixu-button-std&gt;
+  Click me!
+&lt;/pixu-button-std&gt;
+
+// runtime
+&lt;pixu-button-std type="button"&gt;
+  Click me!
+&lt;/pixu-button-std&gt;
+      </code>
+    </pre>
+  </section>
+  <section>
+    <pre>
+      <code class="hljs language-javascript" data-trim data-line-numbers="1-7|9-13|15-18|20-23">
+// extends pattern way to define custom elements
+class PixuButton extends HTMLButtonElement {
+  constructor() {
+    super();    
+    this.setAttribute('role', 'button');
+  }
+}
+  
+// register with the extends option
+customElements.define(
+  'pixu-button', PixuButton,
+  { extends: 'button' }
+);
+
+// usage
+&lt;button is="pixu-button"&gt;
+  Click me!
+&lt;/button&gt;
+
+// runtime
+&lt;button is="pixu-button" type="button"&gt;
+  Click me!
+&lt;/button&gt;
+      </code>
+    </pre>
+  </section>
+  <section>
+    <p>Can you see the <mark>difference</mark>?</p>
+    <small balance>
+      <ul>
+        <li class="fragment">Both are <mark>defined</mark> using <mark>class</mark> syntax</li>
+        <li class="fragment">Both are <mark>registered</mark> with <mark>customElements.define</mark></li>
+        <li class="fragment">But the <mark>extends pattern</mark> keeps the <mark>native element's behavior</mark> (and a11y/SEO), differently than the <mark>standard pattern</mark></li>
+      </ul>
+    </small>
+    <aside class="notes">customElements let us extend native HTML elements with custom behavior while maintaining all their built-in functionality, accessibility, and browser support.</aside>
+  </section>
 </section>

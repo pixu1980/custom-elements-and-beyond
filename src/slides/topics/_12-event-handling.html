@@ -1,11 +1,13 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Event Handling & <mark>Communication</mark></h3>
     <p>How components talk to each other</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Custom Events</h4>
-    <pre><code class="language-javascript">class SelectButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class SelectButton extends HTMLButtonElement {
   connectedCallback() {
     this.addEventListener('click', this.handleClick);
   }
@@ -24,11 +26,15 @@
       })
     );
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Listening to custom events</h4>
-    <pre><code class="language-javascript">class SelectContainer extends HTMLDivElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class SelectContainer extends HTMLDivElement {
   connectedCallback() {
     // Listen for events from children
     this.addEventListener('item-selected', this.handleSelection);
@@ -49,11 +55,15 @@
       })
     );
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Parent-Child Communication</h4>
-    <pre><code class="language-javascript">// Parent calls child methods directly
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    // Parent calls child methods directly
 class ParentContainer extends HTMLDivElement {
   connectedCallback() {
     this.querySelector('[is="child-element"]')?.initialize();
@@ -67,11 +77,15 @@ class ChildElement extends HTMLButtonElement {
       new CustomEvent('initialized', { bubbles: true })
     );
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Event delegation pattern</h4>
-    <pre><code class="language-javascript">class ListContainer extends HTMLUListElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class ListContainer extends HTMLUListElement {
   connectedCallback() {
     // Single listener for all items
     this.addEventListener('click', this.handleItemClick);
@@ -92,26 +106,18 @@ class ChildElement extends HTMLButtonElement {
       item.classList.toggle('selected', item.dataset.id === id);
     });
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Best Practices</h4>
     <ul>
-      <li class="fragment">
-        Use <code>bubbles: true</code> for events that should propagate
-      </li>
-      <li class="fragment">
-        Include relevant data in <code>event.detail</code>
-      </li>
-      <li class="fragment">
-        Use <mark>event delegation</mark> for dynamic content
-      </li>
-      <li class="fragment">
-        Always <mark>clean up</mark> event listeners in disconnectedCallback
-      </li>
-      <li class="fragment">
-        Follow native event naming conventions (lowercase, hyphenated)
-      </li>
+      <li class="fragment">Use <code>bubbles: true</code> for events that should propagate</li>
+      <li class="fragment">Include relevant data in <code>event.detail</code></li>
+      <li class="fragment">Use <mark>event delegation</mark> for dynamic content</li>
+      <li class="fragment">Always <mark>clean up</mark> event listeners in disconnectedCallback</li>
+      <li class="fragment">Follow native event naming conventions (lowercase, hyphenated)</li>
     </ul>
   </section>
 </section>

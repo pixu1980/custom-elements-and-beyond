@@ -1,0 +1,10 @@
+# Ignore build output and cache
+dist/
+.parcel-cache/
+
+# Node and misc
+node_modules/
+*.log
+
+# Parcel artifacts
+*.map

@@ -1,11 +1,13 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>Build Tools</mark> & Bundling</h3>
-    <p>Integrating Custom Elements in modern build pipelines</p>
+    <p>Integrating customElements in modern build pipelines</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>No Build Approach</h4>
-    <pre><code class="language-html">&lt;!-- Native ES modules, no build required --&gt;
+    <pre>
+  <code class="hljs html" data-trim data-line-numbers>
+    &lt;!-- Native ES modules, no build required --&gt;
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -19,8 +21,12 @@
     import './components/counter-button.js';
   &lt;/script&gt;
 &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-    <pre><code class="language-javascript">// components/counter-button.js
+&lt;/html&gt;
+  </code>
+    </pre>
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    // components/counter-button.js
 class CounterButton extends HTMLButtonElement {
   constructor() {
     super();
@@ -37,11 +43,15 @@ class CounterButton extends HTMLButtonElement {
 
 customElements.define('counter-button', CounterButton, { extends: 'button' });
 
-// Works directly in modern browsers!</code></pre>
+// Works directly in modern browsers!
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Vite Configuration</h4>
-    <pre><code class="language-javascript">// vite.config.js
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    // vite.config.js
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -52,7 +62,7 @@ export default defineConfig({
       fileName: 'custom-elements',
     },
     rollupOptions: {
-      // Preserve custom elements
+      // Preserve customElements
       output: {
         preserveModules: true,
       },
@@ -63,8 +73,12 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@ungap/custom-elements'],
   },
-});</code></pre>
-    <pre><code class="language-json">{
+});
+  </code>
+    </pre>
+    <pre>
+  <code class="hljs json" data-trim data-line-numbers>
+    {
   "type": "module",
   "main": "./dist/custom-elements.js",
   "exports": {
@@ -72,11 +86,15 @@ export default defineConfig({
     "./counter-button": "./dist/components/counter-button.js"
   },
   "files": ["dist"]
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Webpack Configuration</h4>
-    <pre><code class="language-javascript">// webpack.config.js
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    // webpack.config.js
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -108,11 +126,15 @@ module.exports = {
       },
     ],
   },
-};</code></pre>
+};
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Code Splitting</h4>
-    <pre><code class="language-javascript">// Lazy load components
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    // Lazy load components
 class ComponentLoader extends HTMLDivElement {
   async connectedCallback() {
     const componentName = this.getAttribute('component');
@@ -135,17 +157,25 @@ class ComponentLoader extends HTMLDivElement {
   }
 }
 
-customElements.define('component-loader', ComponentLoader, { extends: 'div' });</code></pre>
-    <pre><code class="language-html">&lt;!-- Component loads only when needed --&gt;
+customElements.define('component-loader', ComponentLoader, { extends: 'div' });
+  </code>
+    </pre>
+    <pre>
+  <code class="hljs html" data-trim data-line-numbers>
+    &lt;!-- Component loads only when needed --&gt;
 &lt;div is="component-loader" 
      component="data-table" 
      tag="table"&gt;
   Loading...
-&lt;/div&gt;</code></pre>
+&lt;/div&gt;
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>CSS Processing</h4>
-    <pre><code class="language-javascript">// With CSS imports (Vite/Webpack)
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    // With CSS imports (Vite/Webpack)
 import styles from './button.module.css';
 
 class StyledButton extends HTMLButtonElement {
@@ -155,8 +185,12 @@ class StyledButton extends HTMLButtonElement {
   }
 }
 
-customElements.define('styled-button', StyledButton, { extends: 'button' });</code></pre>
-    <pre><code class="language-css">/* button.module.css */
+customElements.define('styled-button', StyledButton, { extends: 'button' });
+  </code>
+    </pre>
+    <pre>
+  <code class="hljs css" data-trim data-line-numbers>
+    /* button.module.css */
 .button {
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
@@ -166,11 +200,15 @@ customElements.define('styled-button', StyledButton, { extends: 'button' });</co
 
 .button:hover {
   background: var(--button-bg-hover, darkblue);
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Development Server</h4>
-    <pre><code class="language-json">// package.json
+    <pre>
+  <code class="hljs json" data-trim data-line-numbers>
+    // package.json
 {
   "name": "my-custom-elements",
   "type": "module",
@@ -185,19 +223,27 @@ customElements.define('styled-button', StyledButton, { extends: 'button' });</co
     "vitest": "^1.0.0",
     "@ungap/custom-elements": "^1.3.0"
   }
-}</code></pre>
-    <pre><code class="language-bash"># Development with hot reload
+}
+  </code>
+    </pre>
+    <pre>
+  <code class="hljs bash" data-trim data-line-numbers>
+    # Development with hot reload
 npm run dev
 
 # Production build
 npm run build
 
 # Preview production build
-npm run preview</code></pre>
+npm run preview
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Publishing to NPM</h4>
-    <pre><code class="language-json">// package.json for npm package
+    <pre>
+  <code class="hljs json" data-trim data-line-numbers>
+    // package.json for npm package
 {
   "name": "@yourorg/custom-elements",
   "version": "1.0.0",
@@ -221,8 +267,14 @@ npm run preview</code></pre>
     "build": "vite build && tsc --emitDeclarationOnly",
     "prepublishOnly": "npm run build"
   }
-}</code></pre>
-    <pre><code class="language-bash"># Publish to npm
-npm publish --access public</code></pre>
+}
+  </code>
+    </pre>
+    <pre>
+  <code class="hljs bash" data-trim data-line-numbers>
+    # Publish to npm
+npm publish --access public
+  </code>
+    </pre>
   </section>
 </section>

@@ -1,0 +1,57 @@
+<section>
+  <section>
+    <h3>
+      Building a Click counter <br />
+      <mark>Custom Element</mark>
+    </h3>
+  </section>
+  <section>
+    <h4>Step 1: Define the class</h4>
+    <pre>
+      <code class="hljs language-javascript" data-trim data-line-numbers>
+class CounterButton extends HTMLButtonElement {
+  constructor() {
+    super();
+    this.count = 0;
+  }
+
+  connectedCallback() {
+    this.addEventListener('click', this.handleClick);
+  }
+
+  handleClick() {
+    this.count++;
+    this.updateText();
+  };
+
+  updateText() {
+    this.textContent = `Clicked ${this.count} times`;
+  }
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Step 2: Register the element</h4>
+    <pre>
+      <code class="hljs language-javascript" data-trim data-line-numbers>
+customElements.define('counter-button', CounterButton, {
+  extends: 'button'
+});
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Step 3: Use in HTML</h4>
+    <pre>
+      <code class="hljs language-html" data-trim data-line-numbers>
+&lt;button is="counter-button"&gt;Click me&lt;/button&gt;
+      </code>
+    </pre>
+    <div class="fragment" style="margin-top: 2em">
+      <p><strong>Live Demo:</strong></p>
+      <button is="counter-button" style="padding: 1em 2em; font-size: 1.2em">Click me</button>
+    </div>
+    <aside class="notes">Notice how we inherit all button functionality: keyboard support, form integration, ARIA roles, and all native events.</aside>
+  </section>
+</section>

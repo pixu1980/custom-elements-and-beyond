@@ -1,0 +1,152 @@
+<section>
+  <section>
+    <h3><mark>Automatic Data Binding</mark> with Signals</h3>
+    <p>Declarative UI updates without manual DOM manipulation</p>
+    <ul class="fragment">
+      <li>Use <code>data-bind-*</code> attributes for bindings</li>
+      <li>Automatically sync state to DOM</li>
+      <li>No Shadow DOM or templates needed</li>
+      <li>Works with standard HTML elements</li>
+    </ul>
+    <aside class="notes">We can create a simple data binding system that automatically updates the DOM when signals change.</aside>
+  </section>
+  <section>
+    <h4>Creating a Binding System</h4>
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+// Global state with signals
+const state = {
+  count: Signal(0),
+  message: Signal('Hello'),
+};
+
+// Bind text content to a signal
+function bindText(element, key) {
+  return state[key].subscribe((value) => {
+    element.textContent = value;
+  });
+}
+
+// Bind attribute to a signal
+function bindAttribute(element, attr, key) {
+  return state[key].subscribe((value) => {
+    element.setAttribute(attr, value);
+  });
+}
+
+// Auto-bind elements with data-bind-text attribute
+function initBindings() {
+  document.querySelectorAll('[data-bind-text]').forEach((el) => {
+    const key = el.dataset.bindText;
+    bindText(el, key);
+  });
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Using Data Bindings in HTML</h4>
+    <pre>
+      <code class="hljs html" data-trim data-line-numbers>
+&lt;div&gt;
+  &lt;p&gt;Count: &lt;span data-bind-text="count"&gt;&lt;/span&gt;&lt;/p&gt;
+  &lt;p&gt;Message: &lt;span data-bind-text="message"&gt;&lt;/span&gt;&lt;/p&gt;
+  
+  &lt;button is="x-inc"&gt;+1&lt;/button&gt;
+  &lt;button is="x-dec"&gt;-1&lt;/button&gt;
+  &lt;button is="x-reset"&gt;Reset&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  // Initialize bindings on page load
+  initBindings();
+&lt;/script&gt;
+      </code>
+    </pre>
+    <aside class="notes">Elements with data-bind-text automatically subscribe to signals and update when state changes.</aside>
+  </section>
+  <section>
+    <h4>customElements for Actions</h4>
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+class XInc extends HTMLButtonElement {
+  connectedCallback() {
+    this.onclick = () => state.count.set(state.count.get() + 1);
+  }
+}
+
+class XDec extends HTMLButtonElement {
+  connectedCallback() {
+    this.onclick = () => state.count.set(state.count.get() - 1);
+  }
+}
+
+class XReset extends HTMLButtonElement {
+  connectedCallback() {
+    this.onclick = () => {
+      state.count.set(0);
+      state.message.set('Reset!');
+    };
+  }
+}
+
+customElements.define('x-inc', XInc, { extends: 'button' });
+customElements.define('x-dec', XDec, { extends: 'button' });
+customElements.define('x-reset', XReset, { extends: 'button' });
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Two Way Bindings for Inputs</h4>
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+// Bind input value to signal (two-way)
+function bindInput(input, key) {
+  // Signal to input
+  const unsubscribe = state[key].subscribe((value) => {
+    if (input.value !== value) {
+      input.value = value;
+    }
+  });
+  
+  // Input to signal
+  input.addEventListener('input', () => {
+    state[key].set(input.value);
+  });
+  
+  return unsubscribe;
+}
+
+// Auto-bind inputs with data-bind-value
+document.querySelectorAll('[data-bind-value]').forEach((input) => {
+  const key = input.dataset.bindValue;
+  bindInput(input, key);
+});
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Complete Reactive Example</h4>
+    <pre>
+      <code class="hljs html" data-trim data-line-numbers>
+&lt;div&gt;
+  &lt;input type="text" data-bind-value="message" /&gt;
+  &lt;p&gt;You typed: &lt;strong data-bind-text="message"&gt;&lt;/strong&gt;&lt;/p&gt;
+  
+  &lt;input type="range" min="0" max="100" data-bind-value="count" /&gt;
+  &lt;p&gt;Value: &lt;span data-bind-text="count"&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+      </code>
+    </pre>
+    <div class="fragment">
+      <p><strong>Key Benefits:</strong></p>
+      <ul>
+        <li>Declarative syntax like modern frameworks</li>
+        <li>Minimal JavaScript, maximum expressiveness</li>
+        <li>Standard HTML elements</li>
+        <li>No build step required</li>
+      </ul>
+    </div>
+    <aside class="notes">With this simple binding system, we get framework-like reactivity using only browser APIs and customElements.</aside>
+  </section>
+</section>

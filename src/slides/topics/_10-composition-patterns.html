@@ -1,11 +1,13 @@
-<section></section>
-  <section data-transition="slide">
+<section>
+  <section>
     <h3>Component <mark>Composition</mark> Patterns</h3>
     <p>Building complex components from simple extended elements</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Container Pattern</h4>
-    <pre><code class="language-javascript">class TabContainer extends HTMLDivElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class TabContainer extends HTMLDivElement {
   connectedCallback() {
     this.setAttribute('role', 'tablist');
     this.setupTabs();
@@ -25,11 +27,15 @@
   activateTab(index) {
     // Manage active states
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Presentational Pattern</h4>
-    <pre><code class="language-javascript">class TabButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class TabButton extends HTMLButtonElement {
   connectedCallback() {
     this.setAttribute('role', 'tab');
     this.setAttribute('aria-selected', 'false');
@@ -44,11 +50,15 @@
     this.setAttribute('aria-selected', 'false');
     this.classList.remove('active');
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Usage</h4>
-    <pre><code class="language-html">&lt;div is="tab-container"&gt;
+    <pre>
+  <code class="hljs html" data-trim data-line-numbers>
+    &lt;div is="tab-container"&gt;
   &lt;button is="tab-button"&gt;Tab 1&lt;/button&gt;
   &lt;button is="tab-button"&gt;Tab 2&lt;/button&gt;
   &lt;button is="tab-button"&gt;Tab 3&lt;/button&gt;
@@ -56,27 +66,18 @@
   &lt;div is="tab-panel"&gt;Content 1&lt;/div&gt;
   &lt;div is="tab-panel"&gt;Content 2&lt;/div&gt;
   &lt;div is="tab-panel"&gt;Content 3&lt;/div&gt;
-&lt;/div&gt;</code></pre>
-    <p class="fragment">
-      ✅ Separation of concerns: container manages logic, children handle
-      presentation
-    </p>
+&lt;/div&gt;
+  </code>
+    </pre>
+    <p class="fragment">✅ Separation of concerns: container manages logic, children handle presentation</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Best Practices</h4>
     <ul>
-      <li class="fragment">
-        Keep components <mark>focused</mark> on a single responsibility
-      </li>
-      <li class="fragment">
-        Use <mark>composition</mark> over deep inheritance
-      </li>
-      <li class="fragment">
-        Communicate through <mark>events</mark> and attributes
-      </li>
-      <li class="fragment">
-        Let parents manage <mark>state</mark>, children handle presentation
-      </li>
+      <li class="fragment">Keep components <mark>focused</mark> on a single responsibility</li>
+      <li class="fragment">Use <mark>composition</mark> over deep inheritance</li>
+      <li class="fragment">Communicate through <mark>events</mark> and attributes</li>
+      <li class="fragment">Let parents manage <mark>state</mark>, children handle presentation</li>
     </ul>
   </section>
 </section>

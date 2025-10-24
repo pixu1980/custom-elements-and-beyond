@@ -1,0 +1,80 @@
+<section>
+  <section>
+    <h3><mark>Reactivity</mark> in VanillaJS</h3>
+    <p>Building reactive patterns without frameworks</p>
+    <ul class="fragment">
+      <li>Observable pattern with <code>EventTarget</code></li>
+      <li>Signal primitives for state management</li>
+      <li>Automatic data binding to DOM</li>
+      <li>Framework-like reactivity in plain JavaScript</li>
+    </ul>
+    <aside class="notes">Reactivity is a core feature of modern frameworks. We can implement similar patterns in vanilla JavaScript using browser APIs.</aside>
+  </section>
+  <section>
+    <h4>Observable Pattern (EventTarget based)</h4>
+    <pre><code class="language-javascript">function observable(initial) {
+  let value = initial;
+  const et = new EventTarget();
+  
+  return {
+    get value() {
+      return value;
+    },
+    set value(v) {
+      value = v;
+      et.dispatchEvent(new Event('change'));
+    },
+    subscribe(fn) {
+      const handler = () => fn(value);
+      et.addEventListener('change', handler);
+      fn(value); // Initial call
+      return () => et.removeEventListener('change', handler);
+    },
+  };
+}</code></pre>
+    <aside class="notes">This Observable uses EventTarget to notify subscribers when value changes. It's lightweight and uses native browser APIs.</aside>
+  </section>
+  <section>
+    <h4>Using Observable in customElements</h4>
+    <pre><code class="language-javascript">// Create observable state
+const counter = observable(0);
+
+class CounterDisplay extends HTMLDivElement {
+  connectedCallback() {
+    // Subscribe to changes
+    this._unsubscribe = counter.subscribe((value) => {
+      this.textContent = `Count: ${value}`;
+    });
+  }
+  
+  disconnectedCallback() {
+    // Clean up subscription
+    this._unsubscribe();
+  }
+}
+
+class IncrementButton extends HTMLButtonElement {
+  connectedCallback() {
+    this.onclick = () => counter.value++;
+  }
+}
+
+customElements.define('counter-display', CounterDisplay, { extends: 'div' });
+customElements.define('increment-button', IncrementButton, { extends: 'button' });</code></pre>
+  </section>
+  <section>
+    <h4>Observable Pattern in Action</h4>
+    <pre><code class="language-html">&lt;div is="counter-display"&gt;&lt;/div&gt;
+&lt;button is="increment-button"&gt;+1&lt;/button&gt;</code></pre>
+    <div class="fragment">
+      <p><strong>Benefits:</strong></p>
+      <ul>
+        <li>Automatic UI updates on state change</li>
+        <li>Clean separation between state and UI</li>
+        <li>Easy to test and debug</li>
+        <li>Proper cleanup with unsubscribe</li>
+      </ul>
+    </div>
+    <aside class="notes">The Observable pattern provides reactive data flow without any framework. Components automatically re-render when state changes.</aside>
+  </section>
+</section>

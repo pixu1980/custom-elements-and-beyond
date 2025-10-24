@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Wrappers & <mark>Adapters</mark></h3>
     <p>Publish once, consume anywhere</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Distribution Targets</h4>
     <ul>
       <li class="fragment">Vanilla ES modules</li>
@@ -13,7 +13,7 @@
       <li class="fragment">Svelte actions</li>
     </ul>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>React Wrapper Quickstart</h4>
     <pre><code class="language-javascript">export function wrapReact(tagName, events = []){
   return forwardRef(({ children, ...props }, ref) => {
@@ -38,7 +38,7 @@
   });
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Vue Adapter Quickstart</h4>
     <pre><code class="language-javascript">export function wrapVue(name){
   return {
@@ -59,7 +59,7 @@
   };
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Adapter Best Practices</h4>
     <ul>
       <li class="fragment">Mirror properties, not only attributes</li>

@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Real-World <mark>Examples</mark></h3>
     <p>Putting it all together with complete implementations</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Example 1: Notification Toast</h4>
     <pre><code class="language-javascript">class ToastNotification extends HTMLDivElement {
   static get observedAttributes() {
@@ -51,7 +51,7 @@ customElements.define('toast-notification', ToastNotification, {
   extends: 'div',
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Usage: Toast</h4>
     <pre><code class="language-html">&lt;div is="toast-notification" 
      type="success" 
@@ -76,7 +76,7 @@ function showToast(message, type = 'info') {
 
 showToast('Hello World!', 'success');</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Example 2: Accordion Panel</h4>
     <pre><code class="language-javascript">class AccordionPanel extends HTMLDetailsElement {
   connectedCallback() {
@@ -137,7 +137,7 @@ customElements.define('accordion-panel', AccordionPanel, {
   extends: 'details',
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Example 3: Copy Button</h4>
     <pre><code class="language-javascript">class CopyButton extends HTMLButtonElement {
   connectedCallback() {
@@ -189,24 +189,14 @@ customElements.define('copy-button', CopyButton, {
   extends: 'button',
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Resources</h4>
     <ul>
-      <li class="fragment">
-        📚 <strong>MDN Web Docs:</strong> Complete Custom Elements documentation
-      </li>
-      <li class="fragment">
-        💻 <strong>GitHub:</strong> Open-source component libraries
-      </li>
-      <li class="fragment">
-        🎨 <strong>CodePen:</strong> Interactive examples and demos
-      </li>
-      <li class="fragment">
-        🔧 <strong>Web.dev:</strong> Best practices and patterns
-      </li>
+      <li class="fragment">📚 <strong>MDN Web Docs:</strong> Complete customElements documentation</li>
+      <li class="fragment">💻 <strong>GitHub:</strong> Open-source component libraries</li>
+      <li class="fragment">🎨 <strong>CodePen:</strong> Interactive examples and demos</li>
+      <li class="fragment">🔧 <strong>Web.dev:</strong> Best practices and patterns</li>
     </ul>
-    <p class="fragment" style="margin-top: 2em">
-      🔗 Links to full examples available in the slides repository
-    </p>
+    <p class="fragment" style="margin-top: 2em">🔗 Links to full examples available in the slides repository</p>
   </section>
 </section>

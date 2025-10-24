@@ -1,11 +1,13 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>Error Handling</mark> & Resilience</h3>
     <p>Building robust components that gracefully handle failures</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Try-Catch in Lifecycle</h4>
-    <pre><code class="language-javascript">class ResilientComponent extends HTMLDivElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class ResilientComponent extends HTMLDivElement {
   connectedCallback() {
     try {
       this.initialize();
@@ -31,11 +33,15 @@
       &lt;/div&gt;
     `;
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Graceful Degradation</h4>
-    <pre><code class="language-javascript">class ImageWithFallback extends HTMLImageElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class ImageWithFallback extends HTMLImageElement {
   connectedCallback() {
     this.addEventListener('error', this.handleError);
   }
@@ -59,11 +65,15 @@
   disconnectedCallback() {
     this.removeEventListener('error', this.handleError);
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Retry Logic</h4>
-    <pre><code class="language-javascript">class DataFetcher extends HTMLDivElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class DataFetcher extends HTMLDivElement {
   constructor() {
     super();
     this.maxRetries = 3;
@@ -97,11 +107,15 @@
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Error Boundaries Pattern</h4>
-    <pre><code class="language-javascript">class ErrorBoundary extends HTMLDivElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class ErrorBoundary extends HTMLDivElement {
   connectedCallback() {
     this.setupErrorHandling();
   }
@@ -133,11 +147,15 @@
       errorContainer.style.display = 'block';
     }
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Loading States</h4>
-    <pre><code class="language-javascript">class AsyncButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class AsyncButton extends HTMLButtonElement {
   async connectedCallback() {
     this.addEventListener('click', this.handleClick);
   }
@@ -178,6 +196,8 @@
     this.textContent = '❌ Failed';
     console.error(error);
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
 </section>

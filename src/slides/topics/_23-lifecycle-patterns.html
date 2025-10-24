@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Advanced <mark>Lifecycle</mark> Patterns</h3>
     <p>Mastering component lifecycle for robust applications</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Lazy Initialization</h4>
     <pre><code class="language-javascript">class LazyComponent extends HTMLDivElement {
   constructor() {
@@ -50,7 +50,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Cleanup Management</h4>
     <pre><code class="language-javascript">class ManagedComponent extends HTMLDivElement {
   constructor() {
@@ -109,7 +109,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Reconnection Handling</h4>
     <pre><code class="language-javascript">class ReconnectableComponent extends HTMLDivElement {
   constructor() {
@@ -165,7 +165,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Adopted Callback Pattern</h4>
     <pre><code class="language-javascript">class PortableComponent extends HTMLDivElement {
   adoptedCallback() {
@@ -200,7 +200,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Attribute Change Batching</h4>
     <pre><code class="language-javascript">class BatchedComponent extends HTMLDivElement {
   constructor() {
@@ -241,27 +241,15 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Lifecycle Best Practices</h4>
     <ul>
-      <li class="fragment">
-        <mark>Lazy initialize</mark> expensive operations
-      </li>
-      <li class="fragment">
-        Always <mark>cleanup</mark> in disconnectedCallback
-      </li>
-      <li class="fragment">
-        Handle <mark>reconnection</mark> gracefully
-      </li>
-      <li class="fragment">
-        <mark>Batch</mark> attribute changes when possible
-      </li>
-      <li class="fragment">
-        Use <mark>Intersection Observer</mark> for visibility-based init
-      </li>
-      <li class="fragment">
-        Consider <mark>adoptedCallback</mark> for iframe usage
-      </li>
+      <li class="fragment"><mark>Lazy initialize</mark> expensive operations</li>
+      <li class="fragment">Always <mark>cleanup</mark> in disconnectedCallback</li>
+      <li class="fragment">Handle <mark>reconnection</mark> gracefully</li>
+      <li class="fragment"><mark>Batch</mark> attribute changes when possible</li>
+      <li class="fragment">Use <mark>Intersection Observer</mark> for visibility-based init</li>
+      <li class="fragment">Consider <mark>adoptedCallback</mark> for iframe usage</li>
     </ul>
   </section>
 </section>

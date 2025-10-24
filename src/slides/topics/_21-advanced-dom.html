@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Advanced <mark>DOM Manipulation</mark></h3>
     <p>Best practices for efficient and safe DOM operations</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>innerHTML vs createElement</h4>
     <pre><code class="language-javascript">class ProductCard extends HTMLDivElement {
   // ❌ Bad: innerHTML is slower and loses event listeners
@@ -32,7 +32,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>DocumentFragment for Batch Operations</h4>
     <pre><code class="language-javascript">class ItemList extends HTMLUListElement {
   set items(items) {
@@ -63,7 +63,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>XSS Prevention</h4>
     <pre><code class="language-javascript">class CommentBox extends HTMLDivElement {
   // ❌ DANGER: XSS vulnerability!
@@ -108,7 +108,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Efficient DOM Queries</h4>
     <pre><code class="language-javascript">class DataGrid extends HTMLTableElement {
   constructor() {
@@ -155,7 +155,7 @@
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Performance Monitoring</h4>
     <pre><code class="language-javascript">class PerformantComponent extends HTMLDivElement {
   render() {

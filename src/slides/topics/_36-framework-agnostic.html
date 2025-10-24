@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>Framework Agnostic</mark> Components</h3>
     <p>Building components that work everywhere</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Universal Component Pattern</h4>
     <pre><code class="language-javascript">// universal-button.js
 class UniversalButton extends HTMLButtonElement {
@@ -68,33 +68,19 @@ customElements.define('universal-button', UniversalButton, {
   extends: 'button',
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Framework Compatibility Checklist</h4>
     <ul>
-      <li class="fragment">
-        ✅ Use <mark>properties</mark> for complex data, <mark>attributes</mark> for simple values
-      </li>
-      <li class="fragment">
-        ✅ Emit <mark>CustomEvents</mark> with kebab-case names
-      </li>
-      <li class="fragment">
-        ✅ Support both <mark>declarative</mark> (HTML) and <mark>imperative</mark> (JS) usage
-      </li>
-      <li class="fragment">
-        ✅ Provide <mark>proper cleanup</mark> in disconnectedCallback
-      </li>
-      <li class="fragment">
-        ✅ Don't rely on <mark>framework-specific</mark> features
-      </li>
-      <li class="fragment">
-        ✅ Include <mark>TypeScript definitions</mark> for better DX
-      </li>
-      <li class="fragment">
-        ✅ Document <mark>all public APIs</mark> clearly
-      </li>
+      <li class="fragment">✅ Use <mark>properties</mark> for complex data, <mark>attributes</mark> for simple values</li>
+      <li class="fragment">✅ Emit <mark>CustomEvents</mark> with kebab-case names</li>
+      <li class="fragment">✅ Support both <mark>declarative</mark> (HTML) and <mark>imperative</mark> (JS) usage</li>
+      <li class="fragment">✅ Provide <mark>proper cleanup</mark> in disconnectedCallback</li>
+      <li class="fragment">✅ Don't rely on <mark>framework-specific</mark> features</li>
+      <li class="fragment">✅ Include <mark>TypeScript definitions</mark> for better DX</li>
+      <li class="fragment">✅ Document <mark>all public APIs</mark> clearly</li>
     </ul>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Framework Adapters</h4>
     <pre><code class="language-javascript">// adapters/react.jsx
 import { forwardRef, useEffect, useRef } from 'react';
@@ -144,7 +130,7 @@ export function createReactWrapper(elementName, events = []) {
 // Usage
 const UniversalButton = createReactWrapper('universal-button', ['button-click']);</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Interoperability Best Practices</h4>
     <pre><code class="language-javascript">// Good: Framework-agnostic data flow
 class DataComponent extends HTMLDivElement {
@@ -187,7 +173,7 @@ class DataComponent extends HTMLDivElement {
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Testing Across Frameworks</h4>
     <pre><code class="language-javascript">// test/universal.test.js
 describe('Universal Component', () => {
@@ -222,7 +208,7 @@ describe('Universal Component', () => {
   });
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Progressive Enhancement</h4>
     <pre><code class="language-html">&lt;!-- Component works without JavaScript --&gt;
 &lt;button is="universal-button" disabled&gt;

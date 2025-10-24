@@ -1,10 +1,10 @@
 <section>
-  <section data-transition="slide">
-    <h3>Micro Frontends with <mark>Custom Elements</mark></h3>
+  <section>
+    <h3>Micro Frontends with <mark>customElements</mark></h3>
     <p>Composing apps from independent slices using the platform</p>
   </section>
-  <section data-transition="slide">
-    <h4>Why Custom Elements fit MFE</h4>
+  <section>
+    <h4>Why customElements fit MFE</h4>
     <ul>
       <li class="fragment">Stable contract: attributes, properties, events</li>
       <li class="fragment">Style isolation with attribute gates and layers</li>
@@ -13,7 +13,7 @@
       <li class="fragment">Works with any framework or none</li>
     </ul>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Shell + Remote Composition</h4>
     <pre><code class="language-html">&lt;!-- Shell owns layout and navigation --&gt;
 &lt;header&gt;My App&lt;/header&gt;
@@ -39,7 +39,7 @@ await Promise.all([
   loadRemote('orders-table', '/remotes/orders-table.js'),
 ]);</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Contracts: Props and Events</h4>
     <pre><code class="language-javascript">// cart-widget.js
 class CartWidget extends HTMLDivElement {
@@ -58,7 +58,7 @@ class CartWidget extends HTMLDivElement {
 }
 customElements.define('cart-widget', CartWidget, { extends: 'div' });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Versioning Strategy</h4>
     <ul>
       <li class="fragment">Semantic versioning per component</li>

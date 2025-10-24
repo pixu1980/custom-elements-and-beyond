@@ -1,17 +1,50 @@
 <section>
-  <section data-transition="slide">
-    <h3>Building the future with <mark>Web Standards</mark></h3>
-    <p class="fragment"><strong>Custom Elements</strong> empower developers to create reusable, framework-agnostic components by extending native HTML elements</p>
+  <section>
+    <p>🚨 Bold Opinion Alert 🚨</p>
+    <h4 class="fragment">After years of "experimentation" in UI Libraries and Frameworks, <mark>APIs</mark> are <mark>becoming canonical</mark></h4>
   </section>
-  <section data-transition="slide">
-    <h4>Why this matters <mark>now</mark></h4>
-    <div class="fragment">
-      <p>After years of framework dominance, <strong>web standards</strong> are making a comeback</p>
-      <p class="fragment">
-        Custom Elements provide <mark>long-term sustainability</mark> and
-        <mark>interoperability</mark>
-      </p>
-      <p class="fragment">No more framework lock-in - write once, use <mark>everywhere</mark></p>
-    </div>
+  <section>
+    <h4>
+      The <mark>web standards</mark> are <br />
+      <mark>coming back</mark> into the field <br /><br />
+    </h4>
+    <img src="./assets/meme/yoda.gif" alt="Jedi Master Yoda saying 'You must unlearn what you have learned'" />
   </section>
+  <section>
+    <h4>customElements === Web Components?</h4>
+    <h3 class="fragment"><mark>!true</mark></h3>
+  </section>
+  <section>
+    <p>Web Components is a <mark>common term</mark> used to describe <mark>a set of 3 web platform APIs</mark></p>
+    <baseline-status class="fragment" featureId="autonomous-custom-elements"></baseline-status>
+    <baseline-status class="fragment" featureId="shadow-dom"></baseline-status>
+    <baseline-status class="fragment" featureId="template"></baseline-status>
+    <aside class="notes">Web Components is a family of three browser APIs. In this talk we stay focused on customElements only to keep things simple and practical.</aside>
+  </section>
+  <section>
+    <p>
+      In this talk we will focus only <br />
+      on <mark>customElements</mark> API
+    </p>
+  </section>
+  <section>
+    <p>In particular the <mark>customElements v1 API</mark>, also known as "<mark>customized build-in elements</mark>"</p>
+    <baseline-status class="fragment" featureId="customized-built-in-elements"></baseline-status>
+    <small class="fragment">
+      <strong>Note:</strong> unfortunately not supported in Safari... <br />
+      but a blazing fast <mark><a href="https://github.com/WebReflection/custom-elements-builtin" target="_blank" rel="noopener noreferrer">Polyfill</a></mark> is available
+    </small>
+    <aside class="notes">
+      While customElements have excellent support, the extends pattern (customized built-in elements) requires a polyfill for Safari. This is the main trade-off but the benefits of extending native
+      elements often outweigh this limitation.
+    </aside>
+  </section>
+
+  <!-- <section>
+    <p>
+      customElements provide <br />
+      <mark>sustainability</mark> and
+      <mark>interoperability</mark>
+    </p>
+  </section> -->
 </section>

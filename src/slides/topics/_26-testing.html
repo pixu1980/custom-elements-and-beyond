@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
-    <h3><mark>Testing</mark> Custom Elements</h3>
+  <section>
+    <h3><mark>Testing</mark> customElements</h3>
     <p>Strategies for testing web components effectively</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Unit Testing Setup</h4>
     <pre><code class="language-javascript">// counter-button.test.js
 import { expect } from '@esm-bundle/chai';
@@ -42,7 +42,7 @@ describe('CounterButton', () => {
   });
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Testing Lifecycle</h4>
     <pre><code class="language-javascript">describe('Component Lifecycle', () => {
   it('should call connectedCallback when added to DOM', () => {
@@ -77,7 +77,7 @@ describe('CounterButton', () => {
   });
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Testing User Interactions</h4>
     <pre><code class="language-javascript">describe('User Interactions', () => {
   it('should handle keyboard navigation', () => {
@@ -115,7 +115,7 @@ describe('CounterButton', () => {
   });
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Testing Async Operations</h4>
     <pre><code class="language-javascript">describe('Async Operations', () => {
   it('should fetch and render data', async () => {
@@ -158,7 +158,7 @@ describe('CounterButton', () => {
   });
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Integration Testing</h4>
     <pre><code class="language-javascript">describe('Component Integration', () => {
   it('should communicate between components', async () => {
@@ -200,7 +200,7 @@ describe('CounterButton', () => {
   });
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Visual Regression Testing</h4>
     <pre><code class="language-javascript">// Using Playwright or Puppeteer
 describe('Visual Tests', () => {
@@ -233,30 +233,16 @@ describe('Visual Tests', () => {
   });
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Testing Best Practices</h4>
     <ul>
-      <li class="fragment">
-        Test <mark>behavior, not implementation</mark>
-      </li>
-      <li class="fragment">
-        Always <mark>clean up</mark> after tests (remove elements)
-      </li>
-      <li class="fragment">
-        Test <mark>accessibility</mark> (ARIA, keyboard navigation)
-      </li>
-      <li class="fragment">
-        Mock <mark>external dependencies</mark> (fetch, localStorage)
-      </li>
-      <li class="fragment">
-        Test <mark>edge cases</mark> and error states
-      </li>
-      <li class="fragment">
-        Use <mark>real browser</mark> environments when possible
-      </li>
-      <li class="fragment">
-        Consider <mark>visual regression</mark> tests for UI components
-      </li>
+      <li class="fragment">Test <mark>behavior, not implementation</mark></li>
+      <li class="fragment">Always <mark>clean up</mark> after tests (remove elements)</li>
+      <li class="fragment">Test <mark>accessibility</mark> (ARIA, keyboard navigation)</li>
+      <li class="fragment">Mock <mark>external dependencies</mark> (fetch, localStorage)</li>
+      <li class="fragment">Test <mark>edge cases</mark> and error states</li>
+      <li class="fragment">Use <mark>real browser</mark> environments when possible</li>
+      <li class="fragment">Consider <mark>visual regression</mark> tests for UI components</li>
     </ul>
   </section>
 </section>

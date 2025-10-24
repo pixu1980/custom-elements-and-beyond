@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>Debugging</mark> & DevTools</h3>
-    <p>Tools and techniques for debugging Custom Elements</p>
+    <p>Tools and techniques for debugging customElements</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Browser DevTools</h4>
     <pre><code class="language-javascript">class DebuggableComponent extends HTMLDivElement {
   constructor() {
@@ -56,7 +56,7 @@ window.debugComponent = (selector) => {
   return el;
 };</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Custom DevTools Panel</h4>
     <pre><code class="language-javascript">// Create debug panel for component
 class ComponentDebugPanel {
@@ -114,7 +114,7 @@ class ComponentDebugPanel {
 const panel = new ComponentDebugPanel(myComponent);
 panel.show();</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Performance Profiling</h4>
     <pre><code class="language-javascript">class ProfiledComponent extends HTMLDivElement {
   constructor() {
@@ -165,7 +165,7 @@ panel.show();</code></pre>
 // View metrics
 console.table(component.getMetrics());</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Error Tracking</h4>
     <pre><code class="language-javascript">class ErrorTrackingComponent extends HTMLDivElement {
   constructor() {
@@ -221,7 +221,7 @@ window.addEventListener('component-error', (event) => {
   console.error('Component error detected:', event.detail);
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Logging Utilities</h4>
     <pre><code class="language-javascript">// Create custom logger for components
 class ComponentLogger {
@@ -289,7 +289,7 @@ class LoggedComponent extends HTMLDivElement {
 // Enable debugging from console
 localStorage.setItem('debug:LoggedComponent', 'true');</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Testing in DevTools</h4>
     <pre><code class="language-javascript">// Helper functions for testing in console
 

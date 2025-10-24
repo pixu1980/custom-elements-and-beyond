@@ -1,11 +1,13 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Attribute & Property <mark>Binding</mark></h3>
     <p>Creating reactive and data-driven components</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Two-way binding example</h4>
-    <pre><code class="language-javascript">class RangeInput extends HTMLInputElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class RangeInput extends HTMLInputElement {
   connectedCallback() {
     this.type = 'range';
     this.render();
@@ -28,11 +30,15 @@
       display.textContent = this.value;
     }
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Property synchronization</h4>
-    <pre><code class="language-javascript">class SyncedInput extends HTMLInputElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class SyncedInput extends HTMLInputElement {
   static get observedAttributes() {
     return ['value', 'placeholder'];
   }
@@ -53,11 +59,15 @@
       this.dispatchEvent(new Event('change', { bubbles: true }));
     }
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Data binding with objects</h4>
-    <pre><code class="language-javascript">class DataBoundList extends HTMLUListElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class DataBoundList extends HTMLUListElement {
   set data(items) {
     this._data = items;
     this.render();
@@ -77,7 +87,9 @@
       this.appendChild(li);
     });
   }
-}</code></pre>
+}
+  </code>
+    </pre>
     <p class="fragment">
       💡 Use <mark>properties</mark> for complex data, <mark>attributes</mark>
       for simple values

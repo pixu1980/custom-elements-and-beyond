@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Building <mark>Design Systems</mark></h3>
-    <p>Creating scalable component libraries with Custom Elements</p>
+    <p>Creating scalable component libraries with customElements</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Design System Structure</h4>
     <pre><code class="language-plaintext">design-system/
 ├── tokens/
@@ -24,7 +24,7 @@
 │   └── base-element.js
 └── index.js</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Design Tokens</h4>
     <pre><code class="language-css">/* tokens/colors.css */
 :root {
@@ -76,7 +76,7 @@ export const tokens = {
   },
 };</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Base Element Class</h4>
     <pre><code class="language-javascript">// utils/base-element.js
 export class BaseElement extends HTMLElement {
@@ -117,7 +117,7 @@ export class BaseElement extends HTMLElement {
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Design System Button</h4>
     <pre><code class="language-javascript">// components/button/button.js
 import { BaseElement } from '../../utils/base-element.js';
@@ -207,7 +207,7 @@ class DSButton extends HTMLButtonElement {
 
 customElements.define('ds-button', DSButton, { extends: 'button' });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Button Styles</h4>
     <pre><code class="language-css">/* components/button/button.css */
 .ds-button {
@@ -271,7 +271,7 @@ customElements.define('ds-button', DSButton, { extends: 'button' });</code></pre
   cursor: not-allowed;
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Component Documentation</h4>
     <pre><code class="language-markdown"># Button Component
 
@@ -310,7 +310,7 @@ customElements.define('ds-button', DSButton, { extends: 'button' });</code></pre
 - Loading state uses `aria-busy`
 - Disabled state properly handled</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Publishing the Design System</h4>
     <pre><code class="language-json">// package.json
 {

@@ -1,9 +1,9 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>SSR and <mark>Progressive Enhancement</mark></h3>
-    <p>Server first HTML, then enhance with Custom Elements</p>
+    <p>Server first HTML, then enhance with customElements</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Server Renders HTML</h4>
     <pre><code class="language-html">&lt;!-- Server output (no JS required to read) --&gt;
 &lt;article&gt;
@@ -14,7 +14,7 @@
   &lt;/ul&gt;
 &lt;/article&gt;</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Enhance when defined</h4>
     <pre><code class="language-javascript">// Enhance progressively
 class NewsList extends HTMLUListElement {
@@ -31,7 +31,7 @@ customElements.whenDefined('news-list').then(() => {
   document.querySelectorAll('ul[is="news-list"]').forEach(el => el.classList.add('hydrated'));
 });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Islands Architecture</h4>
     <pre><code class="language-html">&lt;!-- Static page with interactive islands --&gt;
 &lt;main&gt;
@@ -43,7 +43,7 @@ customElements.whenDefined('news-list').then(() => {
     <pre><code class="language-javascript">// Load only the island script
 import('/components/counter-button.js');</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>SSR Tips</h4>
     <ul>
       <li class="fragment">Do not rely on client init for critical content</li>

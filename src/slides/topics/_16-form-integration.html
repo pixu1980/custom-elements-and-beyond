@@ -1,11 +1,13 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>Form Integration</mark> & Validation</h3>
     <p>Building form controls that work seamlessly with native forms</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>ElementInternals API</h4>
-    <pre><code class="language-javascript">class CustomInput extends HTMLInputElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class CustomInput extends HTMLInputElement {
   static formAssociated = true;
 
   constructor() {
@@ -35,11 +37,15 @@
       this._internals.setValidity({});
     }
   }
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Custom Validation</h4>
-    <pre><code class="language-javascript">class EmailInput extends HTMLInputElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class EmailInput extends HTMLInputElement {
   connectedCallback() {
     this.type = 'email';
     this.addEventListener('blur', this.validateEmail);
@@ -60,11 +66,15 @@
     // Trigger validation UI
     this.reportValidity();
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Form Submission</h4>
-    <pre><code class="language-javascript">class FormButton extends HTMLButtonElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class FormButton extends HTMLButtonElement {
   connectedCallback() {
     this.type = 'submit';
     this.addEventListener('click', this.handleSubmit);
@@ -94,11 +104,15 @@
       this.disabled = false;
     }
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Real-time Validation</h4>
-    <pre><code class="language-javascript">class PasswordInput extends HTMLInputElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class PasswordInput extends HTMLInputElement {
   static get observedAttributes() {
     return ['minlength'];
   }
@@ -124,11 +138,15 @@
     this.setAttribute('data-strength', strength);
     this.updateStrengthIndicator(strength);
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Complex Validation Example</h4>
-    <pre><code class="language-javascript">class DateRangeInput extends HTMLInputElement {
+    <pre>
+  <code class="hljs javascript" data-trim data-line-numbers>
+    class DateRangeInput extends HTMLInputElement {
   connectedCallback() {
     this.type = 'date';
     this.addEventListener('change', this.validateRange);
@@ -151,20 +169,18 @@
       }
     }
   };
-}</code></pre>
+}
+  </code>
+    </pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Browser Compatibility</h4>
-    <p class="fragment">
-      ⚠️ <code>ElementInternals</code> is relatively new
-    </p>
+    <p class="fragment">⚠️ <code>ElementInternals</code> is relatively new</p>
     <ul class="fragment">
       <li>Chrome/Edge: ✅ Since 2020</li>
       <li>Firefox: ✅ Since 2021</li>
       <li>Safari: ✅ Since 2021</li>
     </ul>
-    <p class="fragment">
-      For older browsers, use traditional form integration with hidden inputs
-    </p>
+    <p class="fragment">For older browsers, use traditional form integration with hidden inputs</p>
   </section>
 </section>

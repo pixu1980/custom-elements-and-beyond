@@ -1,35 +1,21 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3><mark>Interoperability</mark> & Standards</h3>
     <p>Making components work seamlessly across ecosystems</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Web Standards Foundation</h4>
     <ul>
-      <li class="fragment">
-        <mark>Custom Elements</mark> - Define new HTML elements
-      </li>
-      <li class="fragment">
-        <mark>HTML</mark> - Semantic markup and native elements
-      </li>
-      <li class="fragment">
-        <mark>DOM</mark> - Standard DOM APIs for manipulation
-      </li>
-      <li class="fragment">
-        <mark>Events</mark> - CustomEvent for communication
-      </li>
-      <li class="fragment">
-        <mark>CSS</mark> - Standard styling with custom properties
-      </li>
-      <li class="fragment">
-        <mark>Accessibility</mark> - ARIA and native semantics
-      </li>
-      <li class="fragment">
-        <mark>Forms</mark> - ElementInternals for form participation
-      </li>
+      <li class="fragment"><mark>customElements</mark> - Define new HTML elements</li>
+      <li class="fragment"><mark>HTML</mark> - Semantic markup and native elements</li>
+      <li class="fragment"><mark>DOM</mark> - Standard DOM APIs for manipulation</li>
+      <li class="fragment"><mark>Events</mark> - CustomEvent for communication</li>
+      <li class="fragment"><mark>CSS</mark> - Standard styling with custom properties</li>
+      <li class="fragment"><mark>Accessibility</mark> - ARIA and native semantics</li>
+      <li class="fragment"><mark>Forms</mark> - ElementInternals for form participation</li>
     </ul>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Standard Communication Patterns</h4>
     <pre><code class="language-javascript">// Parent-Child Communication
 class ParentComponent extends HTMLDivElement {
@@ -81,7 +67,7 @@ class SiblingB extends HTMLDivElement {
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Form Participation</h4>
     <pre><code class="language-javascript">// Standard form integration
 class CustomInput extends HTMLInputElement {
@@ -131,7 +117,7 @@ class CustomInput extends HTMLInputElement {
 
 customElements.define('custom-input', CustomInput, { extends: 'input' });</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>CSS Custom Properties Bridge</h4>
     <pre><code class="language-css">/* Design tokens that work everywhere */
 :root {
@@ -162,7 +148,7 @@ button[is="ds-button"] {
   --ds-color-primary: #dd0031;
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Accessibility Standards</h4>
     <pre><code class="language-javascript">// Accessible by default
 class AccessibleButton extends HTMLButtonElement {
@@ -196,7 +182,7 @@ class AccessibleButton extends HTMLButtonElement {
 
 // Works with screen readers across all frameworks!</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Module System Compatibility</h4>
     <pre><code class="language-javascript">// ESM (Modern)
 export class MyComponent extends HTMLDivElement {
@@ -230,7 +216,7 @@ const { MyComponent } = await import('./my-component.js');
   return MyComponent;
 }));</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Interoperability Checklist</h4>
     <ul>
       <li class="fragment">✅ Use <mark>standard web APIs</mark> only</li>

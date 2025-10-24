@@ -1,16 +1,16 @@
 <section>
-  <section data-transition="slide">
+  <section>
     <h3>Integration with <mark>Angular</mark></h3>
-    <p>Using Custom Elements in Angular applications</p>
+    <p>Using customElements in Angular applications</p>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Angular Configuration</h4>
     <pre><code class="language-typescript">// app.module.ts (Angular with NgModule)
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 
-// Import custom elements
+// Import customElements
 import './components/counter-button.js';
 import './components/data-list.js';
 
@@ -19,7 +19,7 @@ import './components/data-list.js';
   imports: [BrowserModule],
   providers: [],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // ⭐ Enable custom elements
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // ⭐ Enable customElements
 })
 export class AppModule {}</code></pre>
     <pre><code class="language-typescript">// app.config.ts (Angular standalone)
@@ -29,11 +29,11 @@ import { provideRouter } from '@angular/router';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    // Custom elements work out of the box with standalone
+    // customElements work out of the box with standalone
   ],
 };</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Using in Templates</h4>
     <pre><code class="language-typescript">// app.component.ts
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
@@ -42,7 +42,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
   selector: 'app-root',
   template: `
     &lt;div class="app"&gt;
-      &lt;h1&gt;Angular + Custom Elements&lt;/h1&gt;
+      &lt;h1&gt;Angular + customElements&lt;/h1&gt;
       
       &lt;!-- Use custom element --&gt;
       &lt;button 
@@ -81,7 +81,7 @@ export class AppComponent implements AfterViewInit {
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Property Binding</h4>
     <pre><code class="language-typescript">// data-list.component.ts
 import { Component, ViewChild, ElementRef, Input, OnChanges } from '@angular/core';
@@ -110,7 +110,7 @@ export class DataListComponent implements OnChanges {
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Directive Wrapper</h4>
     <pre><code class="language-typescript">// counter-button.directive.ts
 import { 
@@ -161,7 +161,7 @@ export class CounterButtonDirective implements OnInit, OnDestroy {
   }
 }</code></pre>
   </section>
-  <section data-transition="slide">
+  <section>
     <h4>Using the Directive</h4>
     <pre><code class="language-typescript">// app.component.ts
 import { Component } from '@angular/core';
@@ -186,8 +186,8 @@ export class AppComponent {
   count = 0;
 }</code></pre>
   </section>
-  <section data-transition="slide">
-    <h4>Service for Custom Elements</h4>
+  <section>
+    <h4>Service for customElements</h4>
     <pre><code class="language-typescript">// custom-elements.service.ts
 import { Injectable } from '@angular/core';
 import { Observable, fromEvent } from 'rxjs';
