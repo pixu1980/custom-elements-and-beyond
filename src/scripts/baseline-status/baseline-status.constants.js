@@ -23,8 +23,12 @@ import ICON_CHEVRON from "bundle-text:./icons/chevron.svg";
 import TPL_LOADING from "bundle-text:./templates/loading.html";
 import TPL_MAIN from "bundle-text:./templates/main.html";
 
-// API endpoint
-const API_ENDPOINT = "https://api.webstatus.dev/v1/features/";
+// API endpoints and providers
+const API_PROVIDER_DEFAULT = "auto"; // auto: try webstatus then mdn (if configured)
+const API_ENDPOINT_WEBSTATUS = "https://api.webstatus.dev/v1/features/";
+// MDN Browser Compat Data via CDN: expects a file path like "data/javascript/classes.json"
+const API_ENDPOINT_MDN_CDN =
+	"https://cdn.jsdelivr.net/npm/mdn-browser-compat-data@latest/";
 
 // Baseline text definitions
 const BASELINE_DEFS = {
@@ -67,7 +71,9 @@ const BROWSER_ICONS = {
 
 export {
 	// endpoints and copy
-	API_ENDPOINT,
+	API_PROVIDER_DEFAULT,
+	API_ENDPOINT_WEBSTATUS,
+	API_ENDPOINT_MDN_CDN,
 	BASELINE_DEFS,
 	// icon maps
 	SUPPORT_ICONS,

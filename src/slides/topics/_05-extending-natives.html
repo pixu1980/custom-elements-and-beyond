@@ -77,7 +77,7 @@ customElements.define('date-input', DateInput, {
 });
 
 const input = document.querySelector('input[is="date-input"]');
-const output = document.getElementById('date-demo-out');
+const output = document.querySelector('output#date-demo-out');
 
 input.addEventListener('change', () => {
   output.textContent = input.value ? `Selected: ${input.value}` : '';
@@ -108,16 +108,16 @@ input.addEventListener('change', () => {
     </div>
     <small class="fragment">✅ Inherits: form integration, validation, value property, focus management</small>
     <script>
-      const demo = document.querySelector('input[is="date-input"]');
-      const out = document.getElementById('date-demo-out');
+      const input = document.querySelector('input[is="date-input"]');
+      const output = document.querySelector('output#date-demo-out');
 
-      demo.addEventListener('change', () => {
-        out.textContent = demo.value ? `Selected: ${demo.value}` : '';
+      input.addEventListener('change', () => {
+        output.textContent = input.value ? `Selected: ${input.value}` : '';
       });
     </script>
   </section>
   <section>
-    <h4>Extending <mark>Divs</mark></h4>
+    <h4>Extending Semantic <mark>Elements</mark></h4>
     <pre>
       <code class="hljs javascript" data-trim data-line-numbers>
 class CollapsiblePanel extends HTMLDetailsElement {

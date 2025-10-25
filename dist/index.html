@@ -207,11 +207,11 @@ customElements.define(
   </section>
   <section>
     <p>Can you see the <mark>difference</mark>?</p>
-    <small balance="">
+    <small>
       <ul>
         <li class="fragment">Both are <mark>defined</mark> using <mark>class</mark> syntax</li>
         <li class="fragment">Both are <mark>registered</mark> with <mark>customElements.define</mark></li>
-        <li class="fragment">But the <mark>extends pattern</mark> keeps the <mark>native element's behavior</mark> (and a11y/SEO), differently than the <mark>standard pattern</mark></li>
+        <li class="fragment">The <mark>extends pattern</mark> keeps the <mark>native element's behavior</mark> (and a11y/SEO), differently than the <mark>standard pattern</mark></li>
       </ul>
     </small>
     <aside class="notes">customElements let us extend native HTML elements with custom behavior while maintaining all their built-in functionality, accessibility, and browser support.</aside>
@@ -421,7 +421,7 @@ class MyButton extends HTMLButtonElement {
   }
 }
     </code></pre>
-    <small class="fragment">Sync properties with attributes for <mark>consistency</mark></small>
+    <small balance="" class="fragment">Sync properties with attributes for <mark>consistency</mark> whenever is possible/needed</small>
   </section>
   <section>
     <h3>Observed Attributes &amp; <mark>Reactivity</mark></h3>
@@ -591,7 +591,7 @@ customElements.define('date-input', DateInput, {
 });
 
 const input = document.querySelector('input[is="date-input"]');
-const output = document.getElementById('date-demo-out');
+const output = document.querySelector('output#date-demo-out');
 
 input.addEventListener('change', () =&gt; {
   output.textContent = input.value ? `Selected: ${input.value}` : '';
@@ -620,16 +620,16 @@ input.addEventListener('change', () =&gt; {
       </small>
     </div>
     <small class="fragment">✅ Inherits: form integration, validation, value property, focus management</small>
-    <script>const demo = document.querySelector('input[is="date-input"]');
-const out = document.getElementById('date-demo-out');
-demo.addEventListener('change', ()=>{
-    out.textContent = demo.value ? `Selected: ${demo.value}` : '';
+    <script>const input = document.querySelector('input[is="date-input"]');
+const output = document.querySelector('output#date-demo-out');
+input.addEventListener('change', ()=>{
+    output.textContent = input.value ? `Selected: ${input.value}` : '';
 });
 
 </script>
   </section>
   <section>
-    <h4>Extending <mark>Divs</mark></h4>
+    <h4>Extending Semantic <mark>Elements</mark></h4>
     <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
 class CollapsiblePanel extends HTMLDetailsElement {
   connectedCallback() {
@@ -768,12 +768,19 @@ button[is="icon-button"] {
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
 }
+
 /* States (hover, disabled) */
-button[is="icon-button"]:hover { transform: scale(1.05); }
-button[is="icon-button"][disabled] { opacity: 0.5; cursor: not-allowed; }
+button[is="icon-button"]:hover {
+  transform: scale(1.05);
+}
+
+button[is="icon-button"][disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
       </code>
     </pre>
-    <p class="fragment">✅ Use attribute selectors and keep specificity low</p>
+    <p class="fragment">✅ Use <mark>attribute selectors</mark> and keep specificity low</p>
   </section>
 
   <section>
@@ -784,19 +791,29 @@ button[is="themed-button"] {
   color: var(--button-color, white);
   border-radius: var(--button-radius, 4px);
   padding: var(--button-padding, 0.5rem 1rem);
-  transition: 0.2s;
 }
-.theme-dark { --button-bg: #1a1a1a; --button-color: #ffffff; }
-.theme-light { --button-bg: #f0f0f0; --button-color: #000000; }
+
+.theme-dark {
+  --button-bg: #1a1a1a;
+  --button-color: #ffffff;
+}
+
+.theme-light {
+  --button-bg: #f0f0f0;
+  --button-color: #000000;
+}
       </code>
     </pre>
     <pre class="fragment">      <code class="hljs html" data-trim="" data-line-numbers="">
-&lt;div class="theme-dark"&gt;&lt;button is="themed-button"&gt;Dark&lt;/button&gt;&lt;/div&gt;
-&lt;div class="theme-light"&gt;&lt;button is="themed-button"&gt;Light&lt;/button&gt;&lt;/div&gt;
+&lt;div class="theme-dark"&gt;
+  &lt;button is="themed-button"&gt;Dark&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class="theme-light"&gt;
+  &lt;button is="themed-button"&gt;Light&lt;/button&gt;
+&lt;/div&gt;
       </code>
     </pre>
   </section>
-
   <section>
     <h4>Design tokens and component contract</h4>
     <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
@@ -807,6 +824,7 @@ button[is="themed-button"] {
   --radius-sm: 4px;
   --font-size-base: 1rem;
 }
+
 button[is="themed-button"] {
   background: var(--button-bg, var(--color-primary));
   color: var(--button-color, white);
@@ -828,6 +846,7 @@ button[is="themed-button"] {
 @layer reset {
   *,*::before,*::after { box-sizing: border-box; }
 }
+
 @layer base {
   :root { --space-sm: 0.5rem; --space-md: 1rem; }
 }
@@ -845,7 +864,7 @@ button[is="themed-button"] {
 }
       </code>
     </pre>
-    <p class="fragment">✅ Layers control cascade without specificity hacks</p>
+    <p class="fragment">✅ Layers control cascade <mark>without specificity hacks</mark></p>
   </section>
 
   <section>
@@ -859,45 +878,70 @@ button[is="themed-button"] {
     </pre>
     <pre class="fragment">      <code class="hljs css" data-trim="" data-line-numbers="">
 @scope (.card) {
-  :scope { padding: 1rem; border: 1px solid #ddd; }
-  h3 { margin: 0 0 0.5rem; font-size: 1.25rem; }
-  button[is="themed-button"] { --button-bg: #e8f0ff; }
+  :scope {
+    padding: 1rem; border: 1px solid #ddd;
+  }
+  
+  h3 {
+    margin: 0 0 0.5rem; font-size: 1.25rem;
+  }
+  
+  button[is="themed-button"] {
+    --button-bg: #e8f0ff;
+  }
 }
       </code>
     </pre>
-    <p class="fragment">✅ Scoped styles avoid Shadow DOM while limiting reach</p>
+    <p class="fragment">✅ @scope styles === <mark>encapsulation</mark> <br>with <mark>no boundaries</mark></p>
   </section>
 
   <section>
     <h4>State driven styling</h4>
     <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
 /* data-* states */
-button[is="toggle-button"][data-state="active"] { background: var(--active-bg); }
+button[is="toggle-button"][data-state="active"] {
+  background: var(--active-bg);
+}
+
 /* ARIA states */
-button[is="menu-button"][aria-expanded="true"] { transform: rotate(180deg); }
+button[is="menu-button"][aria-expanded="true"] {
+  transform: rotate(180deg);
+}
+
 /* Pseudo-classes */
-input[is="validated-input"]:invalid { border-color: var(--error-color); }
-input[is="validated-input"]:focus { outline: 2px solid var(--focus-color); outline-offset: 2px; }
+input[is="validated-input"]:invalid {
+  border-color: var(--error-color);
+}
+
+input[is="validated-input"]:focus {
+  outline: 2px solid var(--focus-color); outline-offset: 2px;
+}
       </code>
     </pre>
   </section>
-
-  <section>
+  <!-- <section>
     <h4>Dark mode and preferences</h4>
-    <pre>      <code class="hljs css" data-trim="" data-line-numbers="">
+    <pre>
+      <code class="hljs css" data-trim data-line-numbers>
 /* System preference as default */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) { --bg-primary: #1a1a1a; --text-primary: #ffffff; }
+  :root:not([data-theme]) {
+    --bg-primary: #1a1a1a; --text-primary: #ffffff;
+  }
 }
+
 /* Manual override */
-:root[data-theme="dark"] { --bg-primary: #1a1a1a; --text-primary: #ffffff; }
+:root[data-theme="dark"] {
+  --bg-primary: #1a1a1a; --text-primary: #ffffff;
+}
       </code>
-    </pre>
-    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="">
+    </pre> -->
+  <!-- <pre class="fragment">
+      <code class="hljs javascript" data-trim data-line-numbers>
 class ThemeToggle extends HTMLButtonElement {
   connectedCallback() {
     this.textContent = '🌙';
-    this.addEventListener('click', () =&gt; {
+    this.addEventListener('click', () => {
       const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = next;
       this.textContent = next === 'light' ? '🌙' : '☀️';
@@ -906,18 +950,18 @@ class ThemeToggle extends HTMLButtonElement {
 }
 customElements.define('theme-toggle', ThemeToggle, { extends: 'button' });
       </code>
-    </pre>
-  </section>
-
-  <section>
+    </pre> -->
+  <!-- </section> -->
+  <!-- <section>
     <h4>Usage</h4>
-    <pre>      <code class="hljs html" data-trim="" data-line-numbers="">
+    <pre>
+      <code class="hljs html" data-trim data-line-numbers>
 &lt;button is="theme-toggle"&gt;🌙&lt;/button&gt;
 &lt;button is="themed-button"&gt;Themed Button&lt;/button&gt;
       </code>
     </pre>
     <p class="fragment">✅ Children inherit tokens; layers and scope orchestrate overrides</p>
-  </section>
+  </section> -->
 </section>
 
 <section>
@@ -927,14 +971,18 @@ customElements.define('theme-toggle', ThemeToggle, { extends: 'button' });
       "Nice, so do I have to write <br>
       all this `<mark>boilerplate</mark>` code... <span class="fragment"><mark>every time</mark>??"</span>
     </h4>
-    <p class="fragment">Of course <mark>not</mark>!</p>
+  </section>
+  <section>
+    <h3>Of course <mark>not</mark>!</h3>
   </section>
   <section>
     <h4>
       Expected Question #2: <br>
       "So it's possible to replicate or mimic the <mark>most common features</mark> of Lit, Angular, React, Vue??"
     </h4>
-    <p class="fragment">Well, <mark>yes</mark>!</p>
+  </section>
+  <section>
+    <h3>Well, <mark>yes</mark>!</h3>
   </section>
   <section>
     <h4 balance="">
@@ -943,10 +991,15 @@ customElements.define('theme-toggle', ThemeToggle, { extends: 'button' });
       <span class="fragment">two way data binding, </span><span class="fragment"><mark>reactivity</mark>??</span> <br>
       <span class="fragment">in <mark>vanillaJS</mark> 😱?"</span>
     </h4>
-    <p class="fragment">Hell, <mark>yeah</mark>!</p>
   </section>
   <section>
-    <p>Sounds like a <mark>huge "vanilla" ice cream</mark> 🍦, uh?</p>
+    <h3>Hell, <mark>yeah</mark> 🔥!</h3>
+  </section>
+  <section>
+    <h4>
+      This sounds like a huge <br>
+      <mark>"vanilla" ice cream</mark> 🍦, uh?
+    </h4>
   </section>
   <section>
     <h3>
@@ -956,28 +1009,24 @@ customElements.define('theme-toggle', ThemeToggle, { extends: 'button' });
     </h3>
   </section>
   <section>
-    <h4>extending Semantic HTML elements</h4>
+    <h4>First of all, <mark>extend native HTML</mark> elements</h4>
     <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="">
-export class Button extends HTMLButtonElement {
-}
+export class PixButton extends HTMLButtonElement {}
 
-export class Input extends HTMLInputElement {
-}
+export class PixInput extends HTMLInputElement {}
 
-export class Dialog extends HTMLDialogElement {
-}
+export class PixDialog extends HTMLDialogElement {}
 
-export class Details extends HTMLDetailsElement {
-}
-</code>
+export class PixDetails extends HTMLDetailsElement {}
+      </code> 
     </pre>
-    <h4 class="fragment">Yep, no base classes!</h4>
+    <h4 balance="" class="fragment">Yes, no base classes === no centralization</h4>
   </section>
   <section>
     <h4>
       Static Initialization Blocks (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Static_initialization_blocks" target="_blank" rel="noopener noreferrer">MDN</a>)
     </h4>
-    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="1-4|6-11|6-14|19|13,19|21">
+    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="|6-14|19|21-22">
 export class Button extends HTMLButtonElement {
   static name = "pix-button";
 
@@ -998,13 +1047,14 @@ export class Button extends HTMLButtonElement {
 
 // import '@pix-ui/button';
 
-//Yippie Kai Yay... motherf... static initialization blocks!
+// Yippie Kai Yay, motherf... 
+// ehm... static initialization blocks!
   </code>
     </pre>
   </section>
   <section>
-    <h4><mark>Decorators</mark>?</h4>
-    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="1-6|8-15|17-21|24-31|33-37|39">
+    <h4><mark>Decorators</mark>? <mark>Mixins</mark>?</h4>
+    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="1-6|8-15|17-21|24-31|33-37|39-40">
 export function componentDecorator(componentName, component) {
   assertMetaKey(component, "name");
   defineCustomElement(component);
@@ -1043,21 +1093,22 @@ export function applyMixins(component) {
     });
 }
 
-// Yippie Kai Yay... motherf... decorators!
+// Yippie Kai Yay... motherf... 
+// ehm... vanilla decorators and mixins!
   </code>
     </pre>
   </section>
   <section>
     <h4>Metaprogramming!</h4>
-    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="|1-7|1-11|12-16|18-22|24">
+    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="|1-11|12-16|18-22|27-40|42-43">
 /**
 * PixUI Button class
 *
 * @export
-* @class Button 
+* @class PixButton 
 * @extends {HTMLButtonElement}
 */
-export class Button extends HTMLButtonElement {
+export class PixButton extends HTMLButtonElement {
   static name = "pix-button";
   static extends = "button";
  
@@ -1072,17 +1123,33 @@ export class Button extends HTMLButtonElement {
       console.log("button clicked", this.textContent);
     },
   }
-  
-  // Yippie Kai Yay... motherf... metaprogramming!
- 
+   
  ...
 }
+
+// The instance will have
+class Button extends HTMLButtonElement {
+  ...
+  
+  handleDisabledAttributeChanged(oldValue, newValue) =&gt; {
+    console.log("disabled changed", oldValue, newValue, this.textContent); 
+  }
+  
+  handleClickEvent(e) {
+    console.log("button clicked", this.textContent);
+  }
+  
+  ...
+}
+
+// Yippie Kai Yay... motherf... 
+// ehm... vanilla metaprogramming!
       </code>
     </pre>
   </section>
   <section>
     <h4><mark>Lifecycle</mark> methods?</h4>
-    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="|6-8|9-13|14-18|3-5|22">
+    <pre class="fragment">      <code class="hljs javascript" data-trim="" data-line-numbers="|6-8|9-13|14-18|3-5|22-23">
 export function buildLifecycleMethods(component) {
   return {
     handleEvent(e) {
@@ -1104,10 +1171,334 @@ export function buildLifecycleMethods(component) {
   };
 }
   
-// Yippie Kai Yay... motherf... lifecycle!
-  </code>
+// Yippie Kai Yay... motherf... 
+// ehm... vanilla lifecycle methods!
+      </code>
     </pre>
   </section>
+  <section>
+    <h4>Reactivity &amp; two-way data binding</h4>
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
+// Two way binding with customized built-ins and a tiny store
+function createStore(initial) {
+  const listeners = new Map(); // key =&gt; Set(callback)
+  
+  const notify = (k, v) =&gt; {
+    const set = listeners.get(k);
+    if (!set) return;
+    for (const fn of set) fn(v);
+  };
+  
+  const state = new Proxy({ ...initial }, {
+    set(target, key, value) {
+      if (target[key] === value) return true;
+      target[key] = value;
+      notify(key, value);
+      return true;
+    }
+  });
+  
+  return {
+    state,
+    subscribe(key, fn) {
+      const set = listeners.get(key) || new Set();
+      set.add(fn);
+      listeners.set(key, set);
+      fn(state[key]); // initial push
+      return () =&gt; set.delete(fn);
+    }
+  };
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Reactivity &amp; two-way data binding</h4>
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
+// Customized built-in input that binds to a store key
+class BoundInput extends HTMLInputElement {
+  connectedCallback() {
+    this._key = this.getAttribute('data-bind') || '';
+    if (!this._key) return;
+    
+    this._unsub = store.subscribe(this._key, (v) =&gt; {
+      if (this.value !== String(v ?? '')) this.value = String(v ?? '');
+    });
+    
+    this.addEventListener('input', this);
+  }
+  
+  handleEvent(e) {
+    if (e.type === 'input' &amp;&amp; this._key) store.state[this._key] = this.value;
+  }
+  
+  disconnectedCallback() {
+    this.removeEventListener('input', this);
+    this._unsub?.();
+  }
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Reactivity &amp; two-way data binding</h4>
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="">
+// Customized built-in span that reflects a store key
+class BoundText extends HTMLSpanElement {
+  connectedCallback() {
+    this._key = this.getAttribute('data-bind') || '';
+    if (!this._key) return;
+    
+    this._unsub = store.subscribe(this._key, (v) =&gt; {
+      this.textContent = String(v ?? '');
+    });
+  }
+  
+  disconnectedCallback() { this._unsub?.(); }
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Reactivity &amp; two-way data binding</h4>
+    <pre>      <code class="hljs html" data-trim="" data-line-numbers="">
+&lt;label&gt;
+  Name:
+  &lt;input is="bound-input" type="text" data-bind="name" placeholder="Type your name" /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+  Nick:
+  &lt;input is="bound-input" type="text" data-bind="nick" placeholder="Type your nick" /&gt;
+&lt;/label&gt;
+&lt;p&gt;Hello, &lt;span is="bound-text" data-bind="name"&gt;&lt;/span&gt; aka &lt;span is="bound-text" data-bind="nick"&gt;&lt;/span&gt;!&lt;/p&gt;
+      </code>
+    </pre>
+    <pre>      <code class="hljs javascript" data-trim="" data-line-numbers="|7-8">
+// Store singleton for the page
+const store = createStore({ name: '', nick: '' });
+
+customElements.define('bound-input', BoundInput, { extends: 'input' });
+customElements.define('bound-text', BoundText, { extends: 'span' });
+
+// Yippie Kai Yay... motherf... 
+// vanilla reactivity &amp; two-way data binding!
+      </code>
+    </pre>
+  </section>
+  <section>
+    <div style="margin-top: .75rem">
+      <label>
+        Name:
+        <input is="bound-input" type="text" data-bind="name" style="vertical-align: middle; padding: .5rem 1rem; font-size: 1.8rem" placeholder="Type your name">
+      </label>
+      <br>
+      <label>
+        Nick:
+        <input is="bound-input" type="text" data-bind="nick" style="vertical-align: middle; padding: .5rem 1rem; font-size: 1.8rem" placeholder="Type your nick">
+      </label>
+      <br>
+      <p>Hello, <span is="bound-text" data-bind="name"></span> aka <span is="bound-text" data-bind="nick"></span>!</p>
+      <script>// Inline demo bootstrap with customized built-ins + fallback
+(function() {
+    // Scope to the slide container to avoid leaking to the whole document
+    const container = document.currentScript && document.currentScript.closest('div');
+    if (container && container.dataset.boundDemo === '1') return; // idempotent in Reveal navigation
+    if (container) container.dataset.boundDemo = '1';
+    function createStore(initial) {
+        const listeners = new Map();
+        const notify = (k, v)=>{
+            const set = listeners.get(k);
+            if (!set) return;
+            for (const fn of set)fn(v);
+        };
+        const state = new Proxy({
+            ...initial
+        }, {
+            set (target, key, value) {
+                if (target[key] === value) return true;
+                target[key] = value;
+                notify(key, value);
+                return true;
+            }
+        });
+        return {
+            state,
+            subscribe (key, fn) {
+                const set = listeners.get(key) || new Set();
+                set.add(fn);
+                listeners.set(key, set);
+                fn(state[key]);
+                return ()=>set.delete(fn);
+            }
+        };
+    }
+    const store = createStore({
+        name: '',
+        nick: ''
+    });
+    // Customized built-ins implementation
+    class BoundInput extends HTMLInputElement {
+        connectedCallback() {
+            this._key = this.getAttribute('data-bind') || '';
+            if (!this._key) return;
+            this._unsub = store.subscribe(this._key, (v)=>{
+                if (this.value !== String(v ?? '')) this.value = String(v ?? '');
+            });
+            this.addEventListener('input', this);
+        }
+        handleEvent(e) {
+            if (e.type === 'input' && this._key) store.state[this._key] = this.value;
+        }
+        disconnectedCallback() {
+            this.removeEventListener('input', this);
+            this._unsub?.();
+        }
+    }
+    class BoundText extends HTMLSpanElement {
+        connectedCallback() {
+            this._key = this.getAttribute('data-bind') || '';
+            if (!this._key) return;
+            this._unsub = store.subscribe(this._key, (v)=>{
+                this.textContent = String(v ?? '');
+            });
+        }
+        disconnectedCallback() {
+            this._unsub?.();
+        }
+    }
+    // Feature detection for customized built-ins
+    function supportsCustomizedBuiltins() {
+        if (!window.customElements) return false;
+        try {
+            class XBtn extends HTMLButtonElement {
+            }
+            const name = 'x-test-' + Math.random().toString(36).slice(2);
+            customElements.define(name, XBtn, {
+                extends: 'button'
+            });
+            const el = document.createElement('button', {
+                is: name
+            });
+            return el instanceof XBtn;
+        } catch (_) {
+            return false;
+        }
+    }
+    const hasCBE = supportsCustomizedBuiltins();
+    if (hasCBE) {
+        if (!customElements.get('bound-input')) customElements.define('bound-input', BoundInput, {
+            extends: 'input'
+        });
+        if (!customElements.get('bound-text')) customElements.define('bound-text', BoundText, {
+            extends: 'span'
+        });
+    } else {
+        // Fallback: manual wiring scoped to this slide container
+        const root = container || document;
+        const inputs = root.querySelectorAll('input[data-bind]');
+        for (const input of inputs){
+            const key = input.getAttribute('data-bind') || '';
+            if (!key) continue;
+            // initial sync from store
+            input.value = String(store.state[key] ?? '');
+            // update from store to input
+            store.subscribe(key, (v)=>{
+                const next = String(v ?? '');
+                if (input.value !== next) input.value = next;
+            });
+            // update from input to store
+            input.addEventListener('input', ()=>{
+                store.state[key] = input.value;
+            });
+        }
+        const spans = root.querySelectorAll('span[data-bind]');
+        for (const span of spans){
+            const key = span.getAttribute('data-bind') || '';
+            if (!key) continue;
+            store.subscribe(key, (v)=>{
+                span.textContent = String(v ?? '');
+            });
+        }
+    }
+})();
+
+</script>
+    </div>
+  </section>
+  <!-- <section>
+    <h4>Reactivity</h4>
+    <pre class="fragment">
+      <code class="hljs javascript" data-trim data-line-numbers>
+// Tiny reactive core: effect registry + reactive state
+const effects = new Set();
+function effect(fn) { effects.add(fn); fn(); }
+
+function reactive(obj) {
+  return new Proxy(obj, {
+    set(target, key, value) {
+      if (target[key] === value) return true;
+      target[key] = value;
+      // naive: notify all effects
+      effects.forEach((fn) => fn());
+      return true;
+    }
+  });
+}
+
+// Usage
+const state = reactive({ count: 0 });
+
+effect(() => {
+  const out = document.getElementById('count-out');
+  if (out) out.textContent = String(state.count);
+});
+
+document.getElementById('inc')?.addEventListener('click', () => state.count++);
+document.getElementById('dec')?.addEventListener('click', () => state.count--);
+      </code>
+    </pre>
+    <pre class="fragment">
+      <code class="hljs html" data-trim data-line-numbers>
+&lt;div class="counter"&gt;
+  &lt;button id="dec"&gt;-&lt;/button&gt;
+  &lt;output id="count-out" aria-live="polite"&gt;0&lt;/output&gt;
+  &lt;button id="inc"&gt;+&lt;/button&gt;
+&lt;/div&gt;
+      </code>
+    </pre>
+    <div class="fragment" style="margin-top: 0.75rem; display: inline-flex; gap: 0.5rem; align-items: center">
+      <button id="dec" type="button">-</button>
+      <output id="count-out" aria-live="polite">0</output>
+      <button id="inc" type="button">+</button>
+      <script>
+        // Inline demo bootstrap
+        (function () {
+          const effects = new Set();
+          function effect(fn) {
+            effects.add(fn);
+            fn();
+          }
+          function reactive(obj) {
+            return new Proxy(obj, {
+              set(target, key, value) {
+                if (target[key] === value) return true;
+                target[key] = value;
+                effects.forEach((fn) => fn());
+                return true;
+              },
+            });
+          }
+          const state = reactive({ count: 0 });
+          effect(() => {
+            const out = document.getElementById('count-out');
+            if (out) out.textContent = String(state.count);
+          });
+          document.getElementById('inc')?.addEventListener('click', () => state.count++);
+          document.getElementById('dec')?.addEventListener('click', () => state.count--);
+        })();
+      </script>
+    </div>
+  </section> -->
 </section>
 
 
@@ -1150,109 +1541,70 @@ export function buildLifecycleMethods(component) {
 <include src="./slides/topics/_43-future-features.html"></include> -->
 <section>
   <section>
-    <h3>Resources and <mark>Learning Paths</mark></h3>
-    <p>Bookmark these to go deeper</p>
+    <h3>Resources and <mark>Links</mark></h3>
+    <small>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements" target="_blank" rel="noreferrer noopener">MDN: Using customElements</a></li>
+        <li><a href="https://html.spec.whatwg.org/multipage/custom-elements.html" target="_blank" rel="noreferrer noopener">WHATWG: customElements spec</a></li>
+        <li><a href="https://web.dev/baseline" target="_blank" rel="noreferrer noopener">Web.dev: Baseline</a></li>
+        <li><a href="https://github.com/webcomponents" target="_blank" rel="noreferrer noopener">Web Components GitHub org</a></li>
+        <li><a href="https://caniuse.com/?search=custom%20elements" target="_blank" rel="noreferrer noopener">Can I Use: customElements</a></li>
+      </ul>
+    </small>
   </section>
-  <section>
-    <h4>Docs</h4>
-    <ul>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements" target="_blank" rel="noreferrer noopener">MDN: Using customElements</a></li>
-      <li><a href="https://html.spec.whatwg.org/multipage/custom-elements.html" target="_blank" rel="noreferrer noopener">WHATWG: customElements spec</a></li>
-      <li><a href="https://web.dev/baseline" target="_blank" rel="noreferrer noopener">Web.dev: Baseline</a></li>
-    </ul>
-  </section>
-  <section>
-    <h4>Articles and Guides</h4>
-    <ul>
-      <li><a href="https://web.dev/learn/html/custom-elements/" target="_blank" rel="noreferrer noopener">Web.dev Learn: customElements</a></li>
-      <li><a href="https://github.com/webcomponents" target="_blank" rel="noreferrer noopener">Web Components GitHub org</a></li>
-      <li><a href="https://caniuse.com/?search=custom%20elements" target="_blank" rel="noreferrer noopener">Can I Use: customElements</a></li>
-    </ul>
-  </section>
-  <section>
+  <!-- <section>
     <h4>Libraries and Tools</h4>
     <ul>
       <li><a href="https://github.com/ing-bank/lion" target="_blank" rel="noreferrer noopener">Lion by ING</a></li>
       <li><a href="https://github.com/adobe/spectrum-web-components" target="_blank" rel="noreferrer noopener">Adobe Spectrum Web Components</a></li>
       <li><a href="https://open-wc.org/" target="_blank" rel="noreferrer noopener">Open Web Components</a></li>
     </ul>
-  </section>
+  </section> -->
 </section>
 
 <section>
   <section>
-    <h3>Conclusions &amp; <mark>Call to action</mark></h3>
-    <p>Build on the platform. Extend, not replace.</p>
+    <h3>Call to <mark> action</mark></h3>
+    <p>
+      Build <mark>on the platform</mark>. <br>
+      Extend, don't replace.
+    </p>
+    <small>
+      <ul>
+        <li class="fragment">Extend <mark>native elements</mark> with the {extends} pattern</li>
+        <li class="fragment">Design <mark>clear contracts</mark>: attributes, properties, events</li>
+        <li class="fragment">Prefer <mark>progressive enhancement</mark> and accessibility</li>
+        <li class="fragment">Ship <mark>ESM</mark> + optional adapters for frameworks</li>
+      </ul>
+    </small>
   </section>
-  <section>
-    <h4>Key takeaways</h4>
-    <ul>
-      <li class="fragment">Extend native elements with the {extends} pattern</li>
-      <li class="fragment">Use is="custom-name" in HTML to opt in</li>
-      <li class="fragment">Design clear contracts: attributes, properties, events</li>
-      <li class="fragment">Favor progressive enhancement and accessibility</li>
-      <li class="fragment">Ship ESM, optional adapters for frameworks</li>
-    </ul>
-  </section>
-  <section>
+  <!-- <section>
     <h4>What to do next</h4>
-    <ul>
-      <li class="fragment">Pick one component and build it this week</li>
-      <li class="fragment">Document its API and events</li>
-      <li class="fragment">Try it in React/Vue without wrappers</li>
-      <li class="fragment">Measure performance and a11y</li>
-    </ul>
+    <small>
+      <ul>
+        <li class="fragment">Pick one component and build it this week</li>
+        <li class="fragment">Document its API and events</li>
+        <li class="fragment">Try it in React/Vue without wrappers</li>
+        <li class="fragment">Measure performance and a11y</li>
+      </ul>
+    </small>
   </section>
   <section>
     <h4>Thank you</h4>
     <p>Questions welcome. Find me after the talk.</p>
-  </section>
+  </section> -->
 </section>
 
 
+<!-- <include src="./slides/outro/_wrap-up.html"></include> -->
 <section>
   <section data-transition="convex">
-    <h4>Wrapping up</h4>
-  </section>
-  <section data-transition="convex">
-    <comparison>
-      <left>
-        <h4>Pros</h4>
-        <small>
-          <ul>
-            <li class="fragment">pro 1</li>
-            <li class="fragment">pro 2</li>
-            <li class="fragment">pro 3</li>
-            <li class="fragment">pro 4</li>
-          </ul>
-        </small>
-      </left>
-      <right>
-        <h4>Cons</h4>
-        <small>
-          <ul>
-            <li class="fragment">con 1</li>
-            <li class="fragment">con 2</li>
-            <li class="fragment">con 3</li>
-            <li class="fragment">con 4</li>
-          </ul>
-        </small>
-      </right>
-    </comparison>
-  </section>
-  <section data-transition="convex">
-    <h4>Conclusions</h4>
-  </section>
-</section>
-
-<section>
-  <!-- <section data-transition="convex">
   <h4>Slides Links</h4>
-  <comparison links>
+  <comparison links="">
     <figure>
       <picture>
-        <source srcset="./assets/qrcodes/slides.png?as=webp" type="image/webp" />
-        <img src="./assets/qrcodes/slides.png" alt="Slides" />
+        <source srcset="slides.5d0f24e5.webp" type="image/webp">
+        <img src="slides.283bb78b.png" alt="Slides">
       </picture>
       <figcaption>
         <small>Slides</small>
@@ -1260,23 +1612,23 @@ export function buildLifecycleMethods(component) {
     </figure>
     <figure>
       <picture>
-        <source srcset="./assets/qrcodes/slides-repo.png?as=webp" type="image/webp" />
-        <img src="./assets/qrcodes/slides-repo.png" alt="Slides Repo on Github" />
+        <source srcset="slides-repo.8f28139d.webp" type="image/webp">
+        <img src="slides-repo.6688a3f3.png" alt="Slides Repo on Github">
       </picture>
       <figcaption>
         <small>Slides Repo</small>
       </figcaption>
     </figure>
   </comparison>
-</section> -->
+</section>
 
-<section data-transition="convex">
+<!-- <section data-transition="convex">
   <h4>Personal Links</h4>
-  <comparison links="">
+  <comparison links>
     <figure>
       <picture>
-        <source srcset="pixu-dev.78fd730f.webp" type="image/webp">
-        <img src="pixu-dev.deaa6f1c.png" alt="Pixu.dev">
+        <source srcset="./assets/qrcodes/pixu-dev.png?as=webp" type="image/webp" />
+        <img src="./assets/qrcodes/pixu-dev.png" alt="Pixu.dev" />
       </picture>
       <figcaption>
         <small>pixu.dev</small>
@@ -1284,8 +1636,8 @@ export function buildLifecycleMethods(component) {
     </figure>
     <figure>
       <picture>
-        <source srcset="linkedin.ba7af5d7.webp" type="image/webp">
-        <img src="linkedin.0ce1d20b.png" alt="Pixu LinkedIn Profile">
+        <source srcset="./assets/qrcodes/linkedin.png?as=webp" type="image/webp" />
+        <img src="./assets/qrcodes/linkedin.png" alt="Pixu LinkedIn Profile" />
       </picture>
       <figcaption>
         <small>LinkedIn</small>
@@ -1296,11 +1648,11 @@ export function buildLifecycleMethods(component) {
 
 <section data-transition="convex">
   <h4>DevDojo Links</h4>
-  <comparison links="">
+  <comparison links>
     <figure>
       <picture>
-        <source srcset="dev-dojo.0d19364d.webp" type="image/webp">
-        <img src="dev-dojo.dca9c419.png" alt="devdojo.it">
+        <source srcset="./assets/qrcodes/dev-dojo.png?as=webp" type="image/webp" />
+        <img src="./assets/qrcodes/dev-dojo.png" alt="devdojo.it" />
       </picture>
       <figcaption>
         <small>devdojo.it</small>
@@ -1308,15 +1660,15 @@ export function buildLifecycleMethods(component) {
     </figure>
     <figure>
       <picture>
-        <source srcset="dev-dojo-linkedin.2373522e.webp" type="image/webp">
-        <img src="dev-dojo-linkedin.527c0107.png" alt="devdojo @ linkedin">
+        <source srcset="./assets/qrcodes/dev-dojo-linkedin.png?as=webp" type="image/webp" />
+        <img src="./assets/qrcodes/dev-dojo-linkedin.png" alt="devdojo @ linkedin" />
       </picture>
       <figcaption>
         <small>LinkedIn</small>
       </figcaption>
     </figure>
   </comparison>
-</section>
+</section> -->
 
   <section class="slide-outro-taf" data-transition="convex">
   <!-- <div sr-only data-menu-title>That's All Folks</div> -->
@@ -1398,7 +1750,7 @@ export function buildLifecycleMethods(component) {
 </a>
 
     </main>
-    <script src="custom-elements-and-beyond.f2a811b9.js" type="module"></script>
+    <script src="custom-elements-and-beyond.b8a0752d.js" type="module"></script>
   
 
 </body></html>

@@ -17,3 +17,19 @@ Usage in slides:
 ```html
 <baseline-status feature-id="anchor-positioning"></baseline-status>
 ```
+
+Provider options:
+
+- By default the component fetches data from https://api.webstatus.dev.
+- You can set `provider="mdn"` to use MDN Browser Compat Data (via CDN).
+- Keep `provider="auto"` (default) to try webstatus first and fall back to MDN when webstatus has no data.
+
+Examples:
+
+```html
+<!-- Force MDN and point to a BCD path (dot notation) -->
+<baseline-status provider="mdn" mdn-path="javascript.classes.static_initialization_blocks"></baseline-status>
+
+<!-- Auto provider tries webstatus then MDN; mdn-path can be provided as a hint -->
+<baseline-status provider="auto" feature-id=":has()" mdn-path="css.selectors.has"></baseline-status>
+```

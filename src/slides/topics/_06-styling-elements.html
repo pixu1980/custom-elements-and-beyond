@@ -14,12 +14,19 @@ button[is="icon-button"] {
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
 }
+
 /* States (hover, disabled) */
-button[is="icon-button"]:hover { transform: scale(1.05); }
-button[is="icon-button"][disabled] { opacity: 0.5; cursor: not-allowed; }
+button[is="icon-button"]:hover {
+  transform: scale(1.05);
+}
+
+button[is="icon-button"][disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
       </code>
     </pre>
-    <p class="fragment">✅ Use attribute selectors and keep specificity low</p>
+    <p class="fragment">✅ Use <mark>attribute selectors</mark> and keep specificity low</p>
   </section>
 
   <section>
@@ -31,20 +38,30 @@ button[is="themed-button"] {
   color: var(--button-color, white);
   border-radius: var(--button-radius, 4px);
   padding: var(--button-padding, 0.5rem 1rem);
-  transition: 0.2s;
 }
-.theme-dark { --button-bg: #1a1a1a; --button-color: #ffffff; }
-.theme-light { --button-bg: #f0f0f0; --button-color: #000000; }
+
+.theme-dark {
+  --button-bg: #1a1a1a;
+  --button-color: #ffffff;
+}
+
+.theme-light {
+  --button-bg: #f0f0f0;
+  --button-color: #000000;
+}
       </code>
     </pre>
     <pre class="fragment">
       <code class="hljs html" data-trim data-line-numbers>
-&lt;div class="theme-dark"&gt;&lt;button is="themed-button"&gt;Dark&lt;/button&gt;&lt;/div&gt;
-&lt;div class="theme-light"&gt;&lt;button is="themed-button"&gt;Light&lt;/button&gt;&lt;/div&gt;
+&lt;div class="theme-dark"&gt;
+  &lt;button is="themed-button"&gt;Dark&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class="theme-light"&gt;
+  &lt;button is="themed-button"&gt;Light&lt;/button&gt;
+&lt;/div&gt;
       </code>
     </pre>
   </section>
-
   <section>
     <h4>Design tokens and component contract</h4>
     <pre>
@@ -56,6 +73,7 @@ button[is="themed-button"] {
   --radius-sm: 4px;
   --font-size-base: 1rem;
 }
+
 button[is="themed-button"] {
   background: var(--button-bg, var(--color-primary));
   color: var(--button-color, white);
@@ -78,6 +96,7 @@ button[is="themed-button"] {
 @layer reset {
   *,*::before,*::after { box-sizing: border-box; }
 }
+
 @layer base {
   :root { --space-sm: 0.5rem; --space-md: 1rem; }
 }
@@ -95,7 +114,7 @@ button[is="themed-button"] {
 }
       </code>
     </pre>
-    <p class="fragment">✅ Layers control cascade without specificity hacks</p>
+    <p class="fragment">✅ Layers control cascade <mark>without specificity hacks</mark></p>
   </section>
 
   <section>
@@ -111,13 +130,21 @@ button[is="themed-button"] {
     <pre class="fragment">
       <code class="hljs css" data-trim data-line-numbers>
 @scope (.card) {
-  :scope { padding: 1rem; border: 1px solid #ddd; }
-  h3 { margin: 0 0 0.5rem; font-size: 1.25rem; }
-  button[is="themed-button"] { --button-bg: #e8f0ff; }
+  :scope {
+    padding: 1rem; border: 1px solid #ddd;
+  }
+  
+  h3 {
+    margin: 0 0 0.5rem; font-size: 1.25rem;
+  }
+  
+  button[is="themed-button"] {
+    --button-bg: #e8f0ff;
+  }
 }
       </code>
     </pre>
-    <p class="fragment">✅ Scoped styles avoid Shadow DOM while limiting reach</p>
+    <p class="fragment">✅ @scope styles === <mark>encapsulation</mark> <br />with <mark>no boundaries</mark></p>
   </section>
 
   <section>
@@ -125,29 +152,44 @@ button[is="themed-button"] {
     <pre>
       <code class="hljs css" data-trim data-line-numbers>
 /* data-* states */
-button[is="toggle-button"][data-state="active"] { background: var(--active-bg); }
+button[is="toggle-button"][data-state="active"] {
+  background: var(--active-bg);
+}
+
 /* ARIA states */
-button[is="menu-button"][aria-expanded="true"] { transform: rotate(180deg); }
+button[is="menu-button"][aria-expanded="true"] {
+  transform: rotate(180deg);
+}
+
 /* Pseudo-classes */
-input[is="validated-input"]:invalid { border-color: var(--error-color); }
-input[is="validated-input"]:focus { outline: 2px solid var(--focus-color); outline-offset: 2px; }
+input[is="validated-input"]:invalid {
+  border-color: var(--error-color);
+}
+
+input[is="validated-input"]:focus {
+  outline: 2px solid var(--focus-color); outline-offset: 2px;
+}
       </code>
     </pre>
   </section>
-
-  <section>
+  <!-- <section>
     <h4>Dark mode and preferences</h4>
     <pre>
       <code class="hljs css" data-trim data-line-numbers>
 /* System preference as default */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) { --bg-primary: #1a1a1a; --text-primary: #ffffff; }
+  :root:not([data-theme]) {
+    --bg-primary: #1a1a1a; --text-primary: #ffffff;
+  }
 }
+
 /* Manual override */
-:root[data-theme="dark"] { --bg-primary: #1a1a1a; --text-primary: #ffffff; }
+:root[data-theme="dark"] {
+  --bg-primary: #1a1a1a; --text-primary: #ffffff;
+}
       </code>
-    </pre>
-    <pre class="fragment">
+    </pre> -->
+  <!-- <pre class="fragment">
       <code class="hljs javascript" data-trim data-line-numbers>
 class ThemeToggle extends HTMLButtonElement {
   connectedCallback() {
@@ -161,10 +203,9 @@ class ThemeToggle extends HTMLButtonElement {
 }
 customElements.define('theme-toggle', ThemeToggle, { extends: 'button' });
       </code>
-    </pre>
-  </section>
-
-  <section>
+    </pre> -->
+  <!-- </section> -->
+  <!-- <section>
     <h4>Usage</h4>
     <pre>
       <code class="hljs html" data-trim data-line-numbers>
@@ -173,5 +214,5 @@ customElements.define('theme-toggle', ThemeToggle, { extends: 'button' });
       </code>
     </pre>
     <p class="fragment">✅ Children inherit tokens; layers and scope orchestrate overrides</p>
-  </section>
+  </section> -->
 </section>

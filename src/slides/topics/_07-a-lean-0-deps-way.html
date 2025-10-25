@@ -5,14 +5,18 @@
       "Nice, so do I have to write <br />
       all this `<mark>boilerplate</mark>` code... <span class="fragment"><mark>every time</mark>??"</span>
     </h4>
-    <p class="fragment">Of course <mark>not</mark>!</p>
+  </section>
+  <section>
+    <h3>Of course <mark>not</mark>!</h3>
   </section>
   <section>
     <h4>
       Expected Question #2: <br />
       "So it's possible to replicate or mimic the <mark>most common features</mark> of Lit, Angular, React, Vue??"
     </h4>
-    <p class="fragment">Well, <mark>yes</mark>!</p>
+  </section>
+  <section>
+    <h3>Well, <mark>yes</mark>!</h3>
   </section>
   <section>
     <h4 balance>
@@ -22,10 +26,15 @@
       <span class="fragment">two way data binding, </span><span class="fragment"><mark>reactivity</mark>??</span> <br />
       <span class="fragment">in <mark>vanillaJS</mark> 😱?"</span>
     </h4>
-    <p class="fragment">Hell, <mark>yeah</mark>!</p>
   </section>
   <section>
-    <p>Sounds like a <mark>huge "vanilla" ice cream</mark> 🍦, uh?</p>
+    <h3>Hell, <mark>yeah</mark> 🔥!</h3>
+  </section>
+  <section>
+    <h4>
+      This sounds like a huge <br />
+      <mark>"vanilla" ice cream</mark> 🍦, uh?
+    </h4>
   </section>
   <section>
     <h3>
@@ -35,30 +44,26 @@
     </h3>
   </section>
   <section>
-    <h4>extending Semantic HTML elements</h4>
+    <h4>First of all, <mark>extend native HTML</mark> elements</h4>
     <pre class="fragment">
-      <code class="hljs javascript"  data-trim="" data-line-numbers="">
-export class Button extends HTMLButtonElement {
-}
+      <code class="hljs javascript"  data-trim data-line-numbers>
+export class PixButton extends HTMLButtonElement {}
 
-export class Input extends HTMLInputElement {
-}
+export class PixInput extends HTMLInputElement {}
 
-export class Dialog extends HTMLDialogElement {
-}
+export class PixDialog extends HTMLDialogElement {}
 
-export class Details extends HTMLDetailsElement {
-}
-</code>
+export class PixDetails extends HTMLDetailsElement {}
+      </code> 
     </pre>
-    <h4 class="fragment">Yep, no base classes!</h4>
+    <h4 balance class="fragment">Yes, no base classes === no centralization</h4>
   </section>
   <section>
     <h4>
       Static Initialization Blocks (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Static_initialization_blocks" target="_blank" rel="noopener noreferrer">MDN</a>)
     </h4>
     <pre class="fragment">
-      <code class="hljs javascript" data-trim="" data-line-numbers="1-4|6-11|6-14|19|13,19|21">
+      <code class="hljs javascript" data-trim data-line-numbers="|6-14|19|21-22">
 export class Button extends HTMLButtonElement {
   static name = "pix-button";
 
@@ -79,14 +84,15 @@ export class Button extends HTMLButtonElement {
 
 // import '@pix-ui/button';
 
-//Yippie Kai Yay... motherf... static initialization blocks!
+// Yippie Kai Yay, motherf... 
+// ehm... static initialization blocks!
   </code>
     </pre>
   </section>
   <section>
-    <h4><mark>Decorators</mark>?</h4>
+    <h4><mark>Decorators</mark>? <mark>Mixins</mark>?</h4>
     <pre class="fragment">
-      <code class="hljs javascript" data-trim="" data-line-numbers="1-6|8-15|17-21|24-31|33-37|39">
+      <code class="hljs javascript" data-trim="" data-line-numbers="1-6|8-15|17-21|24-31|33-37|39-40">
 export function componentDecorator(componentName, component) {
   assertMetaKey(component, "name");
   defineCustomElement(component);
@@ -125,22 +131,23 @@ export function applyMixins(component) {
     });
 }
 
-// Yippie Kai Yay... motherf... decorators!
+// Yippie Kai Yay... motherf... 
+// ehm... vanilla decorators and mixins!
   </code>
     </pre>
   </section>
   <section>
     <h4>Metaprogramming!</h4>
     <pre class="fragment">
-      <code class="hljs javascript" data-trim="" data-line-numbers="|1-7|1-11|12-16|18-22|24">
+      <code class="hljs javascript" data-trim="" data-line-numbers="|1-11|12-16|18-22|27-40|42-43">
 /**
 * PixUI Button class
 *
 * @export
-* @class Button 
+* @class PixButton 
 * @extends {HTMLButtonElement}
 */
-export class Button extends HTMLButtonElement {
+export class PixButton extends HTMLButtonElement {
   static name = "pix-button";
   static extends = "button";
  
@@ -155,18 +162,34 @@ export class Button extends HTMLButtonElement {
       console.log("button clicked", this.textContent);
     },
   }
-  
-  // Yippie Kai Yay... motherf... metaprogramming!
- 
+   
  ...
 }
+
+// The instance will have
+class Button extends HTMLButtonElement {
+  ...
+  
+  handleDisabledAttributeChanged(oldValue, newValue) => {
+    console.log("disabled changed", oldValue, newValue, this.textContent); 
+  }
+  
+  handleClickEvent(e) {
+    console.log("button clicked", this.textContent);
+  }
+  
+  ...
+}
+
+// Yippie Kai Yay... motherf... 
+// ehm... vanilla metaprogramming!
       </code>
     </pre>
   </section>
   <section>
     <h4><mark>Lifecycle</mark> methods?</h4>
     <pre class="fragment">
-      <code class="hljs javascript" data-trim="" data-line-numbers="|6-8|9-13|14-18|3-5|22">
+      <code class="hljs javascript" data-trim="" data-line-numbers="|6-8|9-13|14-18|3-5|22-23">
 export function buildLifecycleMethods(component) {
   return {
     handleEvent(e) {
@@ -188,8 +211,335 @@ export function buildLifecycleMethods(component) {
   };
 }
   
-// Yippie Kai Yay... motherf... lifecycle!
-  </code>
+// Yippie Kai Yay... motherf... 
+// ehm... vanilla lifecycle methods!
+      </code>
     </pre>
   </section>
+  <section>
+    <h4>Reactivity & two-way data binding</h4>
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+// Two way binding with customized built-ins and a tiny store
+function createStore(initial) {
+  const listeners = new Map(); // key => Set(callback)
+  
+  const notify = (k, v) => {
+    const set = listeners.get(k);
+    if (!set) return;
+    for (const fn of set) fn(v);
+  };
+  
+  const state = new Proxy({ ...initial }, {
+    set(target, key, value) {
+      if (target[key] === value) return true;
+      target[key] = value;
+      notify(key, value);
+      return true;
+    }
+  });
+  
+  return {
+    state,
+    subscribe(key, fn) {
+      const set = listeners.get(key) || new Set();
+      set.add(fn);
+      listeners.set(key, set);
+      fn(state[key]); // initial push
+      return () => set.delete(fn);
+    }
+  };
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Reactivity & two-way data binding</h4>
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+// Customized built-in input that binds to a store key
+class BoundInput extends HTMLInputElement {
+  connectedCallback() {
+    this._key = this.getAttribute('data-bind') || '';
+    if (!this._key) return;
+    
+    this._unsub = store.subscribe(this._key, (v) => {
+      if (this.value !== String(v ?? '')) this.value = String(v ?? '');
+    });
+    
+    this.addEventListener('input', this);
+  }
+  
+  handleEvent(e) {
+    if (e.type === 'input' && this._key) store.state[this._key] = this.value;
+  }
+  
+  disconnectedCallback() {
+    this.removeEventListener('input', this);
+    this._unsub?.();
+  }
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Reactivity & two-way data binding</h4>
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers>
+// Customized built-in span that reflects a store key
+class BoundText extends HTMLSpanElement {
+  connectedCallback() {
+    this._key = this.getAttribute('data-bind') || '';
+    if (!this._key) return;
+    
+    this._unsub = store.subscribe(this._key, (v) => {
+      this.textContent = String(v ?? '');
+    });
+  }
+  
+  disconnectedCallback() { this._unsub?.(); }
+}
+      </code>
+    </pre>
+  </section>
+  <section>
+    <h4>Reactivity & two-way data binding</h4>
+    <pre>
+      <code class="hljs html" data-trim data-line-numbers>
+&lt;label&gt;
+  Name:
+  &lt;input is="bound-input" type="text" data-bind="name" placeholder="Type your name" /&gt;
+&lt;/label&gt;
+&lt;label&gt;
+  Nick:
+  &lt;input is="bound-input" type="text" data-bind="nick" placeholder="Type your nick" /&gt;
+&lt;/label&gt;
+&lt;p&gt;Hello, &lt;span is="bound-text" data-bind="name"&gt;&lt;/span&gt; aka &lt;span is="bound-text" data-bind="nick"&gt;&lt;/span&gt;!&lt;/p&gt;
+      </code>
+    </pre>
+    <pre>
+      <code class="hljs javascript" data-trim data-line-numbers="|7-8">
+// Store singleton for the page
+const store = createStore({ name: '', nick: '' });
+
+customElements.define('bound-input', BoundInput, { extends: 'input' });
+customElements.define('bound-text', BoundText, { extends: 'span' });
+
+// Yippie Kai Yay... motherf... 
+// vanilla reactivity & two-way data binding!
+      </code>
+    </pre>
+  </section>
+  <section>
+    <div style="margin-top: 0.75rem">
+      <label>
+        Name:
+        <input is="bound-input" type="text" data-bind="name" style="padding: .5rem 1rem; font-size: 1.8rem; vertical-align: middle;" placeholder="Type your name" />
+      </label>
+      <br />
+      <label>
+        Nick:
+        <input is="bound-input" type="text" data-bind="nick" style="padding: .5rem 1rem; font-size: 1.8rem; vertical-align: middle;" placeholder="Type your nick" />
+      </label>
+      <br />
+      <p>Hello, <span is="bound-text" data-bind="name"></span> aka <span is="bound-text" data-bind="nick"></span>!</p>
+      <script>
+        // Inline demo bootstrap with customized built-ins + fallback
+        (function () {
+          // Scope to the slide container to avoid leaking to the whole document
+          const container = document.currentScript && document.currentScript.closest('div');
+          if (container && container.dataset.boundDemo === '1') return; // idempotent in Reveal navigation
+          if (container) container.dataset.boundDemo = '1';
+
+          function createStore(initial) {
+            const listeners = new Map();
+            const notify = (k, v) => {
+              const set = listeners.get(k);
+              if (!set) return;
+              for (const fn of set) fn(v);
+            };
+            const state = new Proxy(
+              { ...initial },
+              {
+                set(target, key, value) {
+                  if (target[key] === value) return true;
+                  target[key] = value;
+                  notify(key, value);
+                  return true;
+                },
+              }
+            );
+            return {
+              state,
+              subscribe(key, fn) {
+                const set = listeners.get(key) || new Set();
+                set.add(fn);
+                listeners.set(key, set);
+                fn(state[key]);
+                return () => set.delete(fn);
+              },
+            };
+          }
+
+          const store = createStore({ name: '', nick: '' });
+
+          // Customized built-ins implementation
+          class BoundInput extends HTMLInputElement {
+            connectedCallback() {
+              this._key = this.getAttribute('data-bind') || '';
+              if (!this._key) return;
+              this._unsub = store.subscribe(this._key, (v) => {
+                if (this.value !== String(v ?? '')) this.value = String(v ?? '');
+              });
+              this.addEventListener('input', this);
+            }
+            handleEvent(e) {
+              if (e.type === 'input' && this._key) store.state[this._key] = this.value;
+            }
+            disconnectedCallback() {
+              this.removeEventListener('input', this);
+              this._unsub?.();
+            }
+          }
+          class BoundText extends HTMLSpanElement {
+            connectedCallback() {
+              this._key = this.getAttribute('data-bind') || '';
+              if (!this._key) return;
+              this._unsub = store.subscribe(this._key, (v) => {
+                this.textContent = String(v ?? '');
+              });
+            }
+            disconnectedCallback() {
+              this._unsub?.();
+            }
+          }
+
+          // Feature detection for customized built-ins
+          function supportsCustomizedBuiltins() {
+            if (!window.customElements) return false;
+            try {
+              class XBtn extends HTMLButtonElement {}
+              const name = 'x-test-' + Math.random().toString(36).slice(2);
+              customElements.define(name, XBtn, { extends: 'button' });
+              const el = document.createElement('button', { is: name });
+              return el instanceof XBtn;
+            } catch (_) {
+              return false;
+            }
+          }
+
+          const hasCBE = supportsCustomizedBuiltins();
+          if (hasCBE) {
+            if (!customElements.get('bound-input')) {
+              customElements.define('bound-input', BoundInput, { extends: 'input' });
+            }
+            if (!customElements.get('bound-text')) {
+              customElements.define('bound-text', BoundText, { extends: 'span' });
+            }
+          } else {
+            // Fallback: manual wiring scoped to this slide container
+            const root = container || document;
+            const inputs = root.querySelectorAll('input[data-bind]');
+            for (const input of inputs) {
+              const key = input.getAttribute('data-bind') || '';
+              if (!key) continue;
+              // initial sync from store
+              input.value = String(store.state[key] ?? '');
+              // update from store to input
+              store.subscribe(key, (v) => {
+                const next = String(v ?? '');
+                if (input.value !== next) input.value = next;
+              });
+              // update from input to store
+              input.addEventListener('input', () => {
+                store.state[key] = input.value;
+              });
+            }
+            const spans = root.querySelectorAll('span[data-bind]');
+            for (const span of spans) {
+              const key = span.getAttribute('data-bind') || '';
+              if (!key) continue;
+              store.subscribe(key, (v) => {
+                span.textContent = String(v ?? '');
+              });
+            }
+          }
+        })();
+      </script>
+    </div>
+  </section>
+  <!-- <section>
+    <h4>Reactivity</h4>
+    <pre class="fragment">
+      <code class="hljs javascript" data-trim data-line-numbers>
+// Tiny reactive core: effect registry + reactive state
+const effects = new Set();
+function effect(fn) { effects.add(fn); fn(); }
+
+function reactive(obj) {
+  return new Proxy(obj, {
+    set(target, key, value) {
+      if (target[key] === value) return true;
+      target[key] = value;
+      // naive: notify all effects
+      effects.forEach((fn) => fn());
+      return true;
+    }
+  });
+}
+
+// Usage
+const state = reactive({ count: 0 });
+
+effect(() => {
+  const out = document.getElementById('count-out');
+  if (out) out.textContent = String(state.count);
+});
+
+document.getElementById('inc')?.addEventListener('click', () => state.count++);
+document.getElementById('dec')?.addEventListener('click', () => state.count--);
+      </code>
+    </pre>
+    <pre class="fragment">
+      <code class="hljs html" data-trim data-line-numbers>
+&lt;div class="counter"&gt;
+  &lt;button id="dec"&gt;-&lt;/button&gt;
+  &lt;output id="count-out" aria-live="polite"&gt;0&lt;/output&gt;
+  &lt;button id="inc"&gt;+&lt;/button&gt;
+&lt;/div&gt;
+      </code>
+    </pre>
+    <div class="fragment" style="margin-top: 0.75rem; display: inline-flex; gap: 0.5rem; align-items: center">
+      <button id="dec" type="button">-</button>
+      <output id="count-out" aria-live="polite">0</output>
+      <button id="inc" type="button">+</button>
+      <script>
+        // Inline demo bootstrap
+        (function () {
+          const effects = new Set();
+          function effect(fn) {
+            effects.add(fn);
+            fn();
+          }
+          function reactive(obj) {
+            return new Proxy(obj, {
+              set(target, key, value) {
+                if (target[key] === value) return true;
+                target[key] = value;
+                effects.forEach((fn) => fn());
+                return true;
+              },
+            });
+          }
+          const state = reactive({ count: 0 });
+          effect(() => {
+            const out = document.getElementById('count-out');
+            if (out) out.textContent = String(state.count);
+          });
+          document.getElementById('inc')?.addEventListener('click', () => state.count++);
+          document.getElementById('dec')?.addEventListener('click', () => state.count--);
+        })();
+      </script>
+    </div>
+  </section> -->
 </section>

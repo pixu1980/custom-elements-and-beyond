@@ -6,7 +6,9 @@
 import styles from "bundle-text:./baseline-status.css";
 
 import {
-	API_ENDPOINT,
+	API_PROVIDER_DEFAULT,
+	API_ENDPOINT_WEBSTATUS,
+	API_ENDPOINT_MDN_CDN,
 	BASELINE_DEFS,
 	SUPPORT_ICONS,
 	BROWSER_ICONS,
@@ -33,7 +35,7 @@ import {
 
 export class BaselineStatus extends HTMLElement {
 	static get observedAttributes() {
-		return ["feature-id", "featureId"];
+		return ["feature-id", "featureId", "provider", "mdn-path"];
 	}
 
 	constructor() {
@@ -54,7 +56,7 @@ export class BaselineStatus extends HTMLElement {
 	}
 
 	attributeChangedCallback(name) {
-		if (name === "feature-id" || name === "featureId") {
+		if (name === "feature-id" || name === "featureId" || name === "provider" || name === "mdn-path") {
 			const fid =
 				this.getAttribute("feature-id") || this.getAttribute("featureId");
 			if (fid && this.getAttribute("feature-id") !== fid)
@@ -67,6 +69,21 @@ export class BaselineStatus extends HTMLElement {
 		return (
 			this.getAttribute("feature-id") || this.getAttribute("featureId") || ""
 		);
+	}
+	get provider() {
+		return this.getAttribute("provider") || API_PROVIDER_DEFAULT;
+	}
+	set provider(v) {
+		if (v == null) this.removeAttribute("provider");
+		else this.setAttribute("provider", String(v));
+	}
+
+	get mdnPath() {
+		return this.getAttribute("mdn-path") || "";
+	}
+	set mdnPath(v) {
+		if (v == null) this.removeAttribute("mdn-path");
+		else this.setAttribute("mdn-path", String(v));
 	}
 	set featureId(v) {
 		if (v == null) this.removeAttribute("feature-id");
@@ -126,10 +143,20 @@ export class BaselineStatus extends HTMLElement {
 			learnMore:
 				baseline === "no_data"
 					? ""
-					: `<a href="https://webstatus.dev/features/${feature?.feature_id || this.featureId}" target="_blank" rel="noopener noreferrer">Learn more</a>`,
+					: this._buildLearnMoreLink(feature),
 		});
 
 		this.innerHTML = html;
+	}
+
+	_buildLearnMoreLink(feature) {
+		// Prefer MDN url if present from BCD normalization
+		const mdn = feature?.learn_more_url;
+		if (mdn) {
+			return `<a href="${escapeAttr(mdn)}" target="_blank" rel="noopener noreferrer">Learn more on MDN</a>`;
+		}
+		const id = feature?.feature_id || this.featureId;
+		return `<a href="https://webstatus.dev/features/${escapeAttr(id)}" target="_blank" rel="noopener noreferrer">Learn more</a>`;
 	}
 
 	_browserImg(name) {
@@ -164,18 +191,138 @@ export class BaselineStatus extends HTMLElement {
 		this._renderLoading();
 
 		try {
-			const resp = await fetch(API_ENDPOINT + encodeURIComponent(featureId), {
-				signal: this._ctrl.signal,
-				cache: "force-cache",
-			});
-			if (!resp.ok) throw new Error(String(resp.status));
-			const json = await resp.json();
-			this._data = json;
-			this._render(json);
+			const data = await this._loadData(featureId);
+			this._data = data;
+			this._render(data);
 		} catch (err) {
 			if (err?.name === "AbortError") return;
 			this._render({ baseline: { status: "no_data" }, name: featureId });
 		}
+	}
+
+	async _loadData(featureId) {
+		const provider = this.provider;
+		if (provider === "webstatus") {
+			return await this._fetchWebstatus(featureId);
+		}
+		if (provider === "mdn") {
+			return await this._fetchMdnCompat(this.mdnPath || featureId);
+		}
+		// auto: try webstatus, then mdn
+		try {
+			const ws = await this._fetchWebstatus(featureId);
+			if (ws?.baseline?.status && ws.baseline.status !== "no_data") return ws;
+			// if webstatus returns no data, attempt mdn
+			const mdn = await this._fetchMdnCompat(this.mdnPath || featureId);
+			return mdn || ws;
+		} catch {
+			// fallback to mdn if webstatus failed
+			const mdn = await this._fetchMdnCompat(this.mdnPath || featureId);
+			return (
+				mdn || { baseline: { status: "no_data" }, name: featureId }
+			);
+		}
+	}
+
+	async _fetchWebstatus(featureId) {
+		const resp = await fetch(
+			API_ENDPOINT_WEBSTATUS + encodeURIComponent(featureId),
+			{ signal: this._ctrl.signal, cache: "force-cache" },
+		);
+		if (!resp.ok) throw new Error(String(resp.status));
+		const json = await resp.json();
+		return json;
+	}
+
+	// Fetch MDN Browser Compat Data (BCD) and normalize to a shape like webstatus
+	async _fetchMdnCompat(pathOrId) {
+		// Accept dotted path like "javascript.classes.static_initialization_blocks"
+		// or a raw BCD JSON path like "data/javascript/classes.json#static_initialization_blocks"
+		try {
+			const { filePath, keyPath } = this._resolveMdnPath(pathOrId);
+			const url = API_ENDPOINT_MDN_CDN + filePath;
+			const resp = await fetch(url, { signal: this._ctrl.signal, cache: "force-cache" });
+			if (!resp.ok) throw new Error(String(resp.status));
+			const json = await resp.json();
+			const entry = this._getByKeyPath(json, keyPath);
+			if (!entry || !entry.__compat) {
+				return { baseline: { status: "no_data" }, name: keyPath[keyPath.length - 1] };
+			}
+			return this._normalizeFromBCD(entry, keyPath);
+		} catch {
+			return { baseline: { status: "no_data" }, name: String(pathOrId) };
+		}
+	}
+
+	_resolveMdnPath(input) {
+		// Examples:
+		// "javascript.classes.static_initialization_blocks"
+		// "data/javascript/classes.json#static_initialization_blocks"
+		if (input.includes("#")) {
+			const [file, hash] = input.split("#");
+			const area = this._areaFromFilePath(file);
+			const keyPath = [area, ...hash.split(".")];
+			return { filePath: file, keyPath };
+		}
+		if (input.startsWith("data/")) {
+			// no hash provided, build key path from file root only
+			const area = this._areaFromFilePath(input);
+			return { filePath: input, keyPath: [area] };
+		}
+		// map dotted domain path to BCD file
+		const parts = input.split(".");
+		const area = parts.shift();
+		const file = `data/${area}/${parts[0]}.json`;
+		const keyPath = [area, ...parts];
+		return { filePath: file, keyPath };
+	}
+
+	_getByKeyPath(obj, pathArr) {
+		if (!pathArr || pathArr.length === 0) return obj;
+		return pathArr.reduce((acc, k) => (acc && acc[k] != null ? acc[k] : null), obj);
+	}
+
+	_areaFromFilePath(filePath) {
+		// e.g., data/javascript/classes.json -> 'javascript'
+		const m = filePath.match(/^data\/(\w+)\//);
+		return m ? m[1] : "";
+	}
+
+	_normalizeFromBCD(entry, keyPath) {
+		const compat = entry.__compat || {};
+		const support = compat.support || {};
+		const mdnUrl = compat.mdn_url || "";
+		const simple = (s) => (Array.isArray(s) ? s[0] : s) || {};
+
+		const impl = {
+			chrome: this._implFromBCD(simple(support.chrome)),
+			edge: this._implFromBCD(simple(support.edge)),
+			firefox: this._implFromBCD(simple(support.firefox)),
+			safari: this._implFromBCD(simple(support.safari)),
+		};
+
+		// Baseline heuristics from BCD: if all four have version_added and no flags, treat as widely
+		const statuses = Object.values(impl).map((v) => v.status);
+		let baseline = "no_data";
+		if (statuses.every((s) => s === "available")) baseline = "widely";
+		else if (statuses.some((s) => s === "available")) baseline = "limited";
+
+		// Latest date is not available in BCD; leave empty
+		return {
+			feature_id: keyPath[keyPath.length - 1] || "",
+			name: keyPath.join("."),
+			baseline: { status: baseline },
+			browser_implementations: impl,
+			learn_more_url: mdnUrl,
+		};
+	}
+
+	_implFromBCD(s) {
+		if (!s) return { status: "unavailable" };
+		const added = s.version_added;
+		const flags = s.flags || s.partial_implementation;
+		const status = added && !flags ? "available" : "unavailable";
+		return { status };
 	}
 }
 
